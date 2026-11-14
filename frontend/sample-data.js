@@ -123,7 +123,7 @@
         {
           id: 'rain',
           name: 'Rain',
-          question: 'July rainfall at Chicago O’Hare is 3.5 in or more',
+          question: 'July rainfall at Chicago O’Hare is 3.5 inches or more',
           measure: 'July rainfall at Chicago O’Hare',
           settles: 'Settles Jul 31, 2027',
           source: 'Chicago O’Hare',

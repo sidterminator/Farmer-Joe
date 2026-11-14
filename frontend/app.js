@@ -57,6 +57,11 @@
     if (unit === 'in') return v.toFixed(1) + ' in';
     return Math.round(v) + ' ' + unit;
   }
+  function unitPhrase(v, unit) {
+    if (unit === 'in') return v.toFixed(1) + ' inches';
+    if (unit === 'bu/ac') return Math.round(v) + ' bushels per acre';
+    return unitValue(v, unit);
+  }
   function unitTick(v, unit) {
     if (unit === 'degF') return Math.round(v) + '°';
     if (unit === 'in') return v.toFixed(1);
@@ -313,7 +318,7 @@
     const hi0 = M.quantile(m.underlying, 0.996);
     const word = sideWord();
     return {
-      ariaLabel: m.measure + ' across ' + whole.format(m.underlying.length) + ' simulated seasons, split at ' + unitValue(m.strike, m.unit) + ' where the contract pays. Use the left and right arrow keys to read values.',
+      ariaLabel: m.measure + ' across ' + whole.format(m.underlying.length) + ' simulated seasons, split at ' + unitPhrase(m.strike, m.unit) + ' where the contract pays. Use the left and right arrow keys to read values.',
       headroom: 1.3,
       yCaption: 'Share of seasons',
       strike: { value: m.strike, label: unitValue(m.strike, m.unit) },
@@ -397,8 +402,8 @@
     const chip = make('span', 'verdict');
     let name = 'equal';
     let text = 'About fair';
-    if (points >= 2) { name = 'check'; text = 'Cheap by ' + points + (points === 1 ? ' point' : ' points'); chip.classList.add('is-good'); }
-    else if (points <= -2) { name = 'alert'; text = 'Expensive by ' + Math.abs(points) + ' points'; chip.classList.add('is-warn'); }
+    if (points >= 2) { name = 'check'; text = 'Cheap by ' + points + (points === 1 ? ' point' : ' points'); }
+    else if (points <= -2) { name = 'alert'; text = 'Expensive by ' + Math.abs(points) + ' points'; }
     chip.appendChild(icon(name));
     chip.appendChild(make('span', null, text));
     return chip;
@@ -477,7 +482,7 @@
         ['Difference', verdict(points)]
       ]);
       const yesAbove = m.yesWhen === 'at-or-above';
-      const when = (state.side === 'yes') === yesAbove ? 'is ' + unitValue(m.strike, m.unit) + ' or above' : 'is below ' + unitValue(m.strike, m.unit);
+      const when = (state.side === 'yes') === yesAbove ? 'is ' + unitPhrase(m.strike, m.unit) + ' or above' : 'is below ' + unitPhrase(m.strike, m.unit);
       $('explain').textContent = 'One ' + word + ' contract costs ' + cents + '¢ now and pays $1 if the ' + m.measure.charAt(0).toLowerCase() + m.measure.slice(1) + ' ' + when + '. Otherwise it pays nothing. ' + m.settles + ', from ' + m.sourceLong + '.';
     }
 
@@ -530,11 +535,18 @@
     $('staged-chip').hidden = !staged;
     $('season-input').hidden = !!staged;
     if (staged) $('staged-name').textContent = staged.name + ' · ' + plural(staged.seasons.length, 'season');
+    syncSend();
+  }
+
+  function syncSend() {
+    $('upload-form').classList.toggle('has-data', !!state.staged || $('season-input').value.trim() !== '');
   }
 
   function say(text, kind) {
     const node = $('upload-status');
-    node.textContent = text;
+    node.textContent = '';
+    if (text && kind === 'error') node.appendChild(icon('alert'));
+    if (text) node.appendChild(make('span', null, text));
     node.classList.toggle('is-error', kind === 'error');
     node.classList.toggle('is-own', kind === 'done');
     $('season-input').setAttribute('aria-invalid', kind === 'error' ? 'true' : 'false');
@@ -631,7 +643,7 @@
       };
       state.staged = null;
       $('season-input').value = '';
-      say(message + (result.stored ? '' : ' It stays in this browser; nothing was sent anywhere.'), 'done');
+      say(message + (result.stored ? '' : ' Kept in this browser only.'), 'done');
       choose(state.marketId, state.side);
     }).catch(function () {
       say('The upload did not go through. Check your connection and press the arrow again.', 'error');
@@ -708,6 +720,13 @@
     $('upload-form').addEventListener('submit', onUpload);
     $('season-input').addEventListener('input', function () {
       if ($('upload-status').classList.contains('is-error')) say('', '');
+      syncSend();
+    });
+    $('show-all').addEventListener('click', function () {
+      state.savedOnly = false;
+      renderMarkets();
+      renderDock();
+      $('saved-toggle').focus();
     });
 
     $('saved-toggle').addEventListener('click', function () {

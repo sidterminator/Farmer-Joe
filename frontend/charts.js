@@ -91,7 +91,8 @@
       const right = MARGIN.l + geom.innerW;
 
       const step = niceStep(data.yMax, 4);
-      const decimals = step * 100 < 1 ? (step * 1000 % 5 === 0 && step * 100 % 1 !== 0 ? 2 : 1) : 0;
+      const pct = +(step * 100).toFixed(6);
+      const decimals = Number.isInteger(pct) ? 0 : Number.isInteger(+(pct * 10).toFixed(6)) ? 1 : 2;
       for (let v = step; v <= data.yMax * 1.0001; v += step) {
         const y = Math.round(yOfShare(v)) + 0.5;
         svgEl('line', { x1: MARGIN.l, x2: right, y1: y, y2: y }, gGrid);

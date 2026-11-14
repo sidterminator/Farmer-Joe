@@ -103,7 +103,10 @@
         <p id="markets-note"></p>
       </div>
       <ul class="market-list" id="market-list"></ul>
-      <p class="empty" id="markets-empty" hidden>No saved markets yet. Use the ribbon beside a market to save it.</p>
+      <div class="empty" id="markets-empty" hidden>
+        <p>No saved markets yet. Show all markets, then use the ribbon beside one to save it.</p>
+        <button type="button" class="btn btn-on-blue" id="show-all">Show all markets</button>
+      </div>
     </aside>
 
   </main>
@@ -119,10 +122,13 @@
     </div>
 
     <div class="dock-right">
-      <button type="button" class="btn btn-on-blue saved-toggle" id="saved-toggle" aria-pressed="false">
-        <svg class="icon" aria-hidden="true"><use href="#i-saved"/></svg>
-        Saved <span class="count" id="saved-count">0</span>
-      </button>
+      <div class="dock-row">
+        <p class="status" id="upload-status" aria-live="polite"></p>
+        <button type="button" class="btn btn-on-blue saved-toggle" id="saved-toggle" aria-pressed="false">
+          <svg class="icon" aria-hidden="true"><use href="#i-saved"/></svg>
+          Saved <span class="count" id="saved-count">0</span>
+        </button>
+      </div>
       <form class="upload" id="upload-form" novalidate>
         <label class="visually-hidden" for="season-input">Add a season as year, bushels per acre</label>
         <span class="chip" id="staged-chip" hidden>
@@ -137,7 +143,6 @@
           <svg class="icon" aria-hidden="true"><use href="#i-send"/></svg>
         </button>
       </form>
-      <p class="status" id="upload-status" aria-live="polite"></p>
     </div>
 
     <p class="fineprint">Educational tool, not financial advice.</p>

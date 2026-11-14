@@ -1,0 +1,679 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-14T22:31:49Z",
+  "title": "Design System: bizfax",
+  "extensions": {
+    "colorMeta": {
+      "blue-900": {
+        "role": "primary",
+        "displayName": "Night Blue",
+        "canonical": "oklch(24.3% 0.079 263)",
+        "tonalRamp": [
+          "#070b14",
+          "#19253c",
+          "#2f4165",
+          "#4a618d",
+          "#6982b2",
+          "#8ca5d5",
+          "#b4caf3",
+          "#e6efff"
+        ]
+      },
+      "blue-800": {
+        "role": "primary",
+        "displayName": "Jacket Blue",
+        "canonical": "oklch(30.0% 0.100 262)",
+        "tonalRamp": [
+          "#060b16",
+          "#152441",
+          "#29416d",
+          "#426098",
+          "#6182bf",
+          "#84a5e1",
+          "#adcafe",
+          "#e6efff"
+        ]
+      },
+      "blue-700": {
+        "role": "primary",
+        "displayName": "Field Blue",
+        "canonical": "oklch(36.3% 0.116 262)",
+        "tonalRamp": [
+          "#050b17",
+          "#112446",
+          "#244074",
+          "#3c60a0",
+          "#5a81c8",
+          "#7ea5ea",
+          "#adcafd",
+          "#e6effe"
+        ]
+      },
+      "blue-600": {
+        "role": "primary",
+        "displayName": "Field Blue (bright)",
+        "canonical": "oklch(44.6% 0.138 261)",
+        "tonalRamp": [
+          "#040b19",
+          "#0c234b",
+          "#1c3f7d",
+          "#335eab",
+          "#5180d4",
+          "#76a5f6",
+          "#accafd",
+          "#e6effe"
+        ]
+      },
+      "blue-500": {
+        "role": "primary",
+        "displayName": "Rule Blue",
+        "canonical": "oklch(47.5% 0.103 263)",
+        "tonalRamp": [
+          "#060b16",
+          "#152442",
+          "#2a406f",
+          "#436099",
+          "#6281c0",
+          "#85a5e3",
+          "#afc9fd",
+          "#e7efff"
+        ]
+      },
+      "edge-on-blue": {
+        "role": "primary",
+        "displayName": "Rule Blue (control edge)",
+        "canonical": "oklch(66.9% 0.088 266)",
+        "tonalRamp": [
+          "#070b15",
+          "#19243e",
+          "#2f4068",
+          "#4a6092",
+          "#6981b8",
+          "#8ca4da",
+          "#b3c9f8",
+          "#e7efff"
+        ]
+      },
+      "rib": {
+        "role": "primary",
+        "displayName": "Rib Blue",
+        "canonical": "oklch(59.2% 0.150 262)",
+        "tonalRamp": [
+          "#040a1b",
+          "#0c224f",
+          "#1b3d82",
+          "#325db2",
+          "#4f7fdb",
+          "#74a3fd",
+          "#aecafe",
+          "#e6efff"
+        ]
+      },
+      "rib-hover": {
+        "role": "primary",
+        "displayName": "Rib Blue (hover)",
+        "canonical": "oklch(71.8% 0.114 264)",
+        "tonalRamp": [
+          "#060b17",
+          "#142345",
+          "#274073",
+          "#405f9f",
+          "#5e81c7",
+          "#82a4e9",
+          "#aec9fe",
+          "#e6efff"
+        ]
+      },
+      "on-blue": {
+        "role": "neutral",
+        "displayName": "On Blue",
+        "canonical": "oklch(100.0% 0.000 0)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "on-blue-2": {
+        "role": "neutral",
+        "displayName": "On Blue (secondary)",
+        "canonical": "oklch(87.5% 0.041 266)",
+        "tonalRamp": [
+          "#090b10",
+          "#1f2531",
+          "#394254",
+          "#576178",
+          "#77829c",
+          "#99a5be",
+          "#bfc9df",
+          "#e7effe"
+        ]
+      },
+      "on-blue-3": {
+        "role": "neutral",
+        "displayName": "On Blue (tertiary)",
+        "canonical": "oklch(76.9% 0.067 265)",
+        "tonalRamp": [
+          "#080b12",
+          "#1c2538",
+          "#334160",
+          "#4f6186",
+          "#6e82ab",
+          "#91a5ce",
+          "#b8c9ed",
+          "#e7efff"
+        ]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Cool Paper",
+        "canonical": "oklch(97.5% 0.007 261)",
+        "tonalRamp": [
+          "#0b0b0c",
+          "#242527",
+          "#404245",
+          "#5f6165",
+          "#808287",
+          "#a2a5a9",
+          "#c7c9cd",
+          "#edeef1"
+        ]
+      },
+      "paper-2": {
+        "role": "neutral",
+        "displayName": "Paper Shade",
+        "canonical": "oklch(94.2% 0.016 263)",
+        "tonalRamp": [
+          "#0a0b0d",
+          "#23252a",
+          "#3e4249",
+          "#5d616a",
+          "#7d838c",
+          "#a0a5af",
+          "#c5c9d2",
+          "#ebeff5"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "oklch(89.2% 0.024 262)",
+        "tonalRamp": [
+          "#0a0b0e",
+          "#21252c",
+          "#3c424d",
+          "#5a626f",
+          "#7b8391",
+          "#9da5b4",
+          "#c2c9d6",
+          "#eaeff8"
+        ]
+      },
+      "line-strong": {
+        "role": "neutral",
+        "displayName": "Hairline (strong)",
+        "canonical": "oklch(79.1% 0.041 265)",
+        "tonalRamp": [
+          "#090b10",
+          "#1f2531",
+          "#394254",
+          "#566178",
+          "#76829c",
+          "#99a5be",
+          "#bfc9df",
+          "#e7effe"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "oklch(30.0% 0.100 262)",
+        "tonalRamp": [
+          "#060b16",
+          "#152441",
+          "#29416d",
+          "#426098",
+          "#6182bf",
+          "#84a5e1",
+          "#adcafe",
+          "#e6efff"
+        ]
+      },
+      "ink-2": {
+        "role": "neutral",
+        "displayName": "Ink (secondary)",
+        "canonical": "oklch(45.2% 0.065 265)",
+        "tonalRamp": [
+          "#080b12",
+          "#1c2538",
+          "#34415e",
+          "#506185",
+          "#6f82aa",
+          "#92a5cc",
+          "#b9c9ec",
+          "#e7efff"
+        ]
+      },
+      "ink-3": {
+        "role": "neutral",
+        "displayName": "Ink (tertiary)",
+        "canonical": "oklch(52.8% 0.061 265)",
+        "tonalRamp": [
+          "#080b12",
+          "#1d2536",
+          "#35425d",
+          "#516183",
+          "#7082a7",
+          "#93a5ca",
+          "#bac9e9",
+          "#e7efff"
+        ]
+      },
+      "gold": {
+        "role": "secondary",
+        "displayName": "Corn Gold",
+        "canonical": "oklch(83.4% 0.158 89)",
+        "tonalRamp": [
+          "#110a00",
+          "#302300",
+          "#523f02",
+          "#785d00",
+          "#a07d00",
+          "#c99f13",
+          "#eac561",
+          "#ffedc1"
+        ]
+      },
+      "gold-hover": {
+        "role": "secondary",
+        "displayName": "Corn Gold (hover)",
+        "canonical": "oklch(89.1% 0.146 91)",
+        "tonalRamp": [
+          "#110a00",
+          "#2f2400",
+          "#514002",
+          "#775e00",
+          "#9e7e01",
+          "#c5a124",
+          "#e5c66c",
+          "#ffeebd"
+        ]
+      },
+      "yes": {
+        "role": "tertiary",
+        "displayName": "Yes Green",
+        "canonical": "oklch(51.2% 0.126 150)",
+        "tonalRamp": [
+          "#030f05",
+          "#002e10",
+          "#025022",
+          "#1e743a",
+          "#419758",
+          "#6aba7c",
+          "#9adca7",
+          "#cffcd6"
+        ]
+      },
+      "yes-deep": {
+        "role": "tertiary",
+        "displayName": "Yes Green (deep)",
+        "canonical": "oklch(43.8% 0.109 150)",
+        "tonalRamp": [
+          "#040e06",
+          "#082d13",
+          "#164f27",
+          "#2e7140",
+          "#4e945e",
+          "#75b782",
+          "#a1d9ab",
+          "#d4fada"
+        ]
+      },
+      "yes-tint": {
+        "role": "tertiary",
+        "displayName": "Yes Green (tint)",
+        "canonical": "oklch(94.5% 0.029 153)",
+        "tonalRamp": [
+          "#090c0a",
+          "#1f2821",
+          "#39463c",
+          "#56665a",
+          "#76887a",
+          "#99aa9d",
+          "#becec2",
+          "#e7f2ea"
+        ]
+      },
+      "yes-ink": {
+        "role": "tertiary",
+        "displayName": "Yes Green (ink)",
+        "canonical": "oklch(41.7% 0.109 150)",
+        "tonalRamp": [
+          "#040e06",
+          "#072d14",
+          "#154f27",
+          "#2d7140",
+          "#4d945f",
+          "#74b783",
+          "#a1daac",
+          "#d3fada"
+        ]
+      },
+      "no": {
+        "role": "tertiary",
+        "displayName": "No Red",
+        "canonical": "oklch(51.9% 0.162 28)",
+        "tonalRamp": [
+          "#190403",
+          "#490907",
+          "#791814",
+          "#a7322a",
+          "#d15449",
+          "#f67b6e",
+          "#feb3a9",
+          "#ffe9e5"
+        ]
+      },
+      "no-deep": {
+        "role": "tertiary",
+        "displayName": "No Red (deep)",
+        "canonical": "oklch(45.3% 0.145 28)",
+        "tonalRamp": [
+          "#180504",
+          "#460f0b",
+          "#74201a",
+          "#a13a31",
+          "#ca5b4f",
+          "#ee8174",
+          "#ffb3a8",
+          "#ffe9e5"
+        ]
+      },
+      "no-tint": {
+        "role": "tertiary",
+        "displayName": "No Red (tint)",
+        "canonical": "oklch(93.4% 0.027 26)",
+        "tonalRamp": [
+          "#0e0a0a",
+          "#2c2221",
+          "#4d3e3c",
+          "#6f5c5a",
+          "#927d7a",
+          "#b59f9d",
+          "#d7c4c2",
+          "#f8ebe9"
+        ]
+      },
+      "no-ink": {
+        "role": "tertiary",
+        "displayName": "No Red (ink)",
+        "canonical": "oklch(42.8% 0.149 28)",
+        "tonalRamp": [
+          "#180504",
+          "#460e0a",
+          "#751f19",
+          "#a23830",
+          "#cc594e",
+          "#f08072",
+          "#feb4a9",
+          "#ffe9e5"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "The panel title, one per view. 19px at 640px and below."
+      },
+      "figure": {
+        "displayName": "Figure",
+        "purpose": "Yes and No prices (21px) and the hedge-size readout (20px)."
+      },
+      "brand": {
+        "displayName": "Brand",
+        "purpose": "The lower-case product name in the header."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "A market's name on its card."
+      },
+      "section": {
+        "displayName": "Section",
+        "purpose": "The Markets heading on the blue ground."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Base size; the upload field and the Import button."
+      },
+      "support": {
+        "displayName": "Support",
+        "purpose": "Lede, market questions, notes and status lines (13.5 to 14px)."
+      },
+      "control": {
+        "displayName": "Control",
+        "purpose": "Button labels; tabs use the same weight at 14.5px."
+      },
+      "data": {
+        "displayName": "Data",
+        "purpose": "Table figures, right-aligned with tabular numerals."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Column heads, Yes and No words, settle lines, axis ticks, chart labels, fine print (12 to 12.5px)."
+      }
+    },
+    "shadows": [
+      {
+        "name": "tooltip-lift",
+        "value": "0 8px 20px rgba(3, 10, 28, 0.5)",
+        "purpose": "The chart tooltip, the only floating element."
+      },
+      {
+        "name": "thumb-lift",
+        "value": "0 1px 4px rgba(15, 42, 95, 0.4)",
+        "purpose": "The slider thumb."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "The one easing (--ease) for control state changes and rib resizing."
+      },
+      {
+        "name": "state",
+        "value": "150ms",
+        "purpose": "Background, border, text and outline colour changes on controls, tabs, cards and the bookmark."
+      },
+      {
+        "name": "rib-resize",
+        "value": "200ms",
+        "purpose": "Ribs changing height when the hedge or data changes."
+      },
+      {
+        "name": "hover-quick",
+        "value": "120ms",
+        "purpose": "Rib hover colour (linear) and slider thumb scale."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "0.01ms",
+        "purpose": "All transition durations under prefers-reduced-motion: reduce."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "stack",
+        "value": "1080px"
+      },
+      {
+        "name": "small",
+        "value": "640px"
+      }
+    ],
+    "focus": [
+      {
+        "name": "on-blue",
+        "value": "2px solid #ffffff, offset 2px",
+        "purpose": "Default focus ring on the blue ground, and around the whole upload field."
+      },
+      {
+        "name": "on-paper",
+        "value": "2px solid #24509f, offset 2px",
+        "purpose": "Focus ring for controls inside paper surfaces."
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Quiet Button",
+      "kind": "button",
+      "refersTo": "button-quiet",
+      "description": "Outlined button on paper surfaces; inverts to ink when used as a toggle that is on (Table view).",
+      "html": "<div class=\"ds-row-paper\"><button class=\"ds-btn-quiet\" type=\"button\">Steadiest</button><button class=\"ds-btn-quiet\" type=\"button\" aria-pressed=\"true\">Table view</button></div>",
+      "css": ".ds-row-paper { display: flex; gap: 8px; padding: 16px; border-radius: 8px; background: var(--paper, #f4f7fc); } .ds-btn-quiet { display: inline-flex; align-items: center; gap: 8px; min-height: 34px; padding: 0 12px; border-radius: 8px; border: 1px solid transparent; background: none; font-size: 13.5px; font-weight: 550; white-space: nowrap; cursor: pointer; font-family: 'Public Sans', system-ui, -apple-system, 'Segoe UI', sans-serif; transition: background-color 0.15s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.15s cubic-bezier(0.16, 1, 0.3, 1), color 0.15s cubic-bezier(0.16, 1, 0.3, 1); border-color: var(--line-strong, #aebbd6); color: var(--ink, #0f2a5f); } .ds-btn-quiet:hover { background: var(--paper-2, #e6ecf7); } .ds-btn-quiet:active { background: var(--line, #d3dcec); } .ds-btn-quiet[aria-pressed=\"true\"] { background: var(--ink, #0f2a5f); border-color: var(--ink, #0f2a5f); color: var(--paper, #f4f7fc); } .ds-btn-quiet:focus-visible { outline: 2px solid var(--blue-600, #24509f); outline-offset: 2px; }"
+    },
+    {
+      "name": "On-Blue Button (Import)",
+      "kind": "button",
+      "refersTo": "button-on-blue",
+      "description": "Outlined button on the blue ground. Import is the larger 44px version with an icon.",
+      "html": "<div class=\"ds-on-blue-wrap\"><button class=\"ds-btn-on-blue ds-btn-import\" type=\"button\"><svg class=\"ds-icon\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M12 15V4M7.5 8.5 12 4l4.5 4.5M4 14v4.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V14\"/></svg>Import</button></div>",
+      "css": ".ds-on-blue-wrap { background: var(--blue-800, #0f2a5f); padding: 16px; border-radius: 8px; display: flex; gap: 12px; align-items: center; } .ds-btn-on-blue { display: inline-flex; align-items: center; gap: 8px; min-height: 34px; padding: 0 12px; border-radius: 8px; border: 1px solid transparent; background: none; font-size: 13.5px; font-weight: 550; white-space: nowrap; cursor: pointer; font-family: 'Public Sans', system-ui, -apple-system, 'Segoe UI', sans-serif; transition: background-color 0.15s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.15s cubic-bezier(0.16, 1, 0.3, 1), color 0.15s cubic-bezier(0.16, 1, 0.3, 1); border-color: var(--edge-on-blue, #7b94cc); color: var(--on-blue, #ffffff); } .ds-btn-on-blue:hover { background: var(--blue-700, #183a7a); border-color: var(--on-blue-2, #c9d6f2); } .ds-btn-on-blue:active { background: var(--blue-600, #24509f); } .ds-btn-on-blue:focus-visible { outline: 2px solid var(--on-blue, #ffffff); outline-offset: 2px; } .ds-btn-import { min-height: 44px; padding: 0 16px 0 13px; font-size: 15px; } .ds-icon { width: 18px; height: 18px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; } .ds-btn-import .ds-icon { width: 20px; height: 20px; }"
+    },
+    {
+      "name": "Saved Toggle",
+      "kind": "button",
+      "refersTo": "saved-toggle-on",
+      "description": "Filters the market list to saved markets. Off: on-blue outline with a blue count pill. On: corn gold with blue text.",
+      "html": "<div class=\"ds-saved-wrap\"><button class=\"ds-saved\" type=\"button\" aria-pressed=\"false\"><svg class=\"ds-saved-icon\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M6.5 20.5V5A1.5 1.5 0 0 1 8 3.5h8A1.5 1.5 0 0 1 17.5 5v15.5L12 16.5z\"/><path d=\"m12 6.6 1 2 2.2.3-1.6 1.6.4 2.2-2-1-2 1 .4-2.2-1.6-1.6 2.2-.3z\"/></svg>Saved <span class=\"ds-saved-count\">0</span></button><button class=\"ds-saved\" type=\"button\" aria-pressed=\"true\"><svg class=\"ds-saved-icon\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M6.5 20.5V5A1.5 1.5 0 0 1 8 3.5h8A1.5 1.5 0 0 1 17.5 5v15.5L12 16.5z\"/><path d=\"m12 6.6 1 2 2.2.3-1.6 1.6.4 2.2-2-1-2 1 .4-2.2-1.6-1.6 2.2-.3z\"/></svg>Saved <span class=\"ds-saved-count\">1</span></button></div>",
+      "css": ".ds-saved-wrap { background: var(--blue-800, #0f2a5f); padding: 16px; border-radius: 8px; display: flex; gap: 12px; } .ds-saved { display: inline-flex; align-items: center; gap: 8px; min-height: 34px; padding: 0 12px; border-radius: 8px; border: 1px solid transparent; background: none; font-size: 13.5px; font-weight: 550; white-space: nowrap; cursor: pointer; font-family: 'Public Sans', system-ui, -apple-system, 'Segoe UI', sans-serif; transition: background-color 0.15s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.15s cubic-bezier(0.16, 1, 0.3, 1), color 0.15s cubic-bezier(0.16, 1, 0.3, 1); border-color: var(--edge-on-blue, #7b94cc); color: var(--on-blue, #ffffff); } .ds-saved:hover { background: var(--blue-700, #183a7a); border-color: var(--on-blue-2, #c9d6f2); } .ds-saved:focus-visible { outline: 2px solid var(--on-blue, #ffffff); outline-offset: 2px; } .ds-saved-icon { width: 18px; height: 18px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; } .ds-saved-count { min-width: 20px; padding: 0 6px; border-radius: 10px; background: var(--blue-600, #24509f); font-size: 12.5px; font-variant-numeric: tabular-nums; text-align: center; } .ds-saved[aria-pressed=\"true\"] { background: var(--gold, #f2c230); border-color: var(--gold, #f2c230); color: var(--blue-800, #0f2a5f); } .ds-saved[aria-pressed=\"true\"]:hover { background: var(--gold-hover, #ffd75c); border-color: var(--gold-hover, #ffd75c); } .ds-saved[aria-pressed=\"true\"] .ds-saved-count { background: var(--blue-800, #0f2a5f); color: var(--on-blue, #ffffff); }"
+    },
+    {
+      "name": "Tabs",
+      "kind": "nav",
+      "refersTo": "tab",
+      "description": "Underline tabs on the panel's top rule; the selected tab carries a 2px ink bar.",
+      "html": "<div class=\"ds-tabs-panel\"><div class=\"ds-tabs\" role=\"tablist\"><button type=\"button\" role=\"tab\" aria-selected=\"true\">Income</button><button type=\"button\" role=\"tab\" aria-selected=\"false\">Forecast and market</button></div></div>",
+      "css": ".ds-tabs-panel { padding: 10px 22px 20px; border-radius: 12px; background: var(--paper, #f4f7fc); } .ds-tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line, #d3dcec); } .ds-tabs [role=\"tab\"] { position: relative; padding: 11px 12px 12px; border: 0; background: none; color: var(--ink-2, #44557a); font-size: 14.5px; font-weight: 550; cursor: pointer; font-family: 'Public Sans', system-ui, -apple-system, 'Segoe UI', sans-serif; transition: color 0.15s cubic-bezier(0.16, 1, 0.3, 1); } .ds-tabs [role=\"tab\"]::after { content: \"\"; position: absolute; left: 12px; right: 12px; bottom: -1px; height: 2px; background: transparent; transition: background-color 0.15s cubic-bezier(0.16, 1, 0.3, 1); } .ds-tabs [role=\"tab\"]:hover, .ds-tabs [role=\"tab\"][aria-selected=\"true\"] { color: var(--ink, #0f2a5f); } .ds-tabs [role=\"tab\"][aria-selected=\"true\"]::after { background: var(--ink, #0f2a5f); } .ds-tabs [role=\"tab\"]:focus-visible { outline: 2px solid var(--blue-600, #24509f); outline-offset: 2px; }"
+    },
+    {
+      "name": "Market Card",
+      "kind": "card",
+      "refersTo": "market-card",
+      "description": "A market on the blue ground: name, question and settle line, Yes and No price buttons, and a bookmark flag in the right gutter. Selected cards carry the dashed gold outline; a saved market's flag is filled gold.",
+      "html": "<div class=\"ds-market-wrap\"><div class=\"ds-market\"><div class=\"ds-market-card\"><button class=\"ds-market-pick\" type=\"button\"><span class=\"ds-market-name\">Temp</span><span class=\"ds-market-question\">Hottest July day at Chicago Midway is 95°F or above</span><span class=\"ds-market-meta\">Settles Jul 31, 2027 · Chicago Midway</span></button><div class=\"ds-sides\"><button class=\"ds-side ds-side-yes\" type=\"button\" aria-pressed=\"true\"><span class=\"ds-side-word\">Yes</span><span class=\"ds-side-price\">40¢</span></button><button class=\"ds-side ds-side-no\" type=\"button\" aria-pressed=\"false\"><span class=\"ds-side-word\">No</span><span class=\"ds-side-price\">60¢</span></button></div></div><button class=\"ds-ribbon\" type=\"button\" aria-pressed=\"true\" aria-label=\"Remove Temp from saved\"><svg viewBox=\"0 0 40 28\" aria-hidden=\"true\"><path d=\"M1 2.5h36.5L29 14l8.5 11.5H1z\"/></svg></button></div></div>",
+      "css": ".ds-market-wrap { background: var(--blue-800, #0f2a5f); padding: 16px 8px 16px 16px; border-radius: 8px; max-width: 520px; font-family: 'Public Sans', system-ui, -apple-system, 'Segoe UI', sans-serif; } .ds-market { position: relative; padding-right: 46px; } .ds-market-card { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px; align-items: stretch; padding: 8px 8px 8px 0; border-radius: 10px; background: var(--paper, #f4f7fc); color: var(--ink, #0f2a5f); outline: 2px dashed var(--gold, #f2c230); outline-offset: 4px; } .ds-market-pick { display: grid; gap: 3px; align-content: center; padding: 8px 4px 8px 16px; border: 0; border-radius: 8px; background: none; text-align: left; color: inherit; font: inherit; cursor: pointer; } .ds-market-pick:hover .ds-market-name { text-decoration: underline; text-underline-offset: 3px; } .ds-market-pick:focus-visible { outline: 2px solid var(--blue-600, #24509f); } .ds-market-name { font-size: 18px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.2; } .ds-market-question { color: var(--ink-2, #44557a); font-size: 13.5px; line-height: 1.35; } .ds-market-meta { color: var(--ink-3, #5a6b8f); font-size: 12.5px; } .ds-sides { display: grid; grid-template-columns: repeat(2, 74px); gap: 6px; } .ds-side { display: grid; align-content: center; justify-items: center; gap: 1px; min-height: 72px; padding: 6px 4px; border: 0; border-radius: 8px; font: inherit; cursor: pointer; transition: background-color 0.15s cubic-bezier(0.16, 1, 0.3, 1), color 0.15s cubic-bezier(0.16, 1, 0.3, 1); } .ds-side:focus-visible { outline: 2px solid var(--blue-600, #24509f); outline-offset: 2px; } .ds-side-word { font-size: 12.5px; font-weight: 600; } .ds-side-price { font-size: 21px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.1; } .ds-side-yes { background: var(--yes-tint, #dff3e4); color: var(--yes-ink, #0b5c2a); } .ds-side-yes:hover { background: #c9ebd2; } .ds-side-yes[aria-pressed=\"true\"] { background: var(--yes, #1f7a3d); color: #ffffff; } .ds-side-yes[aria-pressed=\"true\"]:hover { background: var(--yes-deep, #17622f); } .ds-side-no { background: var(--no-tint, #fbe3e0); color: var(--no-ink, #8f1f1a); } .ds-side-no:hover { background: #f8d0cb; } .ds-side-no[aria-pressed=\"true\"] { background: var(--no, #b3372f); color: #ffffff; } .ds-side-no[aria-pressed=\"true\"]:hover { background: var(--no-deep, #962a23); } .ds-ribbon { position: absolute; top: 50%; right: 4px; width: 42px; height: 30px; margin-top: -15px; padding: 0; border: 0; border-radius: 4px; background: none; cursor: pointer; } .ds-ribbon svg { display: block; width: 100%; height: 100%; overflow: visible; } .ds-ribbon path { fill: transparent; stroke: var(--on-blue-3, #9fb4e0); stroke-width: 1.75; stroke-linejoin: round; transition: fill 0.15s cubic-bezier(0.16, 1, 0.3, 1), stroke 0.15s cubic-bezier(0.16, 1, 0.3, 1); } .ds-ribbon:hover path { stroke: var(--on-blue, #ffffff); fill: var(--blue-700, #183a7a); } .ds-ribbon[aria-pressed=\"true\"] path { fill: var(--gold, #f2c230); stroke: var(--gold, #f2c230); } .ds-ribbon[aria-pressed=\"true\"]:hover path { fill: var(--gold-hover, #ffd75c); stroke: var(--gold-hover, #ffd75c); } .ds-ribbon:focus-visible { outline: 2px solid var(--on-blue, #ffffff); outline-offset: 2px; }"
+    },
+    {
+      "name": "Upload Field",
+      "kind": "input",
+      "refersTo": "upload-field",
+      "description": "Paper bar on the blue ground with a borderless text input and the send button. The send button is blue at rest and corn gold once the field holds something (shown gold here).",
+      "html": "<div class=\"ds-upload-wrap\"><form class=\"ds-upload\" onsubmit=\"return false\"><input type=\"text\" aria-label=\"Add a season as year, bushels per acre\" placeholder=\"Add a season: 2026, 192\"><button class=\"ds-send\" type=\"submit\" aria-label=\"Upload\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M20.5 3.5 10 14M20.5 3.5 14 20.5 10 14 3.5 10z\"/></svg></button></form><form class=\"ds-upload ds-has-data\" onsubmit=\"return false\"><input type=\"text\" aria-label=\"Add a season as year, bushels per acre\" value=\"2026, 192\"><button class=\"ds-send\" type=\"submit\" aria-label=\"Upload\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M20.5 3.5 10 14M20.5 3.5 14 20.5 10 14 3.5 10z\"/></svg></button></form></div>",
+      "css": ".ds-upload-wrap { background: var(--blue-800, #0f2a5f); padding: 16px; border-radius: 8px; display: grid; gap: 14px; max-width: 480px; } .ds-upload { display: flex; align-items: center; gap: 8px; min-height: 48px; margin: 0; padding: 5px 5px 5px 14px; border-radius: 12px; background: var(--paper, #f4f7fc); color: var(--ink, #0f2a5f); } .ds-upload:focus-within { outline: 2px solid var(--on-blue, #ffffff); outline-offset: 2px; } .ds-upload input { flex: 1; min-width: 0; height: 38px; padding: 0; border: 0; outline: 0; background: none; color: inherit; font-size: 15px; caret-color: var(--blue-600, #24509f); font-family: 'Public Sans', system-ui, -apple-system, 'Segoe UI', sans-serif; } .ds-upload input::placeholder { color: var(--ink-3, #5a6b8f); opacity: 1; } .ds-send { display: grid; place-items: center; flex: none; width: 40px; height: 38px; border: 0; border-radius: 8px; background: var(--blue-600, #24509f); color: var(--on-blue, #ffffff); cursor: pointer; transition: background-color 0.15s cubic-bezier(0.16, 1, 0.3, 1), color 0.15s cubic-bezier(0.16, 1, 0.3, 1); } .ds-send:hover { background: var(--blue-700, #183a7a); } .ds-send:active { background: var(--blue-800, #0f2a5f); } .ds-send svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; } .ds-has-data .ds-send { background: var(--gold, #f2c230); color: var(--blue-800, #0f2a5f); } .ds-has-data .ds-send:hover { background: var(--gold-hover, #ffd75c); } .ds-has-data .ds-send:active { background: #e0b020; } .ds-send:focus-visible { outline: 2px solid var(--blue-600, #24509f); outline-offset: 2px; }"
+    },
+    {
+      "name": "Hedge Slider",
+      "kind": "input",
+      "refersTo": "",
+      "description": "Sizes the hedge. Blue fill up to an ink thumb with a paper ring; the readout above is the figure style.",
+      "html": "<div class=\"ds-hedge\"><div class=\"ds-hedge-row\"><label for=\"ds-hedge-range\">Hedge size</label><output>32,600 YES</output></div><input type=\"range\" id=\"ds-hedge-range\" min=\"0\" max=\"100\" value=\"47\" style=\"--fill: 47%\"></div>",
+      "css": ".ds-hedge { display: grid; gap: 8px; max-width: 340px; padding: 16px 22px; border-radius: 12px; background: var(--paper, #f4f7fc); color: var(--ink, #0f2a5f); font-family: 'Public Sans', system-ui, -apple-system, 'Segoe UI', sans-serif; } .ds-hedge-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; } .ds-hedge label { color: var(--ink-2, #44557a); font-size: 13.5px; font-weight: 550; } .ds-hedge output { font-size: 20px; font-weight: 700; letter-spacing: -0.01em; } .ds-hedge input[type=\"range\"] { display: block; width: 100%; height: 22px; margin: 0; background: none; appearance: none; -webkit-appearance: none; cursor: pointer; } .ds-hedge input[type=\"range\"]::-webkit-slider-runnable-track { height: 6px; border-radius: 3px; background: linear-gradient(to right, var(--blue-600, #24509f) var(--fill), var(--line, #d3dcec) var(--fill)); } .ds-hedge input[type=\"range\"]::-moz-range-track { height: 6px; border-radius: 3px; background: var(--line, #d3dcec); } .ds-hedge input[type=\"range\"]::-moz-range-progress { height: 6px; border-radius: 3px; background: var(--blue-600, #24509f); } .ds-hedge input[type=\"range\"]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; margin-top: -6px; border-radius: 50%; border: 2px solid var(--paper, #f4f7fc); background: var(--ink, #0f2a5f); box-shadow: 0 1px 4px rgba(15, 42, 95, 0.4); transition: transform 0.12s cubic-bezier(0.16, 1, 0.3, 1); } .ds-hedge input[type=\"range\"]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--paper, #f4f7fc); background: var(--ink, #0f2a5f); box-shadow: 0 1px 4px rgba(15, 42, 95, 0.4); } .ds-hedge input[type=\"range\"]:hover::-webkit-slider-thumb { transform: scale(1.1); } .ds-hedge input[type=\"range\"]:focus-visible { outline: none; } .ds-hedge input[type=\"range\"]:focus-visible::-webkit-slider-thumb { outline: 2px solid var(--blue-600, #24509f); outline-offset: 2px; } .ds-hedge input[type=\"range\"]:focus-visible::-moz-range-thumb { outline: 2px solid var(--blue-600, #24509f); outline-offset: 2px; }"
+    },
+    {
+      "name": "Verdict Chip",
+      "kind": "chip",
+      "refersTo": "verdict",
+      "description": "Neutral chip that says whether a price is cheap, expensive or about fair, using an icon and words instead of colour.",
+      "html": "<div class=\"ds-verdict-wrap\"><span class=\"ds-verdict\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"m5 12.5 4.5 4.5L19 7.5\"/></svg><span>Cheap by 5 points</span></span><span class=\"ds-verdict\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M12 4 3.5 19h17zM12 10v4.5M12 16.8v.2\"/></svg><span>Expensive by 4 points</span></span><span class=\"ds-verdict\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M6 9.5h12M6 14.5h12\"/></svg><span>About fair</span></span></div>",
+      "css": ".ds-verdict-wrap { display: flex; flex-wrap: wrap; gap: 8px; padding: 16px; border-radius: 8px; background: var(--paper, #f4f7fc); } .ds-verdict { display: inline-flex; align-items: center; gap: 6px; padding: 2px 9px 2px 7px; border-radius: 6px; background: var(--paper-2, #e6ecf7); color: var(--ink, #0f2a5f); font-size: 14px; font-weight: 600; font-family: 'Public Sans', system-ui, -apple-system, 'Segoe UI', sans-serif; } .ds-verdict svg { width: 15px; height: 15px; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }"
+    },
+    {
+      "name": "Rib Plot",
+      "kind": "custom",
+      "refersTo": "plot",
+      "description": "The one chart form: a distribution as fine vertical ribs on the blue plot field, with the hedge as a dashed gold outline over a blue under-stroke. Static sample; the build draws it from data and adds direct labels, a crosshair and a tooltip.",
+      "html": "<figure class=\"ds-plot\"><svg viewBox=\"0 0 440 200\" role=\"img\" aria-label=\"Sample distribution with a hedge outline\"><defs><clipPath id=\"ds-plot-clip\"><rect x=\"0\" y=\"0\" width=\"440\" height=\"176\"/></clipPath></defs><line class=\"ds-grid\" x1=\"24\" x2=\"424\" y1=\"60.5\" y2=\"60.5\"/><line class=\"ds-grid\" x1=\"24\" x2=\"424\" y1=\"118.5\" y2=\"118.5\"/><g clip-path=\"url(#ds-plot-clip)\"><rect class=\"ds-rib\" x=\"25.0\" y=\"172.8\" width=\"7.1\" height=\"9.2\" rx=\"3\"/><rect class=\"ds-rib\" x=\"34.1\" y=\"171.6\" width=\"7.1\" height=\"10.4\" rx=\"3\"/><rect class=\"ds-rib\" x=\"43.2\" y=\"170.0\" width=\"7.1\" height=\"12.0\" rx=\"3\"/><rect class=\"ds-rib\" x=\"52.3\" y=\"167.9\" width=\"7.1\" height=\"14.1\" rx=\"3\"/><rect class=\"ds-rib\" x=\"61.4\" y=\"165.2\" width=\"7.1\" height=\"16.8\" rx=\"3\"/><rect class=\"ds-rib\" x=\"70.5\" y=\"161.9\" width=\"7.1\" height=\"20.1\" rx=\"3\"/><rect class=\"ds-rib\" x=\"79.5\" y=\"157.9\" width=\"7.1\" height=\"24.1\" rx=\"3\"/><rect class=\"ds-rib\" x=\"88.6\" y=\"153.2\" width=\"7.1\" height=\"28.8\" rx=\"3\"/><rect class=\"ds-rib\" x=\"97.7\" y=\"147.6\" width=\"7.1\" height=\"34.4\" rx=\"3\"/><rect class=\"ds-rib\" x=\"106.8\" y=\"141.2\" width=\"7.1\" height=\"40.8\" rx=\"3\"/><rect class=\"ds-rib\" x=\"115.9\" y=\"134.0\" width=\"7.1\" height=\"48.0\" rx=\"3\"/><rect class=\"ds-rib\" x=\"125.0\" y=\"126.1\" width=\"7.1\" height=\"55.9\" rx=\"3\"/><rect class=\"ds-rib\" x=\"134.1\" y=\"117.7\" width=\"7.1\" height=\"64.3\" rx=\"3\"/><rect class=\"ds-rib\" x=\"143.2\" y=\"108.9\" width=\"7.1\" height=\"73.1\" rx=\"3\"/><rect class=\"ds-rib\" x=\"152.3\" y=\"100.0\" width=\"7.1\" height=\"82.0\" rx=\"3\"/><rect class=\"ds-rib\" x=\"161.4\" y=\"91.2\" width=\"7.1\" height=\"90.8\" rx=\"3\"/><rect class=\"ds-rib\" x=\"170.5\" y=\"82.8\" width=\"7.1\" height=\"99.2\" rx=\"3\"/><rect class=\"ds-rib\" x=\"179.5\" y=\"75.3\" width=\"7.1\" height=\"106.7\" rx=\"3\"/><rect class=\"ds-rib\" x=\"188.6\" y=\"68.8\" width=\"7.1\" height=\"113.2\" rx=\"3\"/><rect class=\"ds-rib\" x=\"197.7\" y=\"63.6\" width=\"7.1\" height=\"118.4\" rx=\"3\"/><rect class=\"ds-rib\" x=\"206.8\" y=\"60.1\" width=\"7.1\" height=\"121.9\" rx=\"3\"/><rect class=\"ds-rib\" x=\"215.9\" y=\"58.2\" width=\"7.1\" height=\"123.8\" rx=\"3\"/><rect class=\"ds-rib\" x=\"225.0\" y=\"58.2\" width=\"7.1\" height=\"123.8\" rx=\"3\"/><rect class=\"ds-rib\" x=\"234.1\" y=\"60.1\" width=\"7.1\" height=\"121.9\" rx=\"3\"/><rect class=\"ds-rib\" x=\"243.2\" y=\"63.6\" width=\"7.1\" height=\"118.4\" rx=\"3\"/><rect class=\"ds-rib\" x=\"252.3\" y=\"68.8\" width=\"7.1\" height=\"113.2\" rx=\"3\"/><rect class=\"ds-rib\" x=\"261.4\" y=\"75.3\" width=\"7.1\" height=\"106.7\" rx=\"3\"/><rect class=\"ds-rib\" x=\"270.5\" y=\"82.8\" width=\"7.1\" height=\"99.2\" rx=\"3\"/><rect class=\"ds-rib\" x=\"279.5\" y=\"91.2\" width=\"7.1\" height=\"90.8\" rx=\"3\"/><rect class=\"ds-rib\" x=\"288.6\" y=\"100.0\" width=\"7.1\" height=\"82.0\" rx=\"3\"/><rect class=\"ds-rib\" x=\"297.7\" y=\"108.9\" width=\"7.1\" height=\"73.1\" rx=\"3\"/><rect class=\"ds-rib\" x=\"306.8\" y=\"117.7\" width=\"7.1\" height=\"64.3\" rx=\"3\"/><rect class=\"ds-rib\" x=\"315.9\" y=\"126.1\" width=\"7.1\" height=\"55.9\" rx=\"3\"/><rect class=\"ds-rib\" x=\"325.0\" y=\"134.0\" width=\"7.1\" height=\"48.0\" rx=\"3\"/><rect class=\"ds-rib\" x=\"334.1\" y=\"141.2\" width=\"7.1\" height=\"40.8\" rx=\"3\"/><rect class=\"ds-rib\" x=\"343.2\" y=\"147.6\" width=\"7.1\" height=\"34.4\" rx=\"3\"/><rect class=\"ds-rib\" x=\"352.3\" y=\"153.2\" width=\"7.1\" height=\"28.8\" rx=\"3\"/><rect class=\"ds-rib\" x=\"361.4\" y=\"157.9\" width=\"7.1\" height=\"24.1\" rx=\"3\"/><rect class=\"ds-rib\" x=\"370.5\" y=\"161.9\" width=\"7.1\" height=\"20.1\" rx=\"3\"/><rect class=\"ds-rib\" x=\"379.5\" y=\"165.2\" width=\"7.1\" height=\"16.8\" rx=\"3\"/><rect class=\"ds-rib\" x=\"388.6\" y=\"167.9\" width=\"7.1\" height=\"14.1\" rx=\"3\"/><rect class=\"ds-rib\" x=\"397.7\" y=\"170.0\" width=\"7.1\" height=\"12.0\" rx=\"3\"/><rect class=\"ds-rib\" x=\"406.8\" y=\"171.6\" width=\"7.1\" height=\"10.4\" rx=\"3\"/><rect class=\"ds-rib\" x=\"415.9\" y=\"172.8\" width=\"7.1\" height=\"9.2\" rx=\"3\"/></g><line class=\"ds-baseline\" x1=\"24\" x2=\"424\" y1=\"176.5\" y2=\"176.5\"/><path class=\"ds-stitch-under\" d=\"M46.7 174.8L55.8 174.0L64.9 172.8L74.0 171.1L83.1 168.7L92.2 165.4L101.3 160.9L110.4 155.0L119.5 147.7L128.5 138.6L137.6 127.9L146.7 115.6L155.8 102.2L164.9 87.9L174.0 73.5L183.1 59.8L192.2 47.5L201.3 37.4L210.4 30.2L219.5 26.5L228.5 26.5L237.6 30.2L246.7 37.4L255.8 47.5L264.9 59.8L274.0 73.5L283.1 87.9L292.2 102.2L301.3 115.6L310.4 127.9L319.5 138.6L328.5 147.7L337.6 155.0L346.7 160.9L355.8 165.4L364.9 168.7L374.0 171.1L383.1 172.8L392.2 174.0L401.3 174.8\"/><path class=\"ds-stitch\" d=\"M46.7 174.8L55.8 174.0L64.9 172.8L74.0 171.1L83.1 168.7L92.2 165.4L101.3 160.9L110.4 155.0L119.5 147.7L128.5 138.6L137.6 127.9L146.7 115.6L155.8 102.2L164.9 87.9L174.0 73.5L183.1 59.8L192.2 47.5L201.3 37.4L210.4 30.2L219.5 26.5L228.5 26.5L237.6 30.2L246.7 37.4L255.8 47.5L264.9 59.8L274.0 73.5L283.1 87.9L292.2 102.2L301.3 115.6L310.4 127.9L319.5 138.6L328.5 147.7L337.6 155.0L346.7 160.9L355.8 165.4L364.9 168.7L374.0 171.1L383.1 172.8L392.2 174.0L401.3 174.8\"/><text class=\"ds-tick\" x=\"120\" y=\"192\">$200K</text><text class=\"ds-tick\" x=\"300\" y=\"192\">$300K</text></svg></figure>",
+      "css": ".ds-plot { margin: 0; border-radius: 8px; background: var(--blue-800, #0f2a5f); overflow: hidden; max-width: 440px; } .ds-plot svg { display: block; width: 100%; height: auto; } .ds-grid { stroke: #1d3b78; stroke-width: 1; } .ds-baseline { stroke: var(--blue-500, #3d5a96); stroke-width: 1; } .ds-rib { fill: var(--rib, #4b7ad6); transition: fill 0.12s linear; } .ds-rib:hover { fill: var(--rib-hover, #7fa3ec); } .ds-stitch, .ds-stitch-under { fill: none; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; } .ds-stitch { stroke: var(--gold, #f2c230); stroke-width: 2; stroke-dasharray: 8 5; } .ds-stitch-under { stroke: var(--blue-800, #0f2a5f); stroke-width: 6; } .ds-tick { fill: var(--on-blue-3, #9fb4e0); font-size: 12px; font-variant-numeric: tabular-nums; text-anchor: middle; font-family: 'Public Sans', system-ui, -apple-system, 'Segoe UI', sans-serif; }"
+    },
+    {
+      "name": "Chart Key and Tooltip",
+      "kind": "custom",
+      "refersTo": "tooltip",
+      "description": "Legend swatches cut from the plot field (ribs, gold ribs, dashed gold line) and the tooltip shown over the plot.",
+      "html": "<div class=\"ds-key-wrap\"><ul class=\"ds-legend\"><li><span class=\"ds-swatch ds-swatch-rib\"></span>Without hedge</li><li><span class=\"ds-swatch ds-swatch-line\"></span>With hedge</li><li><span class=\"ds-swatch ds-swatch-gold\"></span>YES pays $1</li></ul><div class=\"ds-tip\"><div class=\"ds-tip-title\">$250K to $254K</div><div class=\"ds-tip-row\"><span class=\"ds-tip-key ds-tip-key-rib\"></span><strong>4.4%</strong> of seasons without hedge</div><div class=\"ds-tip-row\"><span class=\"ds-tip-key ds-tip-key-line\"></span><strong>5.8%</strong> of seasons with hedge</div></div></div>",
+      "css": ".ds-key-wrap { display: grid; gap: 14px; justify-items: start; padding: 16px; border-radius: 8px; background: var(--paper, #f4f7fc); font-family: 'Public Sans', system-ui, -apple-system, 'Segoe UI', sans-serif; } .ds-legend { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 0; padding: 0; list-style: none; font-size: 13px; color: var(--ink-2, #44557a); } .ds-legend li { display: flex; align-items: center; gap: 8px; } .ds-swatch { width: 26px; height: 16px; border-radius: 3px; background-color: var(--blue-800, #0f2a5f); background-repeat: no-repeat; background-position: center; } .ds-swatch-rib { background-image: repeating-linear-gradient(to right, var(--rib, #4b7ad6) 0 4px, transparent 4px 6px); background-size: 16px 9px; } .ds-swatch-gold { background-image: repeating-linear-gradient(to right, var(--gold, #f2c230) 0 4px, transparent 4px 6px); background-size: 16px 9px; } .ds-swatch-line { background-image: repeating-linear-gradient(to right, var(--gold, #f2c230) 0 5px, transparent 5px 8px); background-size: 18px 2px; } .ds-tip { min-width: 170px; padding: 9px 11px 10px; border: 1px solid var(--blue-500, #3d5a96); border-radius: 7px; background: var(--blue-900, #0a1d45); color: var(--on-blue, #ffffff); font-size: 12.5px; box-shadow: 0 8px 20px rgba(3, 10, 28, 0.5); } .ds-tip-title { color: var(--on-blue-2, #c9d6f2); font-variant-numeric: tabular-nums; margin-bottom: 4px; } .ds-tip-row { display: flex; align-items: center; gap: 7px; color: var(--on-blue-2, #c9d6f2); white-space: nowrap; } .ds-tip-row strong { color: var(--on-blue, #ffffff); font-weight: 700; font-variant-numeric: tabular-nums; } .ds-tip-key { width: 12px; height: 2px; flex: none; border-radius: 1px; } .ds-tip-key-rib { background: var(--rib, #4b7ad6); } .ds-tip-key-line { background: var(--gold, #f2c230); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Stitched Jacket",
+    "overview": "The screen is a blue corduroy jacket with gold stitching: FFA-jacket blue covers the whole shell, cool near-white panels sit on it as work surfaces, and corn gold is thread, used only where something belongs to the farmer. No emblem is drawn anywhere; the jacket is carried by the colour pair, the ribbed plot and the dashed gold line alone.\n\nIt is a working screen for one job, read at a glance and operated with a few controls: income spread on the left, markets on the right, the farmer's data along the bottom. Density is moderate. Numbers are the content, so they are bold, right-aligned and aligned by digit; prose is short and sits in a quieter ink. Motion is brief and only ever reports a state change.\n\nThe system does not look like a white fintech dashboard of grey cards with green and red tickers. Blue is the ground, not an accent, and green and red are confined to the two prices a farmer chooses between.",
+    "keyCharacteristics": [
+      "A deep blue ground across the shell, with light panels as the only work surfaces.",
+      "Corn gold means \"the farmer's own\" and nothing else.",
+      "One chart form: fine vertical ribs on a blue plot field, with a dashed gold outline for the hedge.",
+      "Green and red only on Yes and No prices.",
+      "One typeface, Public Sans, with tabular right-aligned figures.",
+      "Flat surfaces; depth comes from the blue and paper tones.",
+      "Sample and assumed numbers are labelled on screen, in the header and the status line."
+    ],
+    "rules": [
+      {
+        "name": "The Farmer's Gold Rule",
+        "body": "Gold marks what is the farmer's own: the selected market, the hedged income, the held side's payout, saved markets, uploaded data, and the send arrow once there is something to send. A gold mark anywhere else is a mistake.",
+        "section": "colors"
+      },
+      {
+        "name": "The Yes and No Rule",
+        "body": "Green and red appear only on Yes and No price buttons. Gains, losses, errors and verdicts are not coloured: the Change column is plain ink, an error is white text with an alert icon, and \"Cheap\" or \"Expensive\" is a neutral chip with an icon.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Emphasis Series Rule",
+        "body": "Gold is deliberately much lighter than Rib Blue and sits outside the lightness band a categorical chart palette would keep. That is intended: a plot has one blue series and at most one gold emphasis series. Colour-blind separation and contrast against the plot field hold. Do not add a third series colour.",
+        "section": "colors"
+      },
+      {
+        "name": "The Right-Aligned Figures Rule",
+        "body": "Figures in tables are right-aligned with tabular numerals, so digits stack by place; the first column holds the row label, left-aligned. Axis ticks and tooltip values are tabular too.",
+        "section": "typography"
+      },
+      {
+        "name": "The Sentence Case Rule",
+        "body": "Labels are sentence case at normal tracking. Nothing in the build is set in tracked capitals; \"YES\" and \"NO\" are capitalised only where prose names the contract side.",
+        "section": "typography"
+      },
+      {
+        "name": "The Tone Before Shadow Rule",
+        "body": "A surface is separated by its tone against the ground. Shadow is kept for the two things that sit above a surface: the tooltip and the slider thumb.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** keep the shell on `blue-800` and put working content on `paper` surfaces.",
+      "**Do** reserve gold for the farmer's own: selection, hedged income, the held side's payout, saved markets, uploaded data, a ready send arrow.",
+      "**Do** draw every distribution as ribs on a blue plot field, and the hedge as the dashed gold outline over them.",
+      "**Do** set text on gold in `blue-800`.",
+      "**Do** right-align figures in tables and use tabular numerals.",
+      "**Do** pair every colour signal with a word or an icon (the Yes and No words, the verdict icon, the alert icon on errors).",
+      "**Do** keep state changes at 200ms or less, using the system ease `cubic-bezier(0.16, 1, 0.3, 1)`.",
+      "**Do** name chart series directly on the plot and repeat them in the legend with plot-field swatches.",
+      "**Do** keep the sample-data notice in the header and say whose data is in use in the status line."
+    ],
+    "donts": [
+      "**Don't** use green or red outside the Yes and No price buttons, including for gains, losses, errors or verdicts.",
+      "**Don't** use gold as decoration, as a generic primary-button colour, or as text on paper.",
+      "**Don't** add a second chart form or a third series colour.",
+      "**Don't** add borders or shadows to panels and cards; only the tooltip and the slider thumb carry a shadow.",
+      "**Don't** draw an emblem, crest or logo mark; the brand is the lower-case word in the header.",
+      "**Don't** introduce a second typeface or tracked capitals.",
+      "**Don't** animate for decoration; nothing moves unless a value or a state changed."
+    ]
+  }
+}

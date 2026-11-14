@@ -9,6 +9,7 @@
   --blue-700: #183a7a;
   --blue-600: #24509f;
   --blue-500: #3d5a96;   /* rules on blue */
+  --edge-on-blue: #7b94cc; /* control borders on blue, 3:1 or better */
   --rib: #4b7ad6;
   --rib-hover: #7fa3ec;
 
@@ -36,9 +37,6 @@
   --no-tint: #fbe3e0;
   --no-ink: #8f1f1a;
 
-  --warn-tint: #fdecc8;
-  --warn-ink: #6b4300;
-  --error-on-blue: #ffc2bb;
 
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
   --pad: 28px;
@@ -159,8 +157,8 @@ button { cursor: pointer; }
 .btn-quiet[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--paper); }
 .btn-quiet:disabled { color: var(--ink-3); border-color: var(--line); cursor: not-allowed; background: none; }
 
-.btn-on-blue { border-color: var(--blue-500); color: var(--on-blue); }
-.btn-on-blue:hover { background: var(--blue-700); border-color: var(--on-blue-3); }
+.btn-on-blue { border-color: var(--edge-on-blue); color: var(--on-blue); }
+.btn-on-blue:hover { background: var(--blue-700); border-color: var(--on-blue-2); }
 .btn-on-blue:active { background: var(--blue-600); }
 
 .link {
@@ -284,7 +282,7 @@ h1 {
 
 .rib {
   fill: var(--rib);
-  transition: y 0.22s var(--ease), height 0.22s var(--ease), fill 0.12s linear;
+  transition: y 0.2s var(--ease), height 0.2s var(--ease), fill 0.12s linear;
 }
 .rib.is-hover { fill: var(--rib-hover); }
 .rib-gold { fill: var(--gold); }
@@ -377,12 +375,10 @@ tbody tr { border-top: 1px solid var(--line); }
   padding: 2px 9px 2px 7px;
   border-radius: 6px;
   background: var(--paper-2);
-  color: var(--ink-2);
+  color: var(--ink);
   font-weight: 600;
 }
 .verdict .icon { width: 15px; height: 15px; stroke-width: 2; }
-.verdict.is-good { background: var(--yes-tint); color: var(--yes-ink); }
-.verdict.is-warn { background: var(--warn-tint); color: var(--warn-ink); }
 
 .hedge { display: grid; gap: 8px; }
 .hedge-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
@@ -495,7 +491,7 @@ h2 { font-size: 16px; font-weight: 650; }
 .market-pick:hover .market-name { text-decoration: underline; text-underline-offset: 3px; }
 .market-pick:focus-visible { outline: 2px solid var(--blue-600); outline-offset: 0; }
 .market-name { font-size: 18px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.2; }
-.market-question { color: var(--ink-2); font-size: 13.5px; line-height: 1.35; }
+.market-question { color: var(--ink-2); font-size: 13.5px; line-height: 1.35; text-wrap: pretty; }
 .market-meta { color: var(--ink-3); font-size: 12.5px; }
 
 .sides { display: grid; grid-template-columns: repeat(2, 74px); gap: 6px; }
@@ -551,8 +547,11 @@ h2 { font-size: 16px; font-weight: 650; }
 
 .empty {
   margin-right: var(--ribbon-gutter);
+  display: grid;
+  gap: 12px;
+  justify-items: start;
   padding: 18px 16px;
-  border: 1px dashed var(--blue-500);
+  border: 1px dashed var(--edge-on-blue);
   border-radius: 10px;
   color: var(--on-blue-2);
   font-size: 14px;
@@ -576,16 +575,21 @@ h2 { font-size: 16px; font-weight: 650; }
   border-radius: 50%;
   background: var(--gold);
 }
-.status.is-error { color: var(--error-on-blue); }
+.status.is-error { color: var(--on-blue); }
+.status .icon { width: 16px; height: 16px; margin-right: 7px; vertical-align: -3px; }
 .status:empty { display: none; }
 
 .dock-right {
   display: grid;
-  justify-items: end;
   gap: 10px;
   padding-right: var(--ribbon-gutter);
 }
-.dock-right .status { justify-self: start; }
+/* The message shares a row with the Saved toggle and the row keeps its
+ * height when empty, so a message never moves the panel above it. */
+.dock-row { display: flex; align-items: flex-end; gap: 16px; min-height: 40px; }
+.dock-row .status { flex: 1; min-width: 0; }
+.dock-row .status:empty { display: block; }
+.dock-row .saved-toggle { flex: none; margin-left: auto; }
 
 .saved-toggle .count {
   min-width: 20px;
@@ -658,12 +662,16 @@ h2 { font-size: 16px; font-weight: 650; }
   height: 38px;
   border: 0;
   border-radius: 8px;
-  background: var(--gold);
-  color: var(--blue-800);
-  transition: background-color 0.15s var(--ease);
+  background: var(--blue-600);
+  color: var(--on-blue);
+  transition: background-color 0.15s var(--ease), color 0.15s var(--ease);
 }
-.send:hover { background: var(--gold-hover); }
-.send:active { background: #e0b020; }
+.send:hover { background: var(--blue-700); }
+.send:active { background: var(--blue-800); }
+/* Gold once there is something of the farmer's to send. */
+.upload.has-data .send { background: var(--gold); color: var(--blue-800); }
+.upload.has-data .send:hover { background: var(--gold-hover); }
+.upload.has-data .send:active { background: #e0b020; }
 .send:focus-visible { outline: 2px solid var(--blue-600); outline-offset: 2px; }
 .send .icon { width: 20px; height: 20px; }
 
@@ -675,8 +683,7 @@ h2 { font-size: 16px; font-weight: 650; }
   .work, .dock { grid-template-columns: minmax(0, 1fr); }
   .work { row-gap: 22px; }
   .dock { row-gap: 18px; }
-  .dock-right { justify-items: stretch; }
-  .saved-toggle { justify-self: end; }
+  .dock-right { padding-right: 0; }
 }
 
 @media (max-width: 640px) {
