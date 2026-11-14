@@ -3,155 +3,252 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>bizfax: weather hedging for farms</title>
-  <meta name="description" content="See what weather contracts would do to a farm's season income.">
-  <meta name="theme-color" content="#0f2a5f">
+  <title>Farmer Joe: weather protection for your crop</title>
+  <meta name="description" content="Tell Farmer Joe about your farm and see which weather contracts would steady your season's income.">
+  <meta name="theme-color" content="#17603a">
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="fonts/public-sans.css">
+  <link rel="stylesheet" href="fonts/fonts.css">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
 <svg class="sprite" aria-hidden="true" focusable="false">
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h15M13 5.5l6.5 6.5-6.5 6.5"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="M20 12H5M11 5.5 4.5 12l6.5 6.5"/></symbol>
   <symbol id="i-import" viewBox="0 0 24 24"><path d="M12 15V4M7.5 8.5 12 4l4.5 4.5M4 14v4.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V14"/></symbol>
-  <symbol id="i-send" viewBox="0 0 24 24"><path d="M20.5 3.5 10 14M20.5 3.5 14 20.5 10 14 3.5 10z"/></symbol>
-  <symbol id="i-saved" viewBox="0 0 24 24"><path d="M6.5 20.5V5A1.5 1.5 0 0 1 8 3.5h8A1.5 1.5 0 0 1 17.5 5v15.5L12 16.5z"/><path d="m12 6.6 1 2 2.2.3-1.6 1.6.4 2.2-2-1-2 1 .4-2.2-1.6-1.6 2.2-.3z"/></symbol>
   <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5M12 7.6v.2"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
   <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 4 3.5 19h17zM12 10v4.5M12 16.8v.2"/></symbol>
   <symbol id="i-equal" viewBox="0 0 24 24"><path d="M6 9.5h12M6 14.5h12"/></symbol>
-  <symbol id="i-close" viewBox="0 0 24 24"><path d="m7 7 10 10M17 7 7 17"/></symbol>
-  <symbol id="i-file" viewBox="0 0 24 24"><path d="M7 3.5h6.5L18 8v11a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 6 19V5a1.5 1.5 0 0 1 1-1.5zM13.5 3.5V8H18"/></symbol>
+  <symbol id="i-retry" viewBox="0 0 24 24"><path d="M19 12a7 7 0 1 1-2.2-5.1M19 5v4.5h-4.5"/></symbol>
 </svg>
 
 <div class="app">
 
-  <header class="top">
-    <p class="brand">bizfax</p>
-    <p class="farm" id="farm-line"></p>
-    <p class="sample-flag">
-      <svg class="icon" aria-hidden="true"><use href="#i-info"/></svg>
-      <span id="sample-text">Sample data. Prices, forecasts and farm figures are made up.</span>
-    </p>
-  </header>
-
-  <main class="work">
-
-    <section class="panel" aria-labelledby="panel-title">
-      <div class="panel-head">
-        <div class="tabs" role="tablist" aria-label="Views">
-          <button type="button" role="tab" id="tab-income" data-tab="income" aria-controls="view" aria-selected="true">Income</button>
-          <button type="button" role="tab" id="tab-forecast" data-tab="forecast" aria-controls="view" aria-selected="false" tabindex="-1">Forecast and market</button>
-        </div>
-        <button type="button" class="btn btn-quiet" id="table-toggle" aria-pressed="false">Table view</button>
+  <!-- 1. Intro: the front of the sack -->
+  <section class="screen screen-intro" id="screen-intro" aria-labelledby="intro-title">
+    <div class="sack-panel">
+      <h1 class="brand" id="intro-title" tabindex="-1"><span>Farmer</span> <span>Joe</span></h1>
+      <div class="sack-foot">
+        <p class="promise">Weather protection for your crop, sized to your farm and your budget.</p>
+        <dl class="spec">
+          <div><dt>Crops</dt><dd>Corn, soybeans, wheat</dd></div>
+          <div><dt>Markets</dt><dd>Kalshi weather contracts, demo exchange</dd></div>
+          <div><dt>Covers</dt><dd>The lower 48 states</dd></div>
+        </dl>
       </div>
-
-      <div class="view" id="view" role="tabpanel" aria-labelledby="tab-income">
-        <div class="view-head">
-          <div>
-            <h1 id="panel-title"></h1>
-            <p class="lede" id="panel-lede"></p>
-          </div>
-          <ul class="legend" id="legend" aria-label="Chart key"></ul>
-        </div>
-
-        <figure class="plot" id="plot" tabindex="0" role="group" aria-roledescription="chart">
-          <svg aria-hidden="true" focusable="false"></svg>
-          <div class="tip" role="status" hidden></div>
-        </figure>
-
-        <div class="bins" id="bins" hidden>
-          <table>
-            <thead id="bins-head"></thead>
-            <tbody id="bins-body"></tbody>
-          </table>
-        </div>
-
-        <div class="below">
-          <table class="compare">
-            <thead id="compare-head"></thead>
-            <tbody id="compare-body"></tbody>
-          </table>
-
-          <div class="hedge" id="hedge">
-            <div class="hedge-row">
-              <label for="hedge-range">Hedge size</label>
-              <output id="hedge-out" for="hedge-range"></output>
-            </div>
-            <div class="range-wrap">
-              <input type="range" id="hedge-range" min="0" max="100" step="1" value="0">
-              <span class="range-mark" id="range-mark" aria-hidden="true"></span>
-            </div>
-            <div class="hedge-row">
-              <div class="hedge-presets">
-                <button type="button" class="btn btn-quiet" id="hedge-none">None</button>
-                <button type="button" class="btn btn-quiet" id="hedge-steady">Steadiest</button>
-              </div>
-              <p class="hedge-cost" id="hedge-cost"></p>
-            </div>
-            <p class="note" id="hedge-note" hidden></p>
-          </div>
-
-          <p class="explain" id="explain" hidden></p>
-        </div>
-      </div>
-    </section>
-
-    <aside class="markets" aria-labelledby="markets-title">
-      <div class="markets-head">
-        <h2 id="markets-title">Markets</h2>
-        <p id="markets-note"></p>
-      </div>
-      <ul class="market-list" id="market-list"></ul>
-      <div class="empty" id="markets-empty" hidden>
-        <p>No saved markets yet. Show all markets, then use the ribbon beside one to save it.</p>
-        <button type="button" class="btn btn-on-blue" id="show-all">Show all markets</button>
-      </div>
-    </aside>
-
-  </main>
-
-  <footer class="dock">
-    <div class="dock-left">
-      <button type="button" class="btn btn-on-blue import" id="import-btn">
-        <svg class="icon" aria-hidden="true"><use href="#i-import"/></svg>
-        Import
-      </button>
-      <input type="file" id="file-input" accept=".csv,text/csv,text/plain" hidden>
-      <p class="status" id="farm-status"></p>
     </div>
-
-    <div class="dock-right">
-      <div class="dock-row">
-        <p class="status" id="upload-status" aria-live="polite"></p>
-        <button type="button" class="btn btn-on-blue saved-toggle" id="saved-toggle" aria-pressed="false">
-          <svg class="icon" aria-hidden="true"><use href="#i-saved"/></svg>
-          Saved <span class="count" id="saved-count">0</span>
-        </button>
+    <div class="sack-side">
+      <ol class="how">
+        <li>Tell it where you farm and what you grow.</li>
+        <li>See which weather contracts would steady your season.</li>
+        <li>Choose the ones you want, and how many.</li>
+      </ol>
+      <div class="start-wrap">
+        <a class="start-tag" href="#/farm" id="start">
+          <span class="eyelet" aria-hidden="true"></span>
+          <span class="start-word">Start</span>
+          <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
+        </a>
+        <p class="fine">Educational tool, not financial advice. Forecasts and July prices are sample data. No real money is traded.</p>
       </div>
-      <form class="upload" id="upload-form" novalidate>
-        <label class="visually-hidden" for="season-input">Add a season as year, bushels per acre</label>
-        <span class="chip" id="staged-chip" hidden>
-          <svg class="icon" aria-hidden="true"><use href="#i-file"/></svg>
-          <span id="staged-name"></span>
-          <button type="button" id="staged-remove" aria-label="Remove the imported file">
-            <svg class="icon" aria-hidden="true"><use href="#i-close"/></svg>
-          </button>
-        </span>
-        <input type="text" id="season-input" autocomplete="off" spellcheck="false" placeholder="Add a season: 2026, 192" aria-describedby="upload-status">
-        <button type="submit" class="send" aria-label="Upload">
-          <svg class="icon" aria-hidden="true"><use href="#i-send"/></svg>
-        </button>
+    </div>
+  </section>
+
+  <!-- 2. The farm form: fill in the tag -->
+  <section class="screen screen-farm" id="screen-farm" aria-labelledby="farm-title" hidden>
+    <header class="bar">
+      <a class="wordmark" href="#/">Farmer Joe</a>
+      <ol class="steps" aria-label="Steps">
+        <li><a href="#/">Start</a></li>
+        <li><a href="#/farm" aria-current="step">Your farm</a></li>
+        <li><a href="#/plan">Your plan</a></li>
+      </ol>
+      <p class="sample-note"><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg><span>Forecasts and July prices are sample data</span></p>
+    </header>
+
+    <div class="farm-grid">
+      <div class="map-side">
+        <h1 id="farm-title" tabindex="-1">Your farm</h1>
+        <p class="map-hint">Click the map where you farm, or type a town on the tag.</p>
+        <svg class="map" id="map" role="img" focusable="false"></svg>
+        <p class="map-key"><span class="key-dot" aria-hidden="true"></span>Weather stations with Kalshi markets</p>
+      </div>
+
+      <form class="tag farm-tag" id="farm-form" novalidate>
+        <span class="eyelet" aria-hidden="true"></span>
+
+        <div class="row row-where" id="row-where">
+          <label for="where">Where is your farm?</label>
+          <div class="control">
+            <input type="text" id="where" list="places" autocomplete="off" spellcheck="false" placeholder="Town, or click the map" aria-describedby="where-out where-error">
+            <datalist id="places"></datalist>
+          </div>
+          <p class="where-out" id="where-out" hidden>
+            <span class="stamped" id="where-stamp"></span>
+            <span class="where-station" id="where-station"></span>
+          </p>
+          <p class="error" id="where-error" hidden></p>
+        </div>
+
+        <fieldset class="row">
+          <legend>What crop?</legend>
+          <div class="control seg" id="crop">
+            <label><input type="radio" name="crop" value="corn" checked><span>Corn</span></label>
+            <label><input type="radio" name="crop" value="soybeans"><span>Soybeans</span></label>
+            <label><input type="radio" name="crop" value="wheat"><span>Wheat</span></label>
+          </div>
+        </fieldset>
+
+        <div class="row" id="row-acres">
+          <label for="acres">How many acres?</label>
+          <div class="control pair">
+            <span class="field"><input type="number" id="acres" inputmode="numeric" min="1" max="100000" step="1" value="300" aria-describedby="acres-error"><span class="unit">acres</span></span>
+            <input type="range" id="acres-range" min="10" max="5000" step="10" value="300" aria-label="Acres, slider">
+          </div>
+          <p class="error" id="acres-error" hidden></p>
+        </div>
+
+        <div class="row" id="row-yield">
+          <label for="yield">Normal yield?</label>
+          <div class="control pair pair-wrap">
+            <span class="field"><input type="number" id="yield" inputmode="decimal" min="1" max="500" step="1" value="200" aria-describedby="yield-note yield-error"><span class="unit">bu/acre</span></span>
+            <button type="button" class="btn btn-quiet" id="import-btn">
+              <svg class="icon" aria-hidden="true"><use href="#i-import"/></svg>Import history
+            </button>
+            <input type="file" id="file-input" accept=".csv,text/csv,text/plain" hidden>
+          </div>
+          <p class="note" id="yield-note" hidden></p>
+          <p class="error" id="yield-error" hidden></p>
+        </div>
+
+        <div class="row" id="row-price">
+          <label for="price">Expected price?</label>
+          <div class="control">
+            <span class="field"><span class="unit unit-lead">$</span><input type="number" id="price" inputmode="decimal" min="0.01" max="100" step="0.05" value="4.50" aria-describedby="price-error"><span class="unit">per bushel</span></span>
+          </div>
+          <p class="error" id="price-error" hidden></p>
+        </div>
+
+        <fieldset class="row">
+          <legend>What worries you?</legend>
+          <div class="control chips">
+            <label><input type="checkbox" name="worry" value="heat" checked><span><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Heat in July</span></label>
+            <label><input type="checkbox" name="worry" value="drought" checked><span><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Drought in July</span></label>
+            <label><input type="checkbox" name="worry" value="crop"><span><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>A poor crop year</span></label>
+          </div>
+        </fieldset>
+
+        <div class="row" id="row-budget">
+          <label for="budget">Most you'll spend on protection?</label>
+          <div class="control pair">
+            <span class="field"><span class="unit unit-lead">$</span><input type="number" id="budget" inputmode="numeric" min="0" max="1000000" step="500" value="15000" aria-describedby="budget-error"></span>
+            <input type="range" id="budget-range" min="0" max="50000" step="500" value="15000" aria-label="Most you'll spend, slider">
+          </div>
+          <p class="error" id="budget-error" hidden></p>
+        </div>
+
+        <div class="row">
+          <label for="stability">Stability or cost?</label>
+          <div class="control lean">
+            <input type="range" id="stability" min="1" max="5" step="1" value="4" aria-describedby="stability-out">
+            <div class="lean-ends" aria-hidden="true"><span>Lowest cost</span><span>Most stability</span></div>
+            <output id="stability-out" for="stability">Mostly stability</output>
+          </div>
+        </div>
+
+        <div class="tag-foot">
+          <p class="crop-value"><span>Crop value in a normal year</span><strong id="crop-value"></strong></p>
+          <button type="submit" class="btn btn-primary">See my plan<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+        </div>
       </form>
     </div>
+  </section>
 
-    <p class="fineprint">Educational tool, not financial advice.</p>
-  </footer>
+  <!-- 3. The plan: results, advice and the order -->
+  <section class="screen screen-plan" id="screen-plan" aria-labelledby="plan-title" hidden>
+    <header class="bar">
+      <a class="wordmark" href="#/">Farmer Joe</a>
+      <ol class="steps" aria-label="Steps">
+        <li><a href="#/">Start</a></li>
+        <li><a href="#/farm">Your farm</a></li>
+        <li><a href="#/plan" aria-current="step">Your plan</a></li>
+      </ol>
+      <p class="sample-note"><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg><span>Forecasts and July prices are sample data</span></p>
+    </header>
+
+    <div class="plan-grid">
+      <div class="plan-main">
+        <h1 id="plan-title" tabindex="-1"></h1>
+        <p class="lede" id="plan-lede"></p>
+        <p class="farm-line"><span id="farm-line"></span> <a href="#/farm">Change</a></p>
+
+        <div class="tag chart-tag">
+          <div class="tag-head">
+            <h2>Season income</h2>
+            <span class="stamped stamp-small">Sample</span>
+            <button type="button" class="btn btn-quiet" id="table-toggle" aria-pressed="false">Table view</button>
+          </div>
+          <figure class="plot" id="plot" tabindex="0" role="group" aria-roledescription="chart">
+            <svg aria-hidden="true" focusable="false"></svg>
+            <div class="tip" role="status" hidden></div>
+          </figure>
+          <div class="bins" id="bins" hidden>
+            <table>
+              <thead id="bins-head"></thead>
+              <tbody id="bins-body"></tbody>
+            </table>
+          </div>
+          <table class="ruled analysis">
+            <thead id="analysis-head"></thead>
+            <tbody id="analysis-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <aside class="plan-side" aria-labelledby="contracts-title">
+        <div class="side-head">
+          <h2 id="contracts-title">Contracts</h2>
+          <p class="plan-state" id="plan-state"></p>
+        </div>
+        <p class="side-hint">Tick the markets you want. Their amounts are sized together, and the graph shows the combination.</p>
+        <ul class="tickets" id="tickets"></ul>
+
+        <div class="tag order-tag">
+          <div class="tag-head">
+            <h2>Your order</h2>
+            <span class="stamped stamp-small">Demo only</span>
+          </div>
+          <div class="meter" id="meter" aria-hidden="true"><span id="meter-fill"></span></div>
+          <p class="budget-line" id="budget-line" aria-live="polite"></p>
+          <ul class="order-lines" id="order-lines"></ul>
+          <p class="order-total"><span>Total</span><strong id="order-total"></strong></p>
+          <button type="button" class="btn btn-primary" id="send-order" disabled aria-describedby="order-note">Send to Kalshi demo</button>
+          <p class="note" id="order-note">Sending isn't connected yet. A Kalshi order has to be signed with an API key, and a web page can't keep one safe, so orders will go through the team's server. Nothing is sent from this page, and no real money is traded.</p>
+        </div>
+      </aside>
+
+      <div class="tag live-tag">
+        <div class="tag-head">
+          <h2>Open on Kalshi now</h2>
+          <p class="live-status" id="live-status" aria-live="polite"></p>
+        </div>
+        <div id="live-body"></div>
+      </div>
+    </div>
+
+    <p class="fine plan-fine">Educational tool, not financial advice. The simulated seasons, the July markets and their prices are sample data. Town list from GeoNames.</p>
+  </section>
 
 </div>
 
+<script src="us-map.js"></script>
+<script src="places.js"></script>
+<script src="stations.js"></script>
 <script src="model.js"></script>
+<script src="kalshi.js"></script>
 <script src="sample-data.js"></script>
+<script src="map.js"></script>
 <script src="charts.js"></script>
 <script src="app.js"></script>
 </body>

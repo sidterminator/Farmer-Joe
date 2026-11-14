@@ -1,29 +1,29 @@
-/* One chart form for the whole screen: a distribution drawn as fine vertical
- * ribs, with an optional dashed outline stitched over it.
+/* The one chart form: two distributions, one above the other, on a shared
+ * ruled grid. The top band is the season without protection and the bottom
+ * band is the season with the farmer's plan, so a tighter spread reads as a
+ * narrower, taller shape directly under the wider one.
  *
- * createPlot(figure) returns { render(spec), refreshLine() }.
+ * createPlot(figure) returns { render(spec), refresh() }.
  *
  * spec = {
  *   ariaLabel: string,
- *   domain(bins)            -> { lo, hi }
- *   ribs(bins, lo, hi)      -> { share: Float64Array, gold: Uint8Array | null }
- *   line(bins, lo, hi)      -> Float64Array | null       (the stitched outline)
- *   headroom: number,         // y-axis top as a multiple of the tallest rib
- *   xTicks(lo, hi)          -> [{ value, label }]
- *   yCaption: string,
- *   strike: { value, label } | null,
- *   labels(data, bins)      -> [{ series: 'rib'|'gold'|'line', bin, text, place: 'above'|'left'|'right' }]
- *   tip(bin, data, lo, hi)  -> { title, rows: [{ series, value, label }] }
+ *   lo, hi: number,                       // shared x range
+ *   headroom: number,                     // y-axis top as a multiple of the first band's peak
+ *   bands: [{ key, label, values(bins, lo, hi) -> Float64Array, mark: { value, label } | null }],
+ *   xTicks(lo, hi) -> [{ value, label }],
+ *   tip(bin, shares, lo, hi) -> { title, rows: [{ key, value, label }] }
  * }
  */
 (function (B) {
   'use strict';
 
   const NS = 'http://www.w3.org/2000/svg';
-  const MARGIN = { l: 46, r: 16, t: 30, b: 30 };
-  const PITCH = 9;       // target distance between rib centres, px
-  const GAP = 2;         // surface gap between ribs, px
-  const RIB_RADIUS = 3;
+  const MARGIN = { l: 44, r: 14, t: 6, b: 28 };
+  const PITCH = 10;        // target distance between column centres, px
+  const GAP = 2;           // surface gap between columns, px
+  const RADIUS = 3;
+  const BAND_HEAD = 22;    // room for the band's label
+  const BAND_GAP = 14;
 
   function svgEl(name, attrs, parent) {
     const node = document.createElementNS(NS, name);
@@ -34,9 +34,7 @@
 
   function niceStep(max, maxTicks) {
     const steps = [0.0025, 0.005, 0.01, 0.02, 0.025, 0.05, 0.1, 0.2, 0.25, 0.5];
-    for (let i = 0; i < steps.length; i++) {
-      if (max / steps[i] <= maxTicks) return steps[i];
-    }
+    for (let i = 0; i < steps.length; i++) if (max / steps[i] <= maxTicks) return steps[i];
     return 1;
   }
 
@@ -46,231 +44,177 @@
     const clipId = 'clip-' + Math.random().toString(36).slice(2, 8);
 
     const defs = svgEl('defs', null, svg);
-    const clipRect = svgEl('rect', null, svgEl('clipPath', { id: clipId }, defs));
+    const clip = svgEl('clipPath', { id: clipId }, defs);
     const gGrid = svgEl('g', { class: 'grid' }, svg);
-    const gRibs = svgEl('g', { class: 'ribs', 'clip-path': 'url(#' + clipId + ')' }, svg);
-    const baseline = svgEl('line', { class: 'baseline' }, svg);
-    const gStrike = svgEl('g', { class: 'strike' }, svg);
-    const cross = svgEl('line', { class: 'cross' }, svg);
-    const lineUnder = svgEl('path', { class: 'stitch-under' }, svg);
-    const linePath = svgEl('path', { class: 'stitch' }, svg);
+    const gCols = svgEl('g', { class: 'cols', 'clip-path': 'url(#' + clipId + ')' }, svg);
     const gAxis = svgEl('g', { class: 'axis' }, svg);
-    const gLabels = svgEl('g', { class: 'dlabels' }, svg);
+    const gMarks = svgEl('g', { class: 'marks' }, svg);
+    const cross = svgEl('line', { class: 'cross', visibility: 'hidden' }, svg);
 
     let spec = null;
     let geom = null;
-    let data = null;
-    let ribNodes = [];
+    let shares = [];
+    let yMax = 1;
+    let nodes = [];
     let hover = -1;
 
     function measure() {
-      const W = Math.max(240, figure.clientWidth);
-      const H = Math.max(180, figure.clientHeight);
+      const W = Math.max(260, figure.clientWidth);
+      const H = Math.max(220, figure.clientHeight);
       const innerW = W - MARGIN.l - MARGIN.r;
-      const innerH = H - MARGIN.t - MARGIN.b;
-      const bins = Math.max(18, Math.round(innerW / PITCH));
-      return { W: W, H: H, innerW: innerW, innerH: innerH, bins: bins, pitch: innerW / bins };
+      const bandH = (H - MARGIN.t - MARGIN.b - BAND_GAP) / 2;
+      const bins = Math.max(16, Math.round(innerW / PITCH));
+      return { W: W, H: H, innerW: innerW, bandH: bandH, bins: bins, pitch: innerW / bins };
     }
 
+    function bandTop(b) { return MARGIN.t + b * (geom.bandH + BAND_GAP); }
+    function bandBase(b) { return bandTop(b) + geom.bandH; }
     function xOfBin(k) { return MARGIN.l + (k + 0.5) * geom.pitch; }
-    function xOfValue(v) { return MARGIN.l + ((v - data.lo) / (data.hi - data.lo)) * geom.innerW; }
-    function yOfShare(s) { return MARGIN.t + geom.innerH - (s / data.yMax) * geom.innerH; }
+    function xOfValue(v) { return MARGIN.l + ((v - spec.lo) / (spec.hi - spec.lo)) * geom.innerW; }
+    function heightOf(share) { return (share / yMax) * (geom.bandH - BAND_HEAD); }
 
-    function computeYMax() {
-      let ribMax = 0;
-      let lineMax = 0;
-      for (let k = 0; k < data.share.length; k++) ribMax = Math.max(ribMax, data.share[k]);
-      if (data.line) for (let k = 0; k < data.line.length; k++) lineMax = Math.max(lineMax, data.line[k]);
-      return Math.max(ribMax * spec.headroom, lineMax * 1.14, 1e-6);
+    function load() {
+      shares = spec.bands.map(function (band) { return band.values(geom.bins, spec.lo, spec.hi); });
+      // The scale is set by the first band with headroom above it, so that
+      // band holds still while the second one grows or shrinks beneath it.
+      const peaks = shares.map(function (s) { let p = 0; for (let k = 0; k < s.length; k++) p = Math.max(p, s[k]); return p; });
+      yMax = Math.max(peaks[0] * (spec.headroom || 1.06), Math.max.apply(null, peaks) * 1.06, 1e-6);
     }
 
     function drawGrid() {
       gGrid.textContent = '';
       gAxis.textContent = '';
-      const base = MARGIN.t + geom.innerH;
       const right = MARGIN.l + geom.innerW;
-
-      const step = niceStep(data.yMax, 4);
+      const step = niceStep(yMax, 2.2);
       const pct = +(step * 100).toFixed(6);
       const decimals = Number.isInteger(pct) ? 0 : Number.isInteger(+(pct * 10).toFixed(6)) ? 1 : 2;
-      for (let v = step; v <= data.yMax * 1.0001; v += step) {
-        const y = Math.round(yOfShare(v)) + 0.5;
-        svgEl('line', { x1: MARGIN.l, x2: right, y1: y, y2: y }, gGrid);
-        const t = svgEl('text', { x: MARGIN.l - 8, y: y + 4, 'text-anchor': 'end' }, gAxis);
-        t.textContent = (v * 100).toFixed(decimals) + '%';
-      }
-      const cap = svgEl('text', { x: MARGIN.l, y: 16, class: 'caption' }, gAxis);
-      cap.textContent = spec.yCaption;
 
-      baseline.setAttribute('x1', MARGIN.l);
-      baseline.setAttribute('x2', right);
-      baseline.setAttribute('y1', base + 0.5);
-      baseline.setAttribute('y2', base + 0.5);
-
-      const ticks = spec.xTicks(data.lo, data.hi);
+      // Vertical rules run through both bands: one grid for both pictures.
+      const ticks = spec.xTicks(spec.lo, spec.hi);
       let lastRight = -Infinity;
-      for (let i = 0; i < ticks.length; i++) {
-        const x = xOfValue(ticks[i].value);
-        if (x < MARGIN.l + 12 || x > right - 12) continue;
-        const t = svgEl('text', { x: x, y: base + 20, 'text-anchor': 'middle' }, gAxis);
-        t.textContent = ticks[i].label;
-        const half = t.getComputedTextLength() / 2;
-        if (x - half < lastRight + 14) { gAxis.removeChild(t); continue; }
+      ticks.forEach(function (t) {
+        const x = Math.round(xOfValue(t.value)) + 0.5;
+        if (x < MARGIN.l + 8 || x > right - 8) return;
+        const text = svgEl('text', { x: x, y: geom.H - 8, 'text-anchor': 'middle' }, gAxis);
+        text.textContent = t.label;
+        const half = text.getComputedTextLength() / 2;
+        if (x - half < lastRight + 14) { gAxis.removeChild(text); return; }
         lastRight = x + half;
-      }
+        svgEl('line', { class: 'rule-v', x1: x, x2: x, y1: bandTop(0) + BAND_HEAD, y2: bandBase(1) }, gGrid);
+      });
+
+      spec.bands.forEach(function (band, b) {
+        const base = Math.round(bandBase(b)) + 0.5;
+        for (let v = step; v <= yMax * 1.0001; v += step) {
+          const y = Math.round(bandBase(b) - heightOf(v)) + 0.5;
+          svgEl('line', { class: 'rule-h', x1: MARGIN.l, x2: right, y1: y, y2: y }, gGrid);
+          const t = svgEl('text', { x: MARGIN.l - 8, y: y + 4, 'text-anchor': 'end' }, gAxis);
+          t.textContent = (v * 100).toFixed(decimals) + '%';
+        }
+        svgEl('line', { class: 'baseline', x1: MARGIN.l, x2: right, y1: base, y2: base }, gGrid);
+        svgEl('rect', { class: 'key key-' + band.key, x: MARGIN.l, y: bandTop(b) + 4, width: 10, height: 10, rx: 2 }, gAxis);
+        const label = svgEl('text', { class: 'band-label', x: MARGIN.l + 16, y: bandTop(b) + 13 }, gAxis);
+        label.textContent = band.label;
+      });
     }
 
-    function drawRibs(rebuild) {
-      const base = MARGIN.t + geom.innerH;
-      clipRect.setAttribute('x', MARGIN.l);
-      clipRect.setAttribute('y', 0);
-      clipRect.setAttribute('width', geom.innerW);
-      clipRect.setAttribute('height', base);
-
+    function drawColumns(rebuild) {
       if (rebuild) {
-        gRibs.textContent = '';
-        ribNodes = [];
-        for (let k = 0; k < geom.bins; k++) {
-          ribNodes.push(svgEl('rect', { rx: RIB_RADIUS, y: base, height: 0 }, gRibs));
-        }
+        gCols.textContent = '';
+        clip.textContent = '';
+        nodes = spec.bands.map(function (band, b) {
+          svgEl('rect', { x: MARGIN.l, y: bandTop(b), width: geom.innerW, height: geom.bandH }, clip);
+          const g = svgEl('g', { class: 'band band-' + band.key }, gCols);
+          const list = [];
+          for (let k = 0; k < geom.bins; k++) list.push(svgEl('rect', { rx: RADIUS, y: bandBase(b), height: 0 }, g));
+          return list;
+        });
       }
       const w = Math.max(2, geom.pitch - GAP);
-      for (let k = 0; k < geom.bins; k++) {
-        const share = data.share[k];
-        const h = share > 0 ? Math.max(1, (share / data.yMax) * geom.innerH) : 0;
-        const node = ribNodes[k];
-        node.setAttribute('x', (MARGIN.l + k * geom.pitch + GAP / 2).toFixed(2));
-        node.setAttribute('width', w.toFixed(2));
-        // The rect runs past the baseline and is clipped there, so only the
-        // data end is rounded.
-        node.setAttribute('y', (base - h).toFixed(2));
-        node.setAttribute('height', (h + RIB_RADIUS * 2).toFixed(2));
-        node.setAttribute('class', (data.gold && data.gold[k] ? 'rib rib-gold' : 'rib') + (k === hover ? ' is-hover' : ''));
-      }
+      spec.bands.forEach(function (band, b) {
+        const base = bandBase(b);
+        for (let k = 0; k < geom.bins; k++) {
+          const share = shares[b][k];
+          const h = share > 0 ? Math.max(1, heightOf(share)) : 0;
+          const node = nodes[b][k];
+          node.setAttribute('x', (MARGIN.l + k * geom.pitch + GAP / 2).toFixed(2));
+          node.setAttribute('width', w.toFixed(2));
+          // Each column runs past its baseline and is clipped there, so only
+          // the data end is rounded.
+          node.setAttribute('y', (base - h).toFixed(2));
+          node.setAttribute('height', (h + RADIUS * 2).toFixed(2));
+          node.setAttribute('class', 'col' + (k === hover ? ' is-hover' : ''));
+        }
+      });
     }
 
-    function drawLine() {
-      const line = data.line;
-      if (!line) {
-        linePath.setAttribute('d', '');
-        lineUnder.setAttribute('d', '');
-        return;
-      }
-      let peak = 0;
-      for (let k = 0; k < line.length; k++) peak = Math.max(peak, line[k]);
-      const floor = peak * 0.004;
-      let first = 0;
-      let last = line.length - 1;
-      while (first < last && line[first] <= floor) first++;
-      while (last > first && line[last] <= floor) last--;
-      first = Math.max(0, first - 1);
-      last = Math.min(line.length - 1, last + 1);
-      let d = '';
-      for (let k = first; k <= last; k++) {
-        d += (k === first ? 'M' : 'L') + xOfBin(k).toFixed(1) + ' ' + yOfShare(line[k]).toFixed(1);
-      }
-      linePath.setAttribute('d', d);
-      lineUnder.setAttribute('d', d);
-    }
-
-    function drawStrike() {
-      gStrike.textContent = '';
-      if (!spec.strike) return;
-      const x = Math.round(xOfValue(spec.strike.value)) + 0.5;
-      svgEl('line', { x1: x, x2: x, y1: MARGIN.t - 6, y2: MARGIN.t + geom.innerH }, gStrike);
-      const t = svgEl('text', { x: x, y: 16, 'text-anchor': 'middle' }, gStrike);
-      t.textContent = spec.strike.label;
-    }
-
-    function topAt(series, k) {
-      const s = series === 'line' && data.line ? data.line[k] : data.share[k];
-      return yOfShare(s);
-    }
-
-    function drawLabels() {
-      gLabels.textContent = '';
-      // On a narrow plot the labels would sit on the marks; the key above
-      // the chart carries the names instead.
-      if (geom.innerW < 420) return;
-      const items = spec.labels(data, geom.bins);
+    function drawMarks() {
+      gMarks.textContent = '';
       const right = MARGIN.l + geom.innerW;
-      for (let i = 0; i < items.length; i++) {
-        const it = items[i];
-        const g = svgEl('g', { class: 'dlabel' }, gLabels);
-        if (it.series === 'line') {
-          svgEl('line', { class: 'key key-line', x1: 0, x2: 16, y1: -4, y2: -4 }, g);
-        } else {
-          svgEl('rect', { class: 'key ' + (it.series === 'gold' ? 'key-gold' : 'key-rib'), x: 0, y: -10, width: 5, height: 11, rx: 1.5 }, g);
+      spec.bands.forEach(function (band, b) {
+        if (!band.mark) return;
+        const x = Math.min(right - 2, Math.max(MARGIN.l + 2, xOfValue(band.mark.value)));
+        const base = bandBase(b);
+        const top = base - Math.min(geom.bandH - BAND_HEAD - 4, 46);
+        svgEl('line', { class: 'mark-line', x1: x, x2: x, y1: top, y2: base }, gMarks);
+        // On a narrow plot the label would sit on the columns; the table
+        // under the chart carries the figure instead.
+        if (geom.innerW < 420) return;
+        const text = svgEl('text', { class: 'mark-label', x: x - 7, y: top + 10, 'text-anchor': 'end' }, gMarks);
+        text.textContent = band.mark.label;
+        // Flip to the right of the line when there is no room on the left.
+        if (x - 7 - text.getComputedTextLength() < MARGIN.l + 2) {
+          text.setAttribute('x', x + 7);
+          text.setAttribute('text-anchor', 'start');
         }
-        const keyW = it.series === 'line' ? 16 : 5;
-        const text = svgEl('text', { x: keyW + 6, y: 0 }, g);
-        text.textContent = it.text;
-        const width = keyW + 6 + text.getComputedTextLength();
-
-        const bx = xOfBin(it.bin);
-        let x;
-        let y;
-        if (it.place === 'left') {
-          x = bx - 12 - width;
-          y = topAt(it.series, it.bin) + 4;
-        } else if (it.place === 'right') {
-          x = bx + 12;
-          y = topAt(it.series, it.bin) + 4;
-        } else {
-          x = bx - width / 2;
-          y = topAt(it.series, it.bin) - 12;
-        }
-        x = Math.min(Math.max(x, MARGIN.l + 4), right - width - 4);
-        y = Math.max(y, MARGIN.t + 12);
-        g.setAttribute('transform', 'translate(' + x.toFixed(1) + ' ' + y.toFixed(1) + ')');
-      }
+      });
     }
 
     function showTip(k) {
       if (k === hover && !tip.hidden) return;
-      if (hover >= 0 && ribNodes[hover]) ribNodes[hover].classList.remove('is-hover');
+      if (hover >= 0) nodes.forEach(function (list) { if (list[hover]) list[hover].classList.remove('is-hover'); });
       hover = k;
-      if (k < 0 || !data) {
+      if (k < 0 || !spec) {
         tip.hidden = true;
         cross.setAttribute('visibility', 'hidden');
         return;
       }
-      ribNodes[k].classList.add('is-hover');
+      nodes.forEach(function (list) { list[k].classList.add('is-hover'); });
       const x = Math.round(xOfBin(k)) + 0.5;
       cross.setAttribute('x1', x);
       cross.setAttribute('x2', x);
-      cross.setAttribute('y1', MARGIN.t);
-      cross.setAttribute('y2', MARGIN.t + geom.innerH);
+      cross.setAttribute('y1', bandTop(0) + BAND_HEAD);
+      cross.setAttribute('y2', bandBase(1));
       cross.setAttribute('visibility', 'visible');
       fillTip(k);
       tip.hidden = false;
       const tw = tip.offsetWidth;
-      const left = x + 14 + tw > geom.W - 8 ? x - 14 - tw : x + 14;
-      tip.style.left = Math.max(8, left) + 'px';
-      tip.style.top = MARGIN.t + 6 + 'px';
+      const left = x + 14 + tw > geom.W - 6 ? x - 14 - tw : x + 14;
+      tip.style.left = Math.max(6, left) + 'px';
+      tip.style.top = bandTop(0) + BAND_HEAD + 'px';
     }
 
     function fillTip(k) {
-      const content = spec.tip(k, data, data.lo, data.hi);
+      const content = spec.tip(k, shares, spec.lo, spec.hi);
       tip.textContent = '';
       const title = document.createElement('p');
       title.className = 'tip-title';
       title.textContent = content.title;
       tip.appendChild(title);
-      for (let i = 0; i < content.rows.length; i++) {
+      content.rows.forEach(function (r) {
         const row = document.createElement('p');
         row.className = 'tip-row';
         const key = document.createElement('span');
-        key.className = 'tip-key tip-key-' + content.rows[i].series;
+        key.className = 'tip-key tip-key-' + r.key;
         const value = document.createElement('strong');
-        value.textContent = content.rows[i].value;
+        value.textContent = r.value;
         const label = document.createElement('span');
-        label.textContent = content.rows[i].label;
+        label.textContent = r.label;
         row.appendChild(key);
         row.appendChild(value);
         row.appendChild(label);
         tip.appendChild(row);
-      }
+      });
     }
 
     function binFromEvent(e) {
@@ -280,58 +224,43 @@
       return Math.min(geom.bins - 1, Math.floor(x / geom.pitch));
     }
 
-    function load() {
-      const d = spec.domain(geom.bins);
-      const r = spec.ribs(geom.bins, d.lo, d.hi);
-      data = { lo: d.lo, hi: d.hi, share: r.share, gold: r.gold, line: spec.line(geom.bins, d.lo, d.hi), yMax: 0 };
-      data.yMax = computeYMax();
-    }
-
     function render(next) {
       if (next) spec = next;
       if (!spec) return;
       const g = measure();
-      const rebuild = !geom || g.bins !== geom.bins || ribNodes.length !== g.bins;
+      const rebuild = !geom || g.bins !== geom.bins || g.H !== geom.H || g.W !== geom.W || nodes.length !== spec.bands.length;
       geom = g;
       svg.setAttribute('viewBox', '0 0 ' + geom.W + ' ' + geom.H);
       svg.setAttribute('width', geom.W);
       svg.setAttribute('height', geom.H);
       figure.setAttribute('aria-label', spec.ariaLabel);
-      const open = hover;
       hover = -1;
+      tip.hidden = true;
+      cross.setAttribute('visibility', 'hidden');
       load();
       drawGrid();
-      drawRibs(rebuild);
-      drawStrike();
-      drawLine();
-      drawLabels();
-      if (open >= 0 && open < geom.bins && !tip.hidden) { tip.hidden = true; showTip(open); } else showTip(-1);
+      drawColumns(rebuild);
+      drawMarks();
     }
 
-    /* Fast path for the hedge slider: only the stitched outline changes. */
-    function refreshLine() {
-      if (!spec || !data) return;
-      data.line = spec.line(geom.bins, data.lo, data.hi);
-      const yMax = computeYMax();
-      if (yMax > data.yMax * 1.001 || yMax < data.yMax * 0.999) {
-        data.yMax = yMax;
-        drawGrid();
-        drawRibs(false);
-      }
-      drawLine();
-      drawLabels();
+    /* Fast path while a quantity slider is dragged: same frame, new heights. */
+    function refresh() {
+      if (!spec || !geom) return;
+      load();
+      drawGrid();   // band labels can change with the selection
+      drawColumns(false);
+      drawMarks();
       if (hover >= 0 && !tip.hidden) fillTip(hover);
     }
 
-    svg.addEventListener('pointermove', function (e) { showTip(binFromEvent(e)); });
+    svg.addEventListener('pointermove', function (e) { if (geom) showTip(binFromEvent(e)); });
     svg.addEventListener('pointerleave', function () { showTip(-1); });
     figure.addEventListener('keydown', function (e) {
       if (!geom) return;
       if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
         e.preventDefault();
         const start = hover < 0 ? Math.floor(geom.bins / 2) : hover;
-        const k = Math.min(geom.bins - 1, Math.max(0, start + (e.key === 'ArrowRight' ? 1 : -1)));
-        showTip(k);
+        showTip(Math.min(geom.bins - 1, Math.max(0, start + (e.key === 'ArrowRight' ? 1 : -1))));
       } else if (e.key === 'Escape') {
         showTip(-1);
       }
@@ -342,14 +271,14 @@
       let pending = 0;
       new ResizeObserver(function () {
         cancelAnimationFrame(pending);
-        pending = requestAnimationFrame(function () { render(); });
+        pending = requestAnimationFrame(function () { if (figure.clientWidth) render(); });
       }).observe(figure);
     } else {
       window.addEventListener('resize', function () { render(); });
     }
 
-    return { render: render, refreshLine: refreshLine };
+    return { render: render, refresh: refresh };
   }
 
   B.createPlot = createPlot;
-})(window.Bizfax = window.Bizfax || {});
+})(window.FarmerJoe = window.FarmerJoe || {});

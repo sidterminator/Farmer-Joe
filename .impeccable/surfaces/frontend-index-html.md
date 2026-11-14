@@ -5,28 +5,28 @@ primary_target: "frontend/index.html"
 related_targets: []
 ---
 
-# Hedging screen (frontend/index.html)
+# Farmer Joe, three screens (frontend/index.html)
 
-Scope: the single app screen of the weather-hedging tool. Visitor mode: Operate.
+Scope: the whole frontend, one file, three screens in order: intro, farm form, plan. Visitor mode: the intro is Persuade; the form and the plan are Operate.
 
-Audience and job: a farmer checking which weather contracts would steady this season's income, then adding their own seasons of data. Task order: read the income spread, pick a market and a side, size the hedge, save markets, upload farm data.
+Audience and job: a farmer who wants to know which weather contracts would steady this season's income. They press Start, describe the farm (location on a map, crop, acres, normal yield, expected price, worries, budget, stability versus cost), then read the advice, choose contracts and amounts, and review the order.
 
-Content: three sample markets (Temp, Yield, Rain) with YES and NO prices, a sample farm, a simulated set of seasons. Everything is sample data and the screen says so.
+Content: the questions and worked example in `../input form.png`; three sample July markets at the station nearest the farm; live open markets read from the Kalshi demo API. Forecasts and July prices are sample data and are labelled so.
 
-Constraints: layout follows the user's sketch (main panel left, market cards right with a bookmark on each, Import bottom left, upload field with send arrow bottom right). Static HTML/CSS/JS, opens from disk with no server.
+Constraints: static HTML/CSS/JS that opens from disk; the user's three-screen order; the pin drop on the map is animated; Farmer Joe is a name, not a speaking character; no real money and no API key in the browser.
 
-Unresolved: upload file format, whether real markets exist for crop yield, what the icon above the upload field in the sketch means (built as a Saved filter).
+Unresolved: order placement needs the team's server; how distance to the station reduces the hedge is a sample assumption.
 
 ## Direction contract
 
-THESIS: A farmer's season income shown as cloth and thread. The spread without a hedge is the fabric; the hedge is stitched over it in gold. It refuses the white fintech dashboard whose whole identity is grey cards and green and red tickers.
+THESIS: Farmer Joe is a brand printed on a seed sack. The intro is the sack's front, the farmer fills in the tag, and the plan reads like the bag's analysis tag. It refuses the white onboarding wizard of progress bar and rounded cards.
 
-OWN-WORLD: Deep blue ground across the shell, cool near-white work surfaces, corn gold only for what is the farmer's own (selected market, hedged income, saved markets, uploaded seasons). Public Sans throughout with tabular right-aligned figures. Plot fields are blue swatches ruled in fine vertical ribs; gold marks are dashed like chain-stitch. Green and red appear only on YES and NO prices.
+OWN-WORLD: Three inks on white tag stock. Sack green is the ground of every screen, corn yellow carries panels and whatever is active or chosen, tag red is the pin, the stamps and the warnings. Green and red also print Yes and No. Big Shoulders in heavy condensed capitals for the name, screen titles and key figures; Archivo for everything read or operated. Tags are white rectangles with an eyelet, and data sits in ruled rows with the label left and the value right.
 
-STORY: The farmer sees the season income spread, picks a market and a side, drags the hedge size, and watches the spread tighten while the cost rises. They save markets and add their own seasons.
+STORY: The farmer meets the name and one promise, presses Start, fills in the tag while the map answers (the pin drops, the nearest station links up), then reads the plan, ticks contracts, sets amounts inside the budget and reviews the order.
 
-FIRST VIEWPORT: 1440 x 900. Blue header strip with the name, the farm line and the sample-data label. Left 62 percent: light panel with Income and Forecast tabs, a blue ribbed plot about 360px tall, a comparison table, and the hedge-size slider. Right: three market cards on the blue ground, each with YES and NO price buttons and a bookmark ribbon hanging off its right edge. Bottom left: Import. Bottom right: the Saved toggle above the upload field with its send arrow.
+FIRST VIEWPORT: 1440 x 900 on a green field. A corn-yellow panel fills the left 62 percent from top edge to bottom edge, carrying FARMER JOE in two stacked lines of capitals about 230px tall with one sentence of promise under it. On the green at the right: three short lines on how it works, the Start tag (white, eyelet, large label, arrow) as the only white object on screen, and the fine print.
 
-FORM: FFA-jacket blue and corn gold, no emblem; position 7 of 7 on the grounded list; seed:867457940cae9466. Signature interaction: dragging the hedge size re-stitches the gold outline, the table and the cost together. Motion grammar: state changes land in 200ms or less, ribs resize with an ease-out, nothing decorative. Raises: fixed furniture per card (character goods catalog); one job per colour (terminal wayfinding); one control remaps the page (type specimen); right-aligned running figures (cassette j-card); short stepped state changes (acetate manual).
+FORM: Seed sack print, position 5 of 7 on the grounded list; seed:4cda982d6f6b5972. Signature interaction: the pin drops on the yellow map and the tag's first row is stamped with the place and its nearest station. Motion grammar: things land and press (a drop with a short settle, a stamp pressing in), screens change like pulling the next tag, everything under 300ms on one ease-out curve. Raises: the active step floods its panel with colour (bebop title card); three spot inks only (risograph); every chart sits on one ruled grid (oscilloscope bench); one form at several sizes, the ruled tag row (Emigre specimen); steps are numbered because the order is real, and a finished answer stays visible but quiet (build-instruction book).
 
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
