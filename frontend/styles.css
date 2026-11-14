@@ -1,7 +1,8 @@
 /* Farmer Joe. A brand printed on a seed sack.
- * Three inks on white tag stock: sack green is the ground of every screen,
- * corn yellow carries panels and whatever is active or chosen, tag red is the
- * pin, the stamps and the warnings. Green and red also print Yes and No. */
+ * Green and white with red highlights: sack green is the ground of every
+ * screen, white tag stock carries the panels, the tags and the map, and tag red
+ * is the highlight (the pin, the stamps, the Start arrow) and the warnings.
+ * Green and red also print Yes and No. */
 
 :root {
   --green-800: #114a2c;
@@ -9,8 +10,7 @@
   --green-600: #1f7446;
   --green-500: #3d8a5f;   /* rules on green */
   --green-300: #5a9c76;   /* chart: without protection */
-  --yellow: #f6cf2e;
-  --yellow-light: #ffe066;
+  --wash: #e8f3eb;        /* pale green: the row being answered, map hover */
   --red: #c6321d;
   --red-deep: #a32715;
 
@@ -52,7 +52,7 @@ body {
   scrollbar-color: var(--green-500) var(--green-700);
 }
 
-::selection { background: var(--yellow); color: var(--ink); }
+::selection { background: var(--red); color: #ffffff; }
 
 h1, h2, p, ul, ol, dl, dd, figure, fieldset { margin: 0; }
 ul, ol { padding: 0; list-style: none; }
@@ -100,7 +100,7 @@ h1:focus { outline: none; }
   justify-content: space-between;
   gap: 32px;
   padding: 48px;   /* stepped in the media queries below, not fluid */
-  background: var(--yellow);
+  background: var(--tag);
   color: var(--ink);
   container-type: inline-size;
 }
@@ -114,6 +114,7 @@ h1:focus { outline: none; }
   letter-spacing: -0.005em;
   text-transform: uppercase;
   margin-top: -0.06em;
+  color: var(--green-700);
 }
 .brand span { display: block; }
 
@@ -160,7 +161,7 @@ h1:focus { outline: none; }
   font-weight: 800;
   font-size: 1.9em;
   line-height: 0.9;
-  color: var(--yellow);
+  color: var(--on-green);
 }
 
 .start-wrap { display: grid; gap: 22px; }
@@ -192,12 +193,21 @@ h1:focus { outline: none; }
   line-height: 0.9;
   text-transform: uppercase;
 }
-.start-tag .icon { width: 52px; height: 52px; stroke-width: 2; transition: transform 180ms var(--ease-out); }
+/* The arrow rides on a red disc: the one red mark on the intro. */
+.start-tag .icon {
+  width: 64px;
+  height: 64px;
+  padding: 13px;
+  border-radius: 50%;
+  background: var(--red);
+  color: #ffffff;
+  stroke-width: 2.25;
+  transition: transform 180ms var(--ease-out), background-color 160ms ease;
+}
 .start-tag:active { transform: scale(0.98); }
-.start-tag:focus-visible { outline: 3px solid var(--yellow); outline-offset: 4px; }
+.start-tag:focus-visible { outline: 3px solid var(--on-green); outline-offset: 4px; }
 @media (hover: hover) and (pointer: fine) {
-  .start-tag:hover .start-face { background: var(--yellow); }
-  .start-tag:hover .icon { transform: translateX(8px); }
+  .start-tag:hover .icon { transform: translateX(8px); background: var(--red-deep); }
 }
 
 .eyelet {
@@ -255,7 +265,7 @@ h1:focus { outline: none; }
   font-variant-numeric: tabular-nums;
 }
 .steps a:hover { color: var(--on-green); background: var(--green-600); }
-.steps a[aria-current="step"] { background: var(--yellow); color: var(--ink); }
+.steps a[aria-current="step"] { background: var(--tag); color: var(--ink); }
 .steps a[aria-disabled="true"] { color: var(--on-green-3); pointer-events: none; }
 
 .sample-note {
@@ -375,14 +385,14 @@ h2 { font-size: 16px; font-weight: 700; }
   overflow: visible;
 }
 .state {
-  fill: var(--yellow);
+  fill: var(--tag);
   stroke: var(--green-700);
   stroke-width: 1;
   vector-effect: non-scaling-stroke;
   cursor: crosshair;
 }
 @media (hover: hover) and (pointer: fine) {
-  .state:hover { fill: var(--yellow-light); }
+  .state:hover { fill: var(--wash); }
 }
 .station { fill: var(--ink); pointer-events: none; }
 .station.is-nearest { stroke: #ffffff; stroke-width: 2; vector-effect: non-scaling-stroke; }
@@ -394,7 +404,7 @@ h2 { font-size: 16px; font-weight: 700; }
   font-size: 13.5px;
   font-weight: 700;
   paint-order: stroke;
-  stroke: var(--yellow);
+  stroke: var(--tag);
   stroke-width: 4px;
   stroke-linejoin: round;
 }
@@ -411,14 +421,14 @@ h2 { font-size: 16px; font-weight: 700; }
 }
 
 .map-key { display: flex; align-items: center; gap: 9px; margin-top: 4px; color: var(--on-green-2); font-size: 13px; }
-.key-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--ink); box-shadow: 0 0 0 2px var(--yellow); }
+.key-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--ink); box-shadow: 0 0 0 2px var(--tag); }
 
 .farm-tag {
   padding: 40px 22px 22px;
   clip-path: polygon(18px 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 0 100%, 0 18px);
 }
 
-/* One ruled row per question. The row being answered floods with yellow. */
+/* One ruled row per question. The row being answered takes a pale green wash. */
 .row {
   display: grid;
   grid-template-columns: minmax(120px, 0.78fr) minmax(0, 1.22fr);
@@ -430,7 +440,7 @@ h2 { font-size: 16px; font-weight: 700; }
   transition: background-color 150ms ease;
 }
 .row-where { border-top: 2px solid var(--ink); }
-.row:focus-within { background: var(--yellow); }
+.row:focus-within { background: var(--wash); }
 .row > label, .row > legend { font-size: 14.5px; font-weight: 650; line-height: 1.35; }
 /* A legend cannot be a grid item, so fieldset rows place it by float. */
 fieldset.row { display: block; }
@@ -515,7 +525,7 @@ fieldset.row > .control { margin-left: 39%; }
 .seg input:hover + span { background: var(--tag-2); }
 .seg input:checked + span { background: var(--ink); color: #ffffff; }
 .seg input:focus-visible + span { outline: 2px solid var(--ink); outline-offset: 1px; }
-.seg input:checked:focus-visible + span { outline-color: var(--yellow); }
+.seg input:checked:focus-visible + span { outline-color: #ffffff; outline-offset: -4px; }
 
 /* Worries: any of three. */
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -741,7 +751,7 @@ tbody tr { border-top: 1px solid var(--rule); }
   overflow: hidden;
 }
 
-/* The pick box is the whole left edge of the ticket: yellow when it is in the plan. */
+/* The pick box is the whole left edge of the ticket: deep green when it is in the plan. */
 .pick { position: relative; display: block; border-right: 1px solid var(--rule); background: var(--tag-2); transition: background-color 150ms ease; }
 .pick input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
 .pick .box {
@@ -758,11 +768,12 @@ tbody tr { border-top: 1px solid var(--rule); }
   background: #ffffff;
   transition: background-color 150ms ease;
 }
-.pick .box .icon { width: 18px; height: 18px; stroke-width: 2.5; opacity: 0; color: #ffffff; transition: opacity 120ms ease; }
-.pick input:checked ~ .box { background: var(--ink); }
+.pick .box .icon { width: 18px; height: 18px; stroke-width: 2.75; opacity: 0; color: var(--green-700); transition: opacity 120ms ease; }
+.pick input:checked ~ .box { background: #ffffff; border-color: #ffffff; }
 .pick input:checked ~ .box .icon { opacity: 1; }
 .pick input:focus-visible ~ .box { outline: 2px solid var(--ink); outline-offset: 3px; }
-.ticket.is-on .pick { background: var(--yellow); border-right-color: var(--yellow); }
+.ticket.is-on .pick { background: var(--green-800); border-right-color: var(--green-800); }
+.ticket.is-on .pick input:focus-visible ~ .box { outline-color: #ffffff; }
 
 .ticket-body { display: grid; gap: 8px; padding: 12px 16px 14px; min-width: 0; }
 .ticket-top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }

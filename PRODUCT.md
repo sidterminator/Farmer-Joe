@@ -51,6 +51,7 @@ Market facts:
 
 - The name is **Farmer Joe**. It is the product's name only, not a character the app speaks as (user, 2026-11-14).
 - Visual direction chosen by the user on 2026-11-14: **seed sack**. It replaced the earlier blue and corn gold look.
+- Palette set by the user on 2026-11-14: **green and white with red highlights**. The corn yellow the seed sack look first shipped with was removed.
 
 ## Evidence on Hand
 
