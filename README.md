@@ -1,8 +1,10 @@
-# Weather Hedging With Prediction Markets
+# Farmer Joe
+
+**Weather hedging with prediction markets**
 
 **Authors:** Siddharth Tiwari, Lingbo Zhang, Rohan Yadav, Stéphanie Meylan
 
-A tool that tells people whose income depends on the weather which prediction market contracts to buy so their daily income becomes as steady as possible, at a cost they are comfortable with.
+Farmer Joe tells people whose income depends on the weather which prediction market contracts to buy so their daily income becomes as steady as possible, at a cost they are comfortable with.
 
 An ice cream shop loses money on a cold day. A roofer earns nothing when it rains. Weather contracts on Kalshi pay out on exactly those days. This project forecasts the weather as a calibrated probability distribution, models how weather moves a person's revenue, and recommends the mix of contracts that minimizes the variance of their income.
 
