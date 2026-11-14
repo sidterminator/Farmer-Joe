@@ -150,6 +150,9 @@
 
     function drawMarks() {
       gMarks.textContent = '';
+      // On a narrow plot the label would sit on the columns; the table under
+      // the chart carries the figure instead.
+      if (geom.innerW < 420) return;
       const right = MARGIN.l + geom.innerW;
       spec.bands.forEach(function (band, b) {
         if (!band.mark) return;
@@ -157,9 +160,6 @@
         const base = bandBase(b);
         const top = base - Math.min(geom.bandH - BAND_HEAD - 4, 46);
         svgEl('line', { class: 'mark-line', x1: x, x2: x, y1: top, y2: base }, gMarks);
-        // On a narrow plot the label would sit on the columns; the table
-        // under the chart carries the figure instead.
-        if (geom.innerW < 420) return;
         const text = svgEl('text', { class: 'mark-label', x: x - 7, y: top + 10, 'text-anchor': 'end' }, gMarks);
         text.textContent = band.mark.label;
         // Flip to the right of the line when there is no room on the left.

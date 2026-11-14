@@ -1,369 +1,410 @@
 ---
-name: bizfax
-description: Weather hedging for farms, a blue jacket stitched in corn gold.
+name: Farmer Joe
+description: Weather protection for a farm's season, printed like a seed sack in three inks on white tag stock.
 colors:
-  blue-900: "#0a1d45"
-  blue-800: "#0f2a5f"
-  blue-700: "#183a7a"
-  blue-600: "#24509f"
-  blue-500: "#3d5a96"
-  edge-on-blue: "#7b94cc"
-  rib: "#4b7ad6"
-  rib-hover: "#7fa3ec"
-  on-blue: "#ffffff"
-  on-blue-2: "#c9d6f2"
-  on-blue-3: "#9fb4e0"
-  paper: "#f4f7fc"
-  paper-2: "#e6ecf7"
-  line: "#d3dcec"
-  line-strong: "#aebbd6"
-  ink: "#0f2a5f"
-  ink-2: "#44557a"
-  ink-3: "#5a6b8f"
-  gold: "#f2c230"
-  gold-hover: "#ffd75c"
-  yes: "#1f7a3d"
-  yes-deep: "#17622f"
-  yes-tint: "#dff3e4"
-  yes-ink: "#0b5c2a"
-  no: "#b3372f"
-  no-deep: "#962a23"
-  no-tint: "#fbe3e0"
-  no-ink: "#8f1f1a"
+  green-700: "#17603a"
+  green-800: "#114a2c"
+  green-600: "#1f7446"
+  green-500: "#3d8a5f"
+  green-300: "#5a9c76"
+  yellow: "#f6cf2e"
+  yellow-light: "#ffe066"
+  red: "#c6321d"
+  red-deep: "#a32715"
+  ink: "#0d3320"
+  ink-2: "#3c5547"
+  ink-3: "#5b7164"
+  tag: "#fbfcf9"
+  tag-2: "#eef3ee"
+  rule: "#d5ddd6"
+  rule-strong: "#9fb0a5"
+  white: "#ffffff"
+  on-green-2: "#d3e6d8"
+  on-green-3: "#b6d6c0"
+  yes-tint: "#dcebdf"
+  no-tint: "#f8dfd9"
+  no-ink: "#8a2112"
 typography:
+  display:
+    fontFamily: "Big Shoulders, Arial Narrow, sans-serif"
+    fontSize: "clamp(72px, min(31cqi, 38vh), 360px)"
+    fontWeight: 900
+    lineHeight: 0.82
+    letterSpacing: "-0.005em"
   headline:
-    fontFamily: "Public Sans, system-ui, -apple-system, Segoe UI, sans-serif"
-    fontSize: "21px"
-    fontWeight: 700
-    lineHeight: 1.2
-    letterSpacing: "-0.012em"
+    fontFamily: "Big Shoulders, Arial Narrow, sans-serif"
+    fontSize: "clamp(40px, 4.4vw, 60px)"
+    fontWeight: 900
+    lineHeight: 1.06
+  action:
+    fontFamily: "Big Shoulders, Arial Narrow, sans-serif"
+    fontSize: "clamp(64px, 6.4vw, 96px)"
+    fontWeight: 900
+    lineHeight: 0.9
+  name:
+    fontFamily: "Big Shoulders, Arial Narrow, sans-serif"
+    fontSize: "30px"
+    fontWeight: 800
+    lineHeight: 1
   figure:
-    fontFamily: "Public Sans, system-ui, -apple-system, Segoe UI, sans-serif"
+    fontFamily: "Big Shoulders, Arial Narrow, sans-serif"
+    fontSize: "40px"
+    fontWeight: 800
+    lineHeight: 0.95
+  stamp:
+    fontFamily: "Big Shoulders, Arial Narrow, sans-serif"
     fontSize: "21px"
-    fontWeight: 700
+    fontWeight: 800
     lineHeight: 1.1
-    letterSpacing: "-0.01em"
-  brand:
-    fontFamily: "Public Sans, system-ui, -apple-system, Segoe UI, sans-serif"
-    fontSize: "19px"
-    fontWeight: 750
-    letterSpacing: "-0.01em"
-  title:
-    fontFamily: "Public Sans, system-ui, -apple-system, Segoe UI, sans-serif"
+    letterSpacing: "0.02em"
+  promise:
+    fontFamily: "Archivo, system-ui, -apple-system, Segoe UI, sans-serif"
+    fontSize: "clamp(20px, 2.1vw, 30px)"
+    fontWeight: 600
+    lineHeight: 1.3
+  lede:
+    fontFamily: "Archivo, system-ui, -apple-system, Segoe UI, sans-serif"
     fontSize: "18px"
-    fontWeight: 700
-    lineHeight: 1.2
-    letterSpacing: "-0.01em"
-  section:
-    fontFamily: "Public Sans, system-ui, -apple-system, Segoe UI, sans-serif"
+    fontWeight: 400
+    lineHeight: 1.4
+  title:
+    fontFamily: "Archivo, system-ui, -apple-system, Segoe UI, sans-serif"
     fontSize: "16px"
-    fontWeight: 650
+    fontWeight: 700
+    lineHeight: 1.45
   body:
-    fontFamily: "Public Sans, system-ui, -apple-system, Segoe UI, sans-serif"
+    fontFamily: "Archivo, system-ui, -apple-system, Segoe UI, sans-serif"
     fontSize: "15px"
     fontWeight: 400
     lineHeight: 1.45
-  support:
-    fontFamily: "Public Sans, system-ui, -apple-system, Segoe UI, sans-serif"
+  label:
+    fontFamily: "Archivo, system-ui, -apple-system, Segoe UI, sans-serif"
+    fontSize: "14.5px"
+    fontWeight: 650
+    lineHeight: 1.35
+  note:
+    fontFamily: "Archivo, system-ui, -apple-system, Segoe UI, sans-serif"
     fontSize: "13.5px"
     fontWeight: 400
-    lineHeight: 1.35
-  control:
-    fontFamily: "Public Sans, system-ui, -apple-system, Segoe UI, sans-serif"
-    fontSize: "13.5px"
-    fontWeight: 550
-  data:
-    fontFamily: "Public Sans, system-ui, -apple-system, Segoe UI, sans-serif"
-    fontSize: "14px"
-    fontWeight: 600
-    fontFeature: "tnum"
-  label:
-    fontFamily: "Public Sans, system-ui, -apple-system, Segoe UI, sans-serif"
-    fontSize: "12.5px"
-    fontWeight: 550
+    lineHeight: 1.45
 rounded:
-  swatch: "3px"
-  chip: "6px"
-  control: "8px"
-  card: "10px"
-  panel: "12px"
+  stamp: "2px"
+  tag: "3px"
+  round: "50%"
 spacing:
-  tight: "8px"
-  row: "12px"
-  stack: "16px"
-  panel-x: "22px"
   pad: "28px"
-  column-gap: "30px"
-  ribbon-gutter: "46px"
+  pad-narrow: "14px"
+  sack: "48px"
+  tag-inset: "22px"
+  row-y: "10px"
+  gap-sm: "8px"
+  gap-md: "12px"
+  gap-lg: "20px"
+  gap-xl: "32px"
 components:
-  button-quiet:
-    backgroundColor: "transparent"
+  start-tag:
+    backgroundColor: "{colors.tag}"
     textColor: "{colors.ink}"
-    typography: "{typography.control}"
-    rounded: "{rounded.control}"
-    padding: "0 12px"
-    height: "34px"
+    typography: "{typography.action}"
+    padding: "18px 30px 18px 26px"
+    height: "132px"
+  start-tag-hover:
+    backgroundColor: "{colors.yellow}"
+    textColor: "{colors.ink}"
+  button-primary:
+    backgroundColor: "{colors.green-700}"
+    textColor: "{colors.white}"
+    rounded: "{rounded.tag}"
+    padding: "0 20px"
+    height: "48px"
+  button-primary-hover:
+    backgroundColor: "{colors.green-800}"
+    textColor: "{colors.white}"
+  button-primary-disabled:
+    backgroundColor: "{colors.tag-2}"
+    textColor: "{colors.ink-3}"
+  button-quiet:
+    backgroundColor: "{colors.tag}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.tag}"
+    padding: "0 14px"
+    height: "38px"
   button-quiet-hover:
-    backgroundColor: "{colors.paper-2}"
+    backgroundColor: "{colors.tag-2}"
+    textColor: "{colors.ink}"
   button-quiet-pressed:
     backgroundColor: "{colors.ink}"
-    textColor: "{colors.paper}"
-  button-on-blue:
-    backgroundColor: "transparent"
-    textColor: "{colors.on-blue}"
-    typography: "{typography.control}"
-    rounded: "{rounded.control}"
-    padding: "0 12px"
-    height: "34px"
-  button-on-blue-hover:
-    backgroundColor: "{colors.blue-700}"
-  saved-toggle-on:
-    backgroundColor: "{colors.gold}"
-    textColor: "{colors.blue-800}"
-    rounded: "{rounded.control}"
-  tab:
-    backgroundColor: "transparent"
-    textColor: "{colors.ink-2}"
-    padding: "11px 12px 12px"
-  tab-selected:
+    textColor: "{colors.tag}"
+  step:
+    backgroundColor: "{colors.green-700}"
+    textColor: "{colors.on-green-2}"
+    rounded: "{rounded.tag}"
+    padding: "6px 12px 6px 8px"
+  step-current:
+    backgroundColor: "{colors.yellow}"
     textColor: "{colors.ink}"
-  panel:
-    backgroundColor: "{colors.paper}"
+  tag:
+    backgroundColor: "{colors.tag}"
     textColor: "{colors.ink}"
-    rounded: "{rounded.panel}"
-    padding: "10px 22px 20px"
-  plot:
-    backgroundColor: "{colors.blue-800}"
-    textColor: "{colors.on-blue-3}"
-    rounded: "{rounded.control}"
-  tooltip:
-    backgroundColor: "{colors.blue-900}"
-    textColor: "{colors.on-blue}"
+    rounded: "{rounded.tag}"
+    padding: "16px 20px 18px"
+  row:
+    backgroundColor: "{colors.tag}"
+    textColor: "{colors.ink}"
     typography: "{typography.label}"
-    padding: "9px 11px 10px"
-  market-card:
-    backgroundColor: "{colors.paper}"
+    padding: "10px 22px"
+  row-active:
+    backgroundColor: "{colors.yellow}"
     textColor: "{colors.ink}"
-    rounded: "{rounded.card}"
-    padding: "8px 8px 8px 0"
+  field:
+    backgroundColor: "{colors.white}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.tag}"
+    padding: "4px 10px"
+    height: "40px"
+  segment-selected:
+    backgroundColor: "{colors.ink}"
+    textColor: "{colors.white}"
+    rounded: "{rounded.stamp}"
+    height: "32px"
+  chip:
+    backgroundColor: "{colors.white}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.tag}"
+    padding: "0 12px 0 9px"
+    height: "36px"
+  chip-selected:
+    backgroundColor: "{colors.ink}"
+    textColor: "{colors.white}"
+  stamp:
+    textColor: "{colors.red}"
+    typography: "{typography.stamp}"
+    rounded: "{rounded.stamp}"
+    padding: "1px 9px 2px"
+  ticket:
+    backgroundColor: "{colors.tag}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.tag}"
+    padding: "12px 16px 14px"
+  ticket-pick:
+    backgroundColor: "{colors.tag-2}"
+    width: "52px"
+  ticket-pick-on:
+    backgroundColor: "{colors.yellow}"
+    width: "52px"
   side-yes:
     backgroundColor: "{colors.yes-tint}"
-    textColor: "{colors.yes-ink}"
-    typography: "{typography.figure}"
-    rounded: "{rounded.control}"
-    width: "74px"
-    height: "72px"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.tag}"
+    width: "68px"
+    height: "50px"
   side-yes-pressed:
-    backgroundColor: "{colors.yes}"
-    textColor: "{colors.on-blue}"
+    backgroundColor: "{colors.green-700}"
+    textColor: "{colors.white}"
   side-no:
     backgroundColor: "{colors.no-tint}"
     textColor: "{colors.no-ink}"
-    typography: "{typography.figure}"
-    rounded: "{rounded.control}"
-    width: "74px"
-    height: "72px"
+    rounded: "{rounded.tag}"
+    width: "68px"
+    height: "50px"
   side-no-pressed:
-    backgroundColor: "{colors.no}"
-    textColor: "{colors.on-blue}"
+    backgroundColor: "{colors.red}"
+    textColor: "{colors.white}"
   verdict:
-    backgroundColor: "{colors.paper-2}"
+    backgroundColor: "{colors.tag-2}"
     textColor: "{colors.ink}"
-    rounded: "{rounded.chip}"
-    padding: "2px 9px 2px 7px"
-  upload-field:
-    backgroundColor: "{colors.paper}"
+    rounded: "{rounded.tag}"
+    padding: "1px 8px 1px 6px"
+  tooltip:
+    backgroundColor: "{colors.tag}"
     textColor: "{colors.ink}"
-    typography: "{typography.body}"
-    rounded: "{rounded.panel}"
-    padding: "5px 5px 5px 14px"
-    height: "48px"
-  send:
-    backgroundColor: "{colors.blue-600}"
-    textColor: "{colors.on-blue}"
-    rounded: "{rounded.control}"
-    width: "40px"
-    height: "38px"
-  send-ready:
-    backgroundColor: "{colors.gold}"
-    textColor: "{colors.blue-800}"
+    rounded: "{rounded.tag}"
+    padding: "8px 11px 9px"
 ---
 
-# Design System: bizfax
+# Design System: Farmer Joe
 
 ## Overview
 
-**Creative North Star: "The Stitched Jacket"**
+**Creative North Star: "The Seed Sack"**
 
-The screen is a blue corduroy jacket with gold stitching: FFA-jacket blue covers the whole shell, cool near-white panels sit on it as work surfaces, and corn gold is thread, used only where something belongs to the farmer. No emblem is drawn anywhere; the jacket is carried by the colour pair, the ribbed plot and the dashed gold line alone.
+Farmer Joe is a brand printed on a seed sack. The intro is the front of the sack: a corn-yellow panel that runs edge to edge with the name in capitals as tall as the panel allows. The farm form is the sack's tag, filled in one ruled row at a time while a yellow map answers. The plan reads like the analysis tag sewn to a bag: a title that states the result, ruled figures, and contracts as tickets. Farmer Joe is the product's name only; nothing on screen speaks as a character.
 
-It is a working screen for one job, read at a glance and operated with a few controls: income spread on the left, markets on the right, the farmer's data along the bottom. Density is moderate. Numbers are the content, so they are bold, right-aligned and aligned by digit; prose is short and sits in a quieter ink. Motion is brief and only ever reports a state change.
+Everything is flat print. There are three inks (sack green, corn yellow, tag red) and one stock (white tag card). Green is the ground of every screen, so the white tags are objects sitting on it, never a page behind them. Density is that of a filled-in form: 15px reading text, 10px row padding, rules instead of boxes. The system refuses the white onboarding wizard of progress bar and rounded cards.
 
-The system does not look like a white fintech dashboard of grey cards with green and red tickers. Blue is the ground, not an accent, and green and red are confined to the two prices a farmer chooses between.
+Motion is things landing and pressing. The pin drops onto the map (260ms) and a red ring spreads from the landing point, a line runs out to the nearest station (280ms), and the place name is stamped onto the tag's first row (180ms, scaling down from 1.16 at its 2 degree tilt). Screens rise in 18px over 240ms. Every move shares one curve, `cubic-bezier(0.23, 1, 0.32, 1)`; state changes on controls take 120 to 200ms. The one longer piece is the landing ring, which fades over 460ms. Under reduced motion the pin and stamp fade in place, screens cross-fade in 160ms, and transitions are cut to nothing.
+
+The finish review left four ideas open that are not in the build and are not part of this system yet: seam or lot devices on the sack front, eyelets and perforations on the plan's tags, a tag-pull screen change, and ruled rows under the map.
 
 **Key Characteristics:**
-- A deep blue ground across the shell, with light panels as the only work surfaces.
-- Corn gold means "the farmer's own" and nothing else.
-- One chart form: fine vertical ribs on a blue plot field, with a dashed gold outline for the hedge.
-- Green and red only on Yes and No prices.
-- One typeface, Public Sans, with tabular right-aligned figures.
-- Flat surfaces; depth comes from the blue and paper tones.
-- Sample and assumed numbers are labelled on screen, in the header and the status line.
+- Sack green is the ground of all three screens; white appears only as tag stock and as type on green.
+- Corn yellow marks one thing per region: the panel, the current step, the row being answered, the contract that is in the plan.
+- Heavy condensed capitals for the name, screen titles and key figures; a plain grotesque for everything read or operated.
+- Data sits in ruled rows, label left and value right, opened by a 2px ink rule and separated by 1px hairlines.
+- One chart form: two distributions stacked on a shared ruled grid, in two greens.
+- Sample and demo data is stamped in red, tilted 2 degrees.
 
 ## Colors
 
-Two voices, blue and corn gold, on cool paper neutrals; green and red are a closed pair used for one decision.
+Three spot inks on white tag stock, with the neutrals all drawn from the green.
 
 ### Primary
-- **Jacket Blue** (`blue-800`): the shell ground and every plot field. Also the ink colour on paper (`ink` is the same value), so text and ground are one blue.
-- **Night Blue** (`blue-900`): the chart tooltip surface, one step below the plot field.
-- **Field Blue** (`blue-700`, `blue-600`): hover and pressed fills for controls on the blue ground; `blue-600` is also the slider fill, the send button at rest, the Saved count pill and the focus ring on paper.
-- **Rule Blue** (`blue-500`, `edge-on-blue`): `blue-500` rules the chart baseline and the tooltip edge; `edge-on-blue` is the border of controls and the dashed empty-state frame on the blue ground.
-- **Rib Blue** (`rib`, `rib-hover`): the bars of the distribution. `rib-hover` is the one rib under the pointer.
+- **Sack Green** (`green-700`, #17603a): the ground of every screen, the primary button, the filled part of sliders and the budget meter, the pressed Yes side, and the "with your plan" columns in the chart. Its neighbours do small jobs: `green-800` is the primary button's hover and the sticky result strip, `green-600` is the hover behind a step in the bar, `green-500` is the scrollbar thumb, and `green-300` is the "without protection" columns in the chart.
 
 ### Secondary
-- **Corn Gold** (`gold`, `gold-hover`): the farmer's own. It appears as the dashed outline around the selected market card, the dashed hedged-income line, the ribs for seasons where the held contract pays, the filled bookmark of a saved market, the Saved toggle when it is filtering, the dot before "Using your data", the send arrow once the field holds something, and the text selection colour. Text on gold is `blue-800`.
+- **Corn Yellow** (`yellow`, #f6cf2e): panels and whatever is active or chosen. The intro panel, the map's states, the current step, the form row that holds focus, the pick strip of a ticket that is in the plan, the numerals of the how-it-works list, text selection, and the Start tag's hover. `yellow-light` is only the hover of a state on the map.
 
 ### Tertiary
-- **Yes Green** (`yes`, `yes-deep`, `yes-tint`, `yes-ink`): the Yes price button. Tint with dark green text at rest; solid green with white text when that side is held; `yes-deep` on hover of the held side.
-- **No Red** (`no`, `no-deep`, `no-tint`, `no-ink`): the No price button, same four-step pattern.
+- **Tag Red** (`red`, #c6321d): the map pin and its landing ring, the stamps, invalid field borders, the over-budget meter and alert, and the pressed No side. `red-deep` is error text on tag stock. `no-ink` on `no-tint` is the unpressed No side and a No price.
 
 ### Neutral
-- **Cool Paper** (`paper`): the main panel, market cards and the upload field.
-- **Paper Shade** (`paper-2`): hover fill for quiet buttons, the sticky table header and the verdict chip.
-- **Hairline** (`line`, `line-strong`): `line` divides table rows, rules the tab strip and is the empty part of the slider track; `line-strong` borders quiet buttons.
-- **Ink** (`ink`, `ink-2`, `ink-3`): headings and figures; supporting prose and row labels; column heads, meta lines and placeholders.
-- **On Blue** (`on-blue`, `on-blue-2`, `on-blue-3`): primary text on the blue ground; secondary text and status lines; axis labels, the markets note and the fine print.
+- **Ink** (`ink`, #0d3320): the darkest green, used as black. All text on tag stock and on yellow, 2px opening rules, selected segments and chips, checked boxes, station dots. `ink-2` is secondary text on a tag, `ink-3` is units, axis labels and placeholders.
+- **Tag Stock** (`tag`, #fbfcf9): the surface of every tag, ticket and the Start tag. `tag-2` is the quiet fill: an unpicked ticket's strip, verdict chips, table heads, loading bars, the disabled primary button.
+- **White** (`white`, #ffffff): type on green, and the fill of fields, so an input reads one step brighter than the tag it sits on.
+- **Rules** (`rule`, `rule-strong`): `rule` is the 1px hairline between rows and the chart grid; `rule-strong` is the 1.5px border of fields, chips and quiet buttons, and the unfilled slider track.
+- **On-green greys** (`on-green-2`, `on-green-3`): secondary text on green (hints, fine print, idle steps) and the step that cannot be reached yet.
+- **Yes tint** (`yes-tint`): the unpressed Yes side and a Yes price.
 
 ### Named Rules
-**The Farmer's Gold Rule.** Gold marks what is the farmer's own: the selected market, the hedged income, the held side's payout, saved markets, uploaded data, and the send arrow once there is something to send. A gold mark anywhere else is a mistake.
+**The Green Ground Rule.** Every screen's background is sack green. White never becomes the page; it is always a tag, a ticket or a field sitting on the green.
 
-**The Yes and No Rule.** Green and red appear only on Yes and No price buttons. Gains, losses, errors and verdicts are not coloured: the Change column is plain ink, an error is white text with an alert icon, and "Cheap" or "Expensive" is a neutral chip with an icon.
+**The Yellow Means Chosen Rule.** Yellow is a flood, never a tint or an outline, and outside the intro panel and the map it marks exactly one current thing per region: the step you are on, the row you are answering, the contract you have picked. Yellow is never text on tag stock and is not used in the chart, because it cannot hold contrast there.
 
-**The One Emphasis Series Rule.** Gold is deliberately much lighter than Rib Blue and sits outside the lightness band a categorical chart palette would keep. That is intended: a plot has one blue series and at most one gold emphasis series. Colour-blind separation and contrast against the plot field hold. Do not add a third series colour.
+**The Red Is Pressed On Rule.** Red is for the pin, the stamps, warnings, and No. It never decorates and never fills a surface larger than a button.
+
+**The Yes And No Rule.** Yes prints in green and No prints in red, tinted at rest and solid when pressed. The word is always printed beside the colour, so the pair never depends on hue alone.
 
 ## Typography
 
-**Display Font:** Public Sans (with system-ui, -apple-system, Segoe UI, sans-serif)
-**Body Font:** Public Sans (same stack)
+**Display Font:** Big Shoulders (with Arial Narrow, sans-serif)
+**Body Font:** Archivo (with system-ui, -apple-system, Segoe UI, sans-serif)
 
-**Character:** One plain, sturdy sans in a variable weight, embedded with the page so it survives being opened from disk. Hierarchy comes from weight and ink tone more than size; the whole ramp sits between 12.5px and 21px.
+**Character:** Stencil-weight condensed capitals from sack printing against a plain, slightly wide grotesque for the working text. Both are variable fonts embedded in `frontend/fonts/fonts.css` as data URIs so they survive opening the page from disk.
 
 ### Hierarchy
-- **Headline** (700, 21px, 1.2, -0.012em): the panel title, one per view, balanced across lines. 19px at 640px and below.
-- **Figure** (700, 20 to 21px, 1.1, -0.01em): the Yes and No prices and the hedge-size readout.
-- **Brand** (750, 19px, -0.01em): the product name in the header, lower case, set as text.
-- **Title** (700, 18px, 1.2, -0.01em): a market's name on its card.
-- **Section** (650, 16px): the "Markets" heading on the blue ground.
-- **Body** (400, 15px, 1.45): the base size, the upload field and the Import button.
-- **Support** (400, 13.5 to 14px, 1.35 to 1.45): the lede under the headline, market questions, notes and status lines, in `ink-2` or `on-blue-2`. Explanatory prose is capped at 62ch, status lines at 70ch.
-- **Control** (550, 13.5px; tabs 14.5px): button and tab labels, never wrapped.
-- **Data** (600, 14px, tabular): table cells. Row labels are 500 in `ink-2`.
-- **Label** (550 to 600, 12 to 12.5px): column heads, the Yes and No words, settle lines, axis ticks, chart direct labels, tooltip text and the fine print.
+- **Display** (900, `clamp(72px, min(31cqi, 38vh), 360px)`, line-height 0.82, uppercase): the name on the intro panel, two stacked lines sized to the panel's width.
+- **Headline** (900, `clamp(40px, 4.4vw, 60px)`, line-height 1.06, uppercase, balanced): one screen title per screen. On the plan the title states the result ("Your plan: $14,945 across 2 markets").
+- **Action** (900, `clamp(64px, 6.4vw, 96px)`, line-height 0.9, uppercase): the word on the Start tag only.
+- **Name** (800 to 900, 30px, line-height 0.95 to 1, uppercase): the wordmark in the bar, the Contracts heading, and each ticket's market name.
+- **Figure** (800, 34 to 40px, line-height 0.95 to 1): the crop value at the foot of the farm tag and the order total. List numerals on the intro use the same face at 1.9em in yellow.
+- **Stamp** (800, 21px or 15px small, letter-spacing 0.02em, uppercase): red stamps.
+- **Promise** (Archivo 600, `clamp(20px, 2.1vw, 30px)`, line-height 1.3, max 24ch): the single sentence under the name.
+- **Lede** (Archivo 400, 18px, line-height 1.4, max 62ch): the sentence under the plan title.
+- **Title** (Archivo 700, 16px): the heading of a tag ("Season income", "Your order").
+- **Body** (Archivo 400, 15px, line-height 1.45): default reading text. Field values are 15.5px at 600.
+- **Label** (Archivo 650, 14 to 14.5px, line-height 1.35): form questions, button text, table values.
+- **Note** (Archivo 400, 12.5 to 13.5px): hints, units, fine print, axis labels; capped at 60 to 80ch.
 
 ### Named Rules
-**The Right-Aligned Figures Rule.** Figures in tables are right-aligned with tabular numerals, so digits stack by place; the first column holds the row label, left-aligned. Axis ticks and tooltip values are tabular too.
+**The Two Voices Rule.** Big Shoulders is for the name, screen titles, market names, key figures and stamps, always at 800 or 900 and never below 15px. Anything the farmer reads as a sentence or operates as a control is Archivo.
 
-**The Sentence Case Rule.** Labels are sentence case at normal tracking. Nothing in the build is set in tracked capitals; "YES" and "NO" are capitalised only where prose names the contract side.
+**The Tabular Figures Rule.** Every number that can change or be compared (prices, amounts, table cells, axis ticks, field values) uses tabular numerals.
 
 ## Layout
 
-A full-height shell of three rows: a header strip, the work area, and a dock pinned to the bottom. The work area and the dock share one two-column grid (about 1.72 to 1, the right column never under 340px, 30px between columns), so Import lines up under the main panel and the upload field under the market cards. Outer padding is 28px.
+Each screen is a full-height field of green with a two-column split that hands the wider side to the picture and the narrower side to the paper.
 
-The left column is one light panel: an underline tab strip with a "Table view" toggle, then a headline with the chart key beside it, the plot (at least 260px tall, growing to fill), and below it a two-part row with the comparison table and the hedge controls. The right column lists market cards 16px apart on the blue ground. Each card keeps a 46px gutter on its right where its bookmark hangs, and the dock's right side keeps the same gutter so the upload field ends flush with the cards.
+- **Intro:** a 62/38 grid. The yellow panel runs from the top edge to the bottom edge with 48px padding, name at the top and the promise with its three ruled spec rows at the bottom. The green side stacks the numbered how-it-works list at the top and the Start tag with fine print at the bottom.
+- **Bar (screens 2 and 3):** wordmark, three numbered steps, and the sample-data note pushed to the right; 14px top padding, 28px page padding (`pad`).
+- **Farm:** map column at 1.32fr beside the tag at 1fr (minimum 400px), 32px gap. The map column is sticky on wide screens.
+- **Plan:** main column at 1.25fr (title, lede, chart tag, live-markets tag) beside the contracts column at 1fr (tickets, order tag), 28px column gap and 20px row gap.
+- **Inside a tag:** rows bleed to the tag's edges with negative margins so the hairlines and the yellow flood run the full width; the content inset is 22px on the farm tag and 20px on plan tags. A form row is a two-column grid, question at 0.78fr and control at 1.22fr.
 
-Inside a card the furniture is fixed: name, question and settle line on the left; two 74px price buttons on the right; the bookmark outside the right edge.
-
-At 1080px and below the two columns stack: panel, markets, then the dock in one column. At 640px and below the outer padding drops to 14px and the gutter to 40px, the sample-data notice moves under the farm line, the row under the plot becomes one column, and each card puts its two price buttons in a full-width row under the text. Table cells may wrap at that width; they never wrap above it.
-
-Rhythm is built from 8, 12 and 16px gaps, with 22px inside the panel and 28px at the page edge.
+Responsive steps are fixed breakpoints, not fluid padding: at 1100px the plan stacks to one column and a sticky strip in `green-800` carries the plan's result above the tickets; at 900px the farm stacks and the map is capped at 42dvh; at 820px the intro stacks and the Start tag moves directly under the panel; at 560px page padding drops to 14px (`pad-narrow`), form rows stack label over control, and the Yes and No sides split the ticket's width.
 
 ## Elevation & Depth
 
-Flat. Depth is tonal: paper surfaces on the blue ground, the blue plot field set into the paper panel, and the darker tooltip over the plot. Surfaces have no borders or shadows at rest; cards and the panel separate from the ground by tone alone.
+Flat. Depth comes from stock on ground: white tags on green, a yellow panel beside green, a white field on a tag. Nothing at rest casts a shadow, and there are no gradients, blurs or overlays.
 
 ### Shadow Vocabulary
-- **Tooltip lift** (`box-shadow: 0 8px 20px rgba(3, 10, 28, 0.5)`): the chart tooltip, the only floating element.
-- **Thumb lift** (`box-shadow: 0 1px 4px rgba(15, 42, 95, 0.4)`): the slider thumb, so it reads as the thing to grab.
+- **Tooltip lift** (`box-shadow: 0 8px 18px rgba(9, 36, 22, 0.28)`): the chart tooltip only, the one element that floats over other content.
+- **Thumb lift** (`box-shadow: 0 1px 4px rgba(13, 51, 32, 0.45)`): the slider thumb, so it reads as the grabbable part of the track.
+- **Eyelet ring** (`box-shadow: 0 0 0 4px` in `rule`): a hard ring, not a shadow; the reinforcement around a tag's punched hole.
 
 ### Named Rules
-**The Tone Before Shadow Rule.** A surface is separated by its tone against the ground. Shadow is kept for the two things that sit above a surface: the tooltip and the slider thumb.
+**The Printed Flat Rule.** Surfaces are separated by ink and stock, never by shadow. A shadow is allowed only on something that floats above the print (the tooltip) or is physically grabbed (the slider thumb).
 
 ## Shapes
 
-Softly rounded rectangles on a short scale: 12px for the panel and the upload field, 10px for market cards and the empty-state frame, 8px for controls, price buttons and the plot field, 6px for small chips and the verdict, 3px for legend swatches. The only circles are the slider thumb, the Saved count pill and the status dot.
+Rectangles with barely eased corners (3px on tags, tickets, fields, buttons, chips and steps; 2px on stamps, the meter and the inside of the segmented control). Circles are reserved for things that are round in the world: eyelets, step numerals, station dots, slider thumbs, the live dot.
 
-Lines are 1px hairlines; borders appear only on controls (quiet buttons, on-blue buttons) and on the scrolling table frame. Dashes mean thread: gold lines are always dashed (the hedge outline at 8 on, 5 off; the selection outline around a card, 2px, offset 4px so it sits on the blue ground). The one non-gold dash is the empty-state frame.
+Two tags have cut corners made with a clip path: the Start tag is clipped at both left corners (26px) so it points like a luggage tag, and the farm tag has both top corners cut (18px) with an eyelet centred 12px below the top edge. The eyelet is a 14px green hole with a 4px ring (20px with a 5px ring on the Start tag). The plan's tags are plain rectangles without eyelets.
 
-Ribs are thin vertical bars with a 2px gap and rounded tops. The bookmark is a swallow-tailed flag drawn in outline, filled when saved. Icons are 1.75px round-capped line drawings at 16 to 20px.
+Borders carry meaning by weight: 2px ink opens a group of rows or closes it into a total, 1px `rule` separates rows, 1.5px `rule-strong` outlines a control, 2px red outlines a stamp. Stamps are tilted 2 degrees anticlockwise.
+
+Icons are 18px line drawings (1.75px stroke, round caps and joins, no fill) from one inline sprite: arrow, back, import, info, check, alert, equal, retry.
 
 ## Components
 
 ### Buttons
-Plain, compact and outlined; they change fill, never size.
-- **Shape:** gently rounded (8px), at least 34px tall, 12px side padding, 13.5px label at weight 550.
-- **Quiet (on paper):** transparent with a `line-strong` border and `ink` label. Hover fills `paper-2`, active fills `line`. When it is a toggle and on, it inverts to `ink` with a `paper` label. Disabled drops to `ink-3` text and a `line` border.
-- **On blue:** transparent with an `edge-on-blue` border and white label. Hover fills `blue-700` and lightens the border; active fills `blue-600`. Import is the larger version: 44px tall, 15px label, 20px icon.
-- **Saved toggle:** an on-blue button with a bookmark icon and a count pill (`blue-600`). When filtering to saved markets it turns gold with `blue-800` text, and the pill inverts to `blue-800`.
-- **Text link (on blue):** white, underlined with a 3px offset; the underline thickens on hover.
-- **Focus:** a 2px outline offset 2px, white on the blue ground and `blue-600` on paper.
-- **Motion:** background, border and text colour change over 150ms with the system ease.
+Plain and pressable; they shrink slightly when pressed (scale 0.97).
+- **Shape:** 3px corners, 1.5px border, 14px Archivo at 650, 38px tall with 14px side padding.
+- **Primary:** solid sack green with white text, 48px tall, 16px text, 20px side padding ("See my plan", "Send to Kalshi demo"). Hover darkens to `green-800`. Disabled is `tag-2` with `ink-3` text and a `rule` border.
+- **Quiet:** `rule-strong` outline on tag stock with ink text ("Import history", "Table view", "Add to plan", "Check again"). Hover fills `tag-2`; a pressed toggle fills ink with tag-stock text.
+- **Text link:** inherits colour, 650 weight, underlined with a 3px offset; the underline thickens to 2px on hover.
+- **Focus:** a 2px outline offset 2px, white on green and ink on tags and on yellow.
 
-### Tabs
-Underline tabs on the panel's top rule. Labels are 14.5px at weight 550 in `ink-2`; the selected tab is `ink` with a 2px `ink` bar that sits on the rule. No fill, no pill.
+### Start tag
+The one white object on the intro. A tag-stock face at least 132px tall, cut at both left corners, holding an eyelet, the word START in the Action size and a 52px arrow. Hover floods the face yellow and slides the arrow 8px right; press scales it to 0.98; focus is a 3px yellow outline offset 4px (drawn on the link, outside the clipped face).
 
-### Cards / Containers
-- **Main panel:** `paper`, 12px corners, 10px 22px 20px padding, no border or shadow.
-- **Market card:** `paper`, 10px corners, a text block and two price buttons. The text block is itself the control that selects the market; hovering it underlines the name. The selected card gains a 2px dashed gold outline offset 4px.
-- **Empty state:** a 1px dashed `edge-on-blue` frame with 10px corners on the blue ground, one sentence that says what to do, and one on-blue button.
+### Steps
+Three numbered links in the bar. Each has a 22px outlined circle with its number and a 14px label at 600 in `on-green-2`. Hover fills `green-600`. The current step floods yellow with ink text. A step that cannot be reached yet is `on-green-3` and inert.
 
-### Price Buttons (Yes and No)
-The only green and red on the screen. Each is 74px wide and at least 72px tall (full width and 54px on small screens) with 8px corners, a 12.5px word over a 21px price. At rest: tint fill, dark same-hue text. Held: solid fill, white text. Hover deepens whichever state it is in. The word is always present; the colour never carries the meaning alone.
+### Tags
+- **Corner Style:** 3px, or cut corners on the farm tag.
+- **Background:** tag stock, ink text.
+- **Shadow Strategy:** none (see Elevation & Depth).
+- **Border:** none; the edge is the change from green to white.
+- **Internal Padding:** 16px 20px 18px on plan tags; 40px 22px 22px on the farm tag to clear the eyelet.
+- **Head:** a 16px/700 title on the left, with a stamp or a quiet button on the right.
 
-### Bookmark
-A swallow-tailed flag hanging off each card's right edge in the gutter, 42 by 30px. Unsaved: a 1.75px outline in `on-blue-3`, brightening to white with a `blue-700` fill on hover. Saved: solid gold, `gold-hover` on hover.
+### Ruled rows
+The system's one data form, used at every size: the spec list on the intro panel, form rows, the analysis table, order lines, live-market rows. Label left, value right, 1px hairline between rows, a 2px ink rule above the first row and above a total. In the form, the row that holds focus floods yellow edge to edge (150ms). Notes and errors sit under the control in the value column.
 
 ### Inputs / Fields
-- **Upload field:** a `paper` bar with 12px corners, 48px tall, holding a borderless 15px text input and the send button at its right end. The placeholder is `ink-3` and shows the expected format. Focus anywhere inside draws a 2px white outline around the whole bar.
-- **Send:** 40 by 38px, 8px corners, `blue-600` with a white paper-plane icon at rest. Once the field holds text or a staged file it turns gold with a `blue-800` icon.
-- **Staged file chip:** replaces the input inside the bar: file icon, name and season count at 14.5px weight 550, truncated with an ellipsis, and a 28px remove button.
-- **Slider:** a 6px track, `blue-600` up to the thumb and `line` beyond; an 18px `ink` thumb with a 2px `paper` ring that grows slightly on hover. A small `ink-3` tick under the track marks the steadiest hedge size. The current value is shown above at 20px weight 700.
-- **Status line:** a sentence beside or above the field in `on-blue-2`. Success from the farmer's data is prefixed with a gold dot; an error turns white with an alert icon and says what to type. The row keeps its height when empty so a message never moves the layout.
+- **Style:** white fill, 1.5px `rule-strong` border, 3px corners, 40px tall. The unit sits inside the field: a leading "$" in ink at 600, a trailing unit ("acres", "bu/acre", "per bushel") in `ink-3`.
+- **Focus:** the border turns ink and a 2px ink outline appears 1px out; the row behind it floods yellow.
+- **Error:** the border turns red and a `red-deep` message at 13.5px/600 with an alert icon appears under the control.
+- **Slider:** a 6px track, sack green up to the value and `rule-strong` after it, with a 20px ink thumb ringed in white. Number fields that have a range are paired with a slider on the same row.
 
-### Tables
-No frame and no zebra. Rows are separated by `line` hairlines, 7px by 12px cell padding. Column heads are 12.5px in `ink-3`, row labels 500 in `ink-2`, figures 600 in `ink`, right-aligned. The table view of a chart sits in a bordered, scrolling box with a sticky `paper-2` header.
+### Segmented control and chips
+- **Segmented (one of three):** a white box with a 1.5px ink border and 3px padding; the chosen segment is solid ink with white text, others fill `tag-2` on hover.
+- **Chips (any of three):** white with a 1.5px `rule-strong` border and a faint check icon; chosen chips turn solid ink with white text and a full-strength check.
 
-### Verdict Chip
-A neutral `paper-2` chip, 6px corners, with a 15px icon (check, alert or equals) and a short phrase in `ink` at weight 600. It states whether a price is cheap, expensive or about fair without colour.
+### Stamps
+Red Big Shoulders capitals in a 2px red outline with 2px corners, tilted 2 degrees, with no fill on a tag and a tag-stock fill on green. Used for the place name on the farm tag (21px) and for "Sample" and "Demo only" marks beside headings (15px, 1.5px outline). When the place is set, the stamp presses in after the pin lands.
 
-### Rib Plot (signature)
-The one chart form. A `blue-800` field with 8px corners inside the paper panel:
-- **Ribs:** the distribution as thin vertical bars in `rib`, 2px apart, tops rounded. Ribs are gold where the held contract pays.
-- **Stitch:** the hedged distribution as a 2px dashed gold outline (8 on, 5 off, round caps) with a 6px `blue-800` stroke beneath it so it stays legible across the ribs.
-- **Scaffold:** faint horizontal grid lines, a `blue-500` baseline, tabular 12px ticks in `on-blue-3`, and a small axis caption at top left. A threshold is a 1px `on-blue-2` vertical with a white 12.5px label above it.
-- **Labels:** series are named directly on the plot in white 12.5px text with a `blue-800` halo and a small key mark; a legend above repeats them using swatches cut from the plot field (ribs, gold ribs, or a dashed gold line).
-- **Hover and focus:** the plot is focusable. The rib under the pointer lightens, a 1px crosshair appears, and a `blue-900` tooltip (7px corners, `blue-500` edge) lists each series with a key bar and a bold tabular value.
-- **Motion:** ribs resize over 200ms with the system ease when the hedge changes; hover colour changes in 120ms. With reduced motion, transitions are effectively instant.
-- **Alternative:** "Table view" swaps the plot for the same data as a table.
+### Map
+The lower 48 states in yellow with 1px green borders on the green ground, crosshair cursor, states lighten to `yellow-light` on hover. Weather stations are ink dots; the nearest one gets a white ring, a 2px ink line from the pin, and a 13.5px/700 ink label haloed in yellow. The pin is red with a white outline and a white eye.
+
+### Contract tickets
+A tag-stock ticket with a 52px pick strip down its left edge holding a 24px checkbox. In the plan, the strip floods yellow, the box fills ink with a white check, and the market name and cost print in ink; out of the plan, the strip is `tag-2` and the name and cost drop to `ink-3`. The body carries the market name in the Name size with its cost at 17px/700 on the right, the question in `ink-2`, then the Yes and No sides (68 by 50px each: the word at 12px over the price at 18px) beside an amount field and slider, then one line on why, ending in a verdict chip (`tag-2`, 13px/650, with a small icon).
+
+### Season income chart
+Two distributions stacked on one ruled grid with a shared money axis: "Without protection" above in `green-300`, "With your plan" below in sack green. Columns have a 2px gap, each band sits on a 1px ink baseline, vertical and horizontal grid lines are 1px `rule`, and axis ticks are 12px `ink-3`. Each band has a 1.5px ink marker for the 1-in-20 season with a 12.5px/650 label haloed in tag stock. Hover darkens the column and shows a crosshair with a bordered tooltip; a quiet toggle swaps the plot for a scrolling table of the same bins. Columns move to new heights in 200ms. Under it, the analysis is ruled rows in three figure columns.
+
+### Order
+A tag with a 10px budget meter (sack green fill on `rule`, turning red when over the limit), a budget line, order lines as ruled rows, a total closed by a 2px ink rule with the amount in the Figure size, and a full-width primary button.
 
 ## Do's and Don'ts
 
 ### Do:
-- **Do** keep the shell on `blue-800` and put working content on `paper` surfaces.
-- **Do** reserve gold for the farmer's own: selection, hedged income, the held side's payout, saved markets, uploaded data, a ready send arrow.
-- **Do** draw every distribution as ribs on a blue plot field, and the hedge as the dashed gold outline over them.
-- **Do** set text on gold in `blue-800`.
-- **Do** right-align figures in tables and use tabular numerals.
-- **Do** pair every colour signal with a word or an icon (the Yes and No words, the verdict icon, the alert icon on errors).
-- **Do** keep state changes at 200ms or less, using the system ease `cubic-bezier(0.16, 1, 0.3, 1)`.
-- **Do** name chart series directly on the plot and repeat them in the legend with plot-field swatches.
-- **Do** keep the sample-data notice in the header and say whose data is in use in the status line.
+- **Do** put every screen on sack green (`green-700`) and keep white for tags, tickets, fields and type on green.
+- **Do** flood with yellow to show the one current or chosen thing in a region: the step, the focused row, the picked ticket.
+- **Do** set data as ruled rows, label left and value right, with a 2px ink rule opening the group and 1px `rule` hairlines between rows.
+- **Do** use Big Shoulders at 800 or 900 in capitals for the name, screen titles, market names, key figures and stamps, and Archivo for everything else.
+- **Do** print Yes in green and No in red with the word beside the colour, tinted at rest and solid when pressed.
+- **Do** stamp sample and demo data in red beside its heading, and keep the stamp's 2 degree tilt.
+- **Do** draw charts as two stacked bands on one shared ruled grid, `green-300` without protection and `green-700` with the plan.
+- **Do** keep moves on `cubic-bezier(0.23, 1, 0.32, 1)` at 120 to 280ms, and give each one a fade-only fallback under reduced motion.
+- **Do** use tabular numerals for every price, amount and table figure.
 
 ### Don't:
-- **Don't** use green or red outside the Yes and No price buttons, including for gains, losses, errors or verdicts.
-- **Don't** use gold as decoration, as a generic primary-button colour, or as text on paper.
-- **Don't** add a second chart form or a third series colour.
-- **Don't** add borders or shadows to panels and cards; only the tooltip and the slider thumb carry a shadow.
-- **Don't** draw an emblem, crest or logo mark; the brand is the lower-case word in the header.
-- **Don't** introduce a second typeface or tracked capitals.
-- **Don't** animate for decoration; nothing moves unless a value or a state changed.
+- **Don't** make white the page background or lay tags out as a white wizard with a progress bar and rounded cards.
+- **Don't** use yellow in the chart or as text on tag stock; it cannot hold contrast there.
+- **Don't** use red for decoration or for any surface larger than a button; it is the pin, the stamps, warnings and No.
+- **Don't** add a fourth ink. Neutrals come from the green (`ink`, `ink-2`, `ink-3`, `rule`, `rule-strong`, `tag-2`).
+- **Don't** add shadows to tags, tickets or buttons; only the chart tooltip and the slider thumb have one.
+- **Don't** round corners past 3px; circles are for eyelets, step numerals, dots and thumbs.
+- **Don't** write as Farmer Joe. It is the product's name, not a speaking character.
+- **Don't** show a sample or assumed number without its label.

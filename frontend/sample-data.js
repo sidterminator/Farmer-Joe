@@ -148,6 +148,7 @@
           yesPaysWhen: 'the U.S. ' + crop.lower + ' yield for 2027 comes in under ' + yieldStrike + ' bushels per acre',
           noPaysWhen: 'the U.S. ' + crop.lower + ' yield for 2027 comes in at ' + yieldStrike + ' bushels per acre or more',
           settles: 'Settles Jan 12, 2028',
+          caveat: 'Sample market. Kalshi may not list one for crop yield.',
           yesCents: yieldYes,
           noCents: 100 - yieldYes,
           payoutYes: yieldPay

@@ -4,7 +4,6 @@
  * pin, the stamps and the warnings. Green and red also print Yes and No. */
 
 :root {
-  --green-900: #0d3320;   /* ink */
   --green-800: #114a2c;
   --green-700: #17603a;   /* the sack */
   --green-600: #1f7446;
@@ -100,7 +99,7 @@ h1:focus { outline: none; }
   flex-direction: column;
   justify-content: space-between;
   gap: 32px;
-  padding: clamp(24px, 3.4vw, 56px);
+  padding: 48px;   /* stepped in the media queries below, not fluid */
   background: var(--yellow);
   color: var(--ink);
   container-type: inline-size;
@@ -142,7 +141,7 @@ h1:focus { outline: none; }
   flex-direction: column;
   justify-content: space-between;
   gap: 40px;
-  padding: clamp(24px, 3.4vw, 56px);
+  padding: 48px;
 }
 
 .how { display: grid; gap: 22px; counter-reset: how; }
@@ -152,7 +151,7 @@ h1:focus { outline: none; }
   grid-template-columns: 44px minmax(0, 1fr);
   align-items: baseline;
   font-size: clamp(17px, 1.5vw, 21px);
-  line-height: 1.3;
+  line-height: 1.35;
   max-width: 26ch;
 }
 .how li::before {
@@ -168,16 +167,21 @@ h1:focus { outline: none; }
 
 /* The Start button is the sack's tag: the one white object on the screen. */
 .start-tag {
+  display: block;
+  color: var(--ink);
+  text-decoration: none;
+  transition: transform 140ms var(--ease-out);
+}
+/* The cut shape sits on an inner face, so the link's focus ring is not clipped away. */
+.start-face {
   display: flex;
   align-items: center;
   gap: 18px;
   min-height: 132px;
   padding: 18px 30px 18px 26px;
   background: var(--tag);
-  color: var(--ink);
-  text-decoration: none;
   clip-path: polygon(26px 0, 100% 0, 100% 100%, 26px 100%, 0 calc(100% - 26px), 0 26px);
-  transition: background-color 160ms ease, transform 140ms var(--ease-out);
+  transition: background-color 160ms ease;
 }
 .start-tag .eyelet { position: static; flex: none; width: 20px; height: 20px; box-shadow: 0 0 0 5px var(--rule); }
 .start-word {
@@ -192,7 +196,7 @@ h1:focus { outline: none; }
 .start-tag:active { transform: scale(0.98); }
 .start-tag:focus-visible { outline: 3px solid var(--yellow); outline-offset: 4px; }
 @media (hover: hover) and (pointer: fine) {
-  .start-tag:hover { background: var(--yellow); }
+  .start-tag:hover .start-face { background: var(--yellow); }
   .start-tag:hover .icon { transform: translateX(8px); }
 }
 
@@ -268,7 +272,7 @@ h1 {
   font-family: var(--display);
   font-weight: 900;
   font-size: clamp(40px, 4.4vw, 60px);
-  line-height: 0.95;
+  line-height: 1.06;
   text-transform: uppercase;
   text-wrap: balance;
 }
@@ -307,6 +311,7 @@ h2 { font-size: 16px; font-weight: 700; }
   transform: rotate(-2deg);
 }
 .stamp-small { font-size: 15px; border-width: 1.5px; }
+.stamp-on-green { background: var(--tag); }
 
 /* ---------- buttons ---------- */
 
@@ -335,9 +340,6 @@ h2 { font-size: 16px; font-weight: 700; }
 .btn-primary:hover { background: var(--green-800); }
 .btn-primary:disabled { background: var(--tag-2); color: var(--ink-3); border-color: var(--rule); cursor: not-allowed; transform: none; }
 
-.btn-on-green { border-color: var(--on-green-3); color: var(--on-green); }
-.btn-on-green:hover { background: var(--green-600); border-color: var(--on-green); }
-
 .link {
   padding: 0;
   border: 0;
@@ -357,6 +359,10 @@ h2 { font-size: 16px; font-weight: 700; }
   gap: 32px;
   align-items: start;
   padding: 10px var(--pad) 32px;
+}
+
+@media (min-width: 901px) {
+  .map-side { position: sticky; top: 16px; }
 }
 
 .map-hint { margin-top: 8px; color: var(--on-green-2); font-size: 16px; }
@@ -380,7 +386,7 @@ h2 { font-size: 16px; font-weight: 700; }
 }
 .station { fill: var(--ink); pointer-events: none; }
 .station.is-nearest { stroke: #ffffff; stroke-width: 2; vector-effect: non-scaling-stroke; }
-.link { stroke: var(--ink); stroke-width: 2; vector-effect: non-scaling-stroke; pointer-events: none; }
+.station-link { stroke: var(--ink); stroke-width: 2; vector-effect: non-scaling-stroke; pointer-events: none; }
 .station-label { pointer-events: none; }
 .station-label text {
   fill: var(--ink);
@@ -425,7 +431,7 @@ h2 { font-size: 16px; font-weight: 700; }
 }
 .row-where { border-top: 2px solid var(--ink); }
 .row:focus-within { background: var(--yellow); }
-.row > label, .row > legend { font-size: 14.5px; font-weight: 650; line-height: 1.3; }
+.row > label, .row > legend { font-size: 14.5px; font-weight: 650; line-height: 1.35; }
 /* A legend cannot be a grid item, so fieldset rows place it by float. */
 fieldset.row { display: block; }
 fieldset.row::after { content: ""; display: block; clear: both; }
@@ -442,8 +448,8 @@ fieldset.row > .control { margin-left: 39%; }
   display: flex;
   align-items: center;
   gap: 6px;
-  height: 40px;
-  padding: 0 10px;
+  min-height: 40px;
+  padding: 4px 10px;
   border: 1.5px solid var(--rule-strong);
   border-radius: 3px;
   background: #ffffff;
@@ -454,7 +460,7 @@ fieldset.row > .control { margin-left: 39%; }
   flex: 1;
   min-width: 0;
   width: 100%;
-  height: 100%;
+  height: 28px;
   padding: 0;
   border: 0;
   outline: 0;
@@ -493,22 +499,22 @@ fieldset.row > .control { margin-left: 39%; }
 .error .icon { width: 16px; height: 16px; margin-top: 1px; }
 
 /* Crop: one of three. */
-.seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; border: 1.5px solid var(--ink); border-radius: 3px; overflow: hidden; background: #ffffff; }
+.seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 3px; padding: 3px; border: 1.5px solid var(--ink); border-radius: 3px; background: #ffffff; }
 .seg label { position: relative; display: block; }
 .seg input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
 .seg span {
   display: grid;
   place-items: center;
-  min-height: 38px;
+  min-height: 32px;
   padding: 0 8px;
+  border-radius: 2px;
   font-size: 14.5px;
   font-weight: 650;
   transition: background-color 150ms ease, color 150ms ease;
 }
-.seg label + label span { border-left: 1.5px solid var(--ink); }
 .seg input:hover + span { background: var(--tag-2); }
 .seg input:checked + span { background: var(--ink); color: #ffffff; }
-.seg input:focus-visible + span { outline: 2px solid var(--ink); outline-offset: -5px; }
+.seg input:focus-visible + span { outline: 2px solid var(--ink); outline-offset: 1px; }
 .seg input:checked:focus-visible + span { outline-color: var(--yellow); }
 
 /* Worries: any of three. */
@@ -652,19 +658,20 @@ input[type="range"]:disabled { cursor: not-allowed; opacity: 0.45; }
   z-index: 2;
   min-width: 180px;
   padding: 8px 11px 9px;
+  border: 1.5px solid var(--ink);
   border-radius: 3px;
-  background: var(--ink);
-  color: #ffffff;
+  background: var(--tag);
+  color: var(--ink);
   font-size: 12.5px;
-  box-shadow: 0 8px 18px rgba(9, 36, 22, 0.35);
+  box-shadow: 0 8px 18px rgba(9, 36, 22, 0.28);
   pointer-events: none;
 }
-.tip-title { color: var(--on-green-2); font-variant-numeric: tabular-nums; margin-bottom: 3px; }
-.tip-row { display: flex; align-items: center; gap: 7px; color: var(--on-green-2); white-space: nowrap; }
-.tip-row strong { color: #ffffff; font-weight: 700; font-variant-numeric: tabular-nums; }
-.tip-key { width: 12px; height: 3px; flex: none; border-radius: 1px; }
-.tip-key-base { background: #8fc3a4; }
-.tip-key-plan { background: var(--yellow); }
+.tip-title { color: var(--ink-2); font-variant-numeric: tabular-nums; margin-bottom: 3px; }
+.tip-row { display: flex; align-items: center; gap: 7px; color: var(--ink-2); white-space: nowrap; }
+.tip-row strong { color: var(--ink); font-weight: 700; font-variant-numeric: tabular-nums; }
+.tip-key { width: 10px; height: 10px; flex: none; border-radius: 2px; }
+.tip-key-base { background: var(--green-300); }
+.tip-key-plan { background: var(--green-700); }
 
 .bins { height: 300px; overflow: auto; border: 1px solid var(--rule); border-radius: 3px; scrollbar-color: var(--rule-strong) transparent; }
 .bins table { width: 100%; }
@@ -688,6 +695,19 @@ tbody tr { border-top: 1px solid var(--rule); }
 .live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green-700); }
 .live-title { font-weight: 650; }
 .live-note { margin-top: 10px; color: var(--ink-2); font-size: 13.5px; max-width: 70ch; }
+.live-row {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin-top: 8px;
+  padding: 8px 0;
+  border-top: 2px solid var(--ink);
+  border-bottom: 1px solid var(--rule);
+  font-size: 14px;
+}
+.live-row strong { font-weight: 650; }
+.live-tag .live-note + .btn { margin-top: 10px; }
 .live-table { width: 100%; margin-top: 8px; }
 .live-table td:first-child { text-align: left; font-weight: 500; color: var(--ink); padding-left: 0; }
 .live-table th:last-child, .live-table td:last-child { padding-right: 0; }
@@ -702,9 +722,10 @@ tbody tr { border-top: 1px solid var(--rule); }
 .live-fail { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 14px; margin-top: 6px; color: var(--ink-2); }
 
 /* Contracts */
-.side-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 12px 0 10px; }
+.side-head { display: flex; align-items: baseline; gap: 12px; padding: 12px 0 10px; }
 .side-head h2 { font-family: var(--display); font-weight: 800; font-size: 30px; line-height: 1; text-transform: uppercase; }
-.plan-state { color: var(--on-green-2); font-size: 13.5px; text-align: right; }
+.plan-state { margin-left: auto; color: var(--on-green-2); font-size: 13.5px; text-align: right; }
+.plan-result { display: none; }
 .plan-state .link { color: var(--on-green); }
 
 .side-hint { margin: -2px 0 12px; color: var(--on-green-2); font-size: 14px; max-width: 56ch; }
@@ -793,7 +814,7 @@ tbody tr { border-top: 1px solid var(--rule); }
 .ticket-prices .btn { margin-left: auto; }
 
 .qty { display: grid; grid-template-columns: minmax(104px, 0.8fr) minmax(0, 1fr); align-items: center; gap: 10px; }
-.qty .field { height: 38px; }
+.qty .field { min-height: 38px; }
 .ticket:not(.is-on) .ticket-name, .ticket:not(.is-on) .ticket-cost { color: var(--ink-3); }
 .ticket-flag { display: flex; gap: 6px; color: var(--ink); font-size: 13.5px; }
 .ticket-flag .icon { width: 16px; height: 16px; margin-top: 1px; }
@@ -842,8 +863,27 @@ tbody tr { border-top: 1px solid var(--rule); }
 /* ---------- narrower screens ---------- */
 
 @media (max-width: 1100px) {
-  .farm-grid, .plan-grid { grid-template-columns: minmax(0, 1fr); gap: 22px; }
-  .plan-grid { grid-template-areas: "main" "side" "live"; }
+  .farm-grid { grid-template-columns: minmax(0, 1fr) minmax(380px, 0.9fr); gap: 24px; }
+  .plan-grid { grid-template-columns: minmax(0, 1fr); grid-template-areas: "main" "side" "live"; gap: 22px; }
+  /* The graph is above the fold here, so its result rides along with the tickets. */
+  .plan-result {
+    display: block;
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    margin: 0 calc(var(--pad) * -1) 12px;
+    padding: 9px var(--pad);
+    background: var(--green-800);
+    color: var(--on-green);
+    font-size: 14.5px;
+    font-weight: 650;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@media (max-width: 900px) {
+  .farm-grid { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+  .map { max-height: 42dvh; }
 }
 
 @media (max-width: 760px) {
@@ -854,13 +894,20 @@ tbody tr { border-top: 1px solid var(--rule); }
   .screen-intro { grid-template-columns: minmax(0, 1fr); }
   .sack-panel { gap: 20px; }
   .how li { max-width: none; }
-  .start-tag { min-height: 104px; }
+  .start-wrap { display: contents; }
+  .start-tag { order: -1; }
+  .fine { order: 1; }
+  .sack-panel, .sack-side { padding: 28px; }
+  .start-face { min-height: 104px; }
 }
 
 @media (max-width: 560px) {
   :root { --pad: 14px; }
   .bar { gap: 8px 14px; }
+  .sack-panel, .sack-side { padding: 22px; }
   .steps { gap: 2px; font-size: 13px; }
+  .side-head { flex-wrap: wrap; }
+  .plan-state { flex-basis: 100%; margin-left: 0; text-align: left; }
   .steps a { padding: 5px 8px 5px 5px; gap: 6px; }
   .row, fieldset.row { display: block; margin: 0 -14px; padding: 10px 14px; }
   .row > label { display: block; padding: 0 0 6px; }

@@ -66,7 +66,7 @@
       return { station: s, node: el('circle', { class: 'station', cx: p[0].toFixed(1), cy: p[1].toFixed(1) }, dots) };
     });
 
-    const link = el('line', { class: 'link', visibility: 'hidden' }, svg);
+    const link = el('line', { class: 'station-link', visibility: 'hidden' }, svg);
     const labelAnchor = el('g', { class: 'station-label', visibility: 'hidden' }, svg);
     const label = el('text', null, labelAnchor);
     const pinAnchor = el('g', { class: 'pin-anchor', visibility: 'hidden' }, svg);
@@ -80,8 +80,8 @@
 
     /* Markers keep the same size on screen whatever width the map is drawn at. */
     function unit() {
-      const w = svg.getBoundingClientRect().width || box[2];
-      return box[2] / w;
+      const ctm = svg.getScreenCTM();
+      return ctm && ctm.a > 0 ? 1 / ctm.a : 1;
     }
 
     function place() {
@@ -144,7 +144,7 @@
       play(ring, [
         { transform: 'scale(0.5)', opacity: 0.75 },
         { transform: 'scale(3.4)', opacity: 0 }
-      ], { duration: 460, delay: 200, fill: 'both' });
+      ], { duration: 280, delay: 200, fill: 'both' });
       const length = Math.hypot(link.x2.baseVal.value - link.x1.baseVal.value, link.y2.baseVal.value - link.y1.baseVal.value);
       link.style.strokeDasharray = length;
       play(link, [{ strokeDashoffset: length }, { strokeDashoffset: 0 }], { duration: 280, delay: 240 });

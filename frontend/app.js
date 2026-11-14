@@ -601,6 +601,12 @@
       top.appendChild(cost);
       body.appendChild(top);
       body.appendChild(make('p', 'ticket-q', m.question + '. ' + m.settles + '.'));
+      if (m.caveat) {
+        const caveat = make('p', 'ticket-flag');
+        caveat.appendChild(icon('info'));
+        caveat.appendChild(make('span', null, m.caveat));
+        body.appendChild(caveat);
+      }
 
       box.addEventListener('change', function () { togglePick(t, box.checked); });
       if (!t.on) {
@@ -832,6 +838,8 @@
       lede = 'This mix adds swing to your season income instead of removing it. Check the side on each contract.';
     }
     $('plan-lede').textContent = lede;
+    $('plan-result').textContent = !active.length ? 'Nothing in the plan yet.'
+      : 'Swing ±' + money(state.base.sd) + ' to ±' + money(state.plan.sd) + '. Bad season ' + signedMoney(state.plan.bad - state.base.bad) + '. Cost ' + dollars(cost) + '.';
     $('farm-line').textContent = whole.format(f.acres) + ' acres of ' + crop.label.toLowerCase() + ' ' + placePhrase(f.label) +
       '. Worth ' + dollars(cropValue()) + ' in a normal year. Nearest station: ' + station.city + ', ' + aboutMiles(f.miles) + '.';
 
@@ -944,9 +952,29 @@
 
     if (live.status === 'ok') {
       const e = live.event;
+      const time = e.fetchedAt.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+      const quoted = e.markets.some(function (m) { return m.yesCents !== null || m.noCents !== null; });
+      const tail = 'Kalshi lists each month’s market shortly before the month, so the July plan above runs on sample prices.';
       status.appendChild(make('span', 'live-dot'));
-      status.appendChild(make('span', null, 'Live from Kalshi’s demo exchange, ' + e.fetchedAt.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })));
       body.appendChild(make('p', 'live-title', e.title));
+
+      if (!quoted) {
+        // Listed but nobody is quoting it: one row says so instead of a table of blanks.
+        status.appendChild(make('span', null, 'Listed, not quoted, ' + time));
+        const line = make('p', 'live-row');
+        line.appendChild(make('span', null, plural(e.markets.length, 'strike') + ' listed, ' +
+          e.markets[0].label.toLowerCase() + ' to ' + e.markets[e.markets.length - 1].label.toLowerCase()));
+        line.appendChild(make('strong', null, 'No offers right now'));
+        body.appendChild(line);
+        body.appendChild(make('p', 'live-note', 'This market is really listed for ' + station.city + ', the station nearest your farm (' + e.ticker + '), on Kalshi’s demo exchange. ' + tail));
+        const again = make('button', 'btn btn-quiet', 'Check again');
+        again.type = 'button';
+        again.addEventListener('click', function () { loadLive(true); });
+        body.appendChild(again);
+        return;
+      }
+
+      status.appendChild(make('span', null, 'Live from Kalshi’s demo exchange, ' + time));
       const table = make('table', 'live-table');
       const thead = make('thead');
       thead.appendChild(row(['Pays if rainfall is', 'Yes', 'No'], true));
@@ -965,11 +993,7 @@
       table.appendChild(thead);
       table.appendChild(tbody);
       body.appendChild(table);
-      const quoted = e.markets.some(function (m) { return m.yesCents !== null || m.noCents !== null; });
-      body.appendChild(make('p', 'live-note', (quoted
-        ? 'These are the real open prices for ' + station.city + ', the station nearest your farm (' + e.ticker + '). '
-        : 'This market is really listed for ' + station.city + ', the station nearest your farm (' + e.ticker + '), but nobody is quoting it on the demo exchange right now. ') +
-        'Kalshi lists each month’s market shortly before the month, so the July plan above runs on sample prices.'));
+      body.appendChild(make('p', 'live-note', 'These are the real open prices for ' + station.city + ', the station nearest your farm (' + e.ticker + '). ' + tail));
       return;
     }
 

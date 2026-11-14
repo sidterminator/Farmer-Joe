@@ -14,7 +14,6 @@
 
 <svg class="sprite" aria-hidden="true" focusable="false">
   <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h15M13 5.5l6.5 6.5-6.5 6.5"/></symbol>
-  <symbol id="i-back" viewBox="0 0 24 24"><path d="M20 12H5M11 5.5 4.5 12l6.5 6.5"/></symbol>
   <symbol id="i-import" viewBox="0 0 24 24"><path d="M12 15V4M7.5 8.5 12 4l4.5 4.5M4 14v4.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V14"/></symbol>
   <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5M12 7.6v.2"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
@@ -46,9 +45,11 @@
       </ol>
       <div class="start-wrap">
         <a class="start-tag" href="#/farm" id="start">
-          <span class="eyelet" aria-hidden="true"></span>
-          <span class="start-word">Start</span>
-          <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
+          <span class="start-face">
+            <span class="eyelet" aria-hidden="true"></span>
+            <span class="start-word">Start</span>
+            <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
+          </span>
         </a>
         <p class="fine">Educational tool, not financial advice. Forecasts and July prices are sample data. No real money is traded.</p>
       </div>
@@ -64,7 +65,7 @@
         <li><a href="#/farm" aria-current="step">Your farm</a></li>
         <li><a href="#/plan">Your plan</a></li>
       </ol>
-      <p class="sample-note"><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg><span>Forecasts and July prices are sample data</span></p>
+      <p class="sample-note"><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg><span>Forecasts, markets and prices are sample data</span></p>
     </header>
 
     <div class="farm-grid">
@@ -174,7 +175,7 @@
         <li><a href="#/farm">Your farm</a></li>
         <li><a href="#/plan" aria-current="step">Your plan</a></li>
       </ol>
-      <p class="sample-note"><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg><span>Forecasts and July prices are sample data</span></p>
+      <p class="sample-note"><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg><span>Forecasts, markets and prices are sample data</span></p>
     </header>
 
     <div class="plan-grid">
@@ -209,9 +210,11 @@
       <aside class="plan-side" aria-labelledby="contracts-title">
         <div class="side-head">
           <h2 id="contracts-title">Contracts</h2>
+          <span class="stamped stamp-small stamp-on-green">Sample</span>
           <p class="plan-state" id="plan-state"></p>
         </div>
         <p class="side-hint">Tick the markets you want. Their amounts are sized together, and the graph shows the combination.</p>
+        <p class="plan-result" id="plan-result" aria-live="polite"></p>
         <ul class="tickets" id="tickets"></ul>
 
         <div class="tag order-tag">
@@ -237,7 +240,7 @@
       </div>
     </div>
 
-    <p class="fine plan-fine">Educational tool, not financial advice. The simulated seasons, the July markets and their prices are sample data. Town list from GeoNames.</p>
+    <p class="fine plan-fine">Educational tool, not financial advice. The simulated seasons, the July markets and their prices are sample data. How closely a station’s weather tracks a farm at that distance is an assumption. Town list from GeoNames.</p>
   </section>
 
 </div>

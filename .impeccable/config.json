@@ -2,16 +2,6 @@
   "detector": {
     "ignoreRules": [],
     "ignoreFiles": [],
-    "ignoreValues": [
-      {
-        "rule": "cramped-padding",
-        "value": "*",
-        "files": [
-          "frontend/index.html"
-        ],
-        "createdAt": "2026-11-14T22:21:09.784Z",
-        "reason": "Agent: the only hit is the tab strip (.panel-head); underline tabs sit on the rule by design and their text has 12px of inset"
-      }
-    ]
+    "ignoreValues": []
   }
 }
