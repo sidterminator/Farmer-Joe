@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>bizfax: weather hedging for farms</title>
+  <meta name="description" content="See what weather contracts would do to a farm's season income.">
+  <meta name="theme-color" content="#0f2a5f">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="fonts/public-sans.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<svg class="sprite" aria-hidden="true" focusable="false">
+  <symbol id="i-import" viewBox="0 0 24 24"><path d="M12 15V4M7.5 8.5 12 4l4.5 4.5M4 14v4.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V14"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M20.5 3.5 10 14M20.5 3.5 14 20.5 10 14 3.5 10z"/></symbol>
+  <symbol id="i-saved" viewBox="0 0 24 24"><path d="M6.5 20.5V5A1.5 1.5 0 0 1 8 3.5h8A1.5 1.5 0 0 1 17.5 5v15.5L12 16.5z"/><path d="m12 6.6 1 2 2.2.3-1.6 1.6.4 2.2-2-1-2 1 .4-2.2-1.6-1.6 2.2-.3z"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5M12 7.6v.2"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 4 3.5 19h17zM12 10v4.5M12 16.8v.2"/></symbol>
+  <symbol id="i-equal" viewBox="0 0 24 24"><path d="M6 9.5h12M6 14.5h12"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="m7 7 10 10M17 7 7 17"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M7 3.5h6.5L18 8v11a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 6 19V5a1.5 1.5 0 0 1 1-1.5zM13.5 3.5V8H18"/></symbol>
+</svg>
+
+<div class="app">
+
+  <header class="top">
+    <p class="brand">bizfax</p>
+    <p class="farm" id="farm-line"></p>
+    <p class="sample-flag">
+      <svg class="icon" aria-hidden="true"><use href="#i-info"/></svg>
+      <span id="sample-text">Sample data. Prices, forecasts and farm figures are made up.</span>
+    </p>
+  </header>
+
+  <main class="work">
+
+    <section class="panel" aria-labelledby="panel-title">
+      <div class="panel-head">
+        <div class="tabs" role="tablist" aria-label="Views">
+          <button type="button" role="tab" id="tab-income" data-tab="income" aria-controls="view" aria-selected="true">Income</button>
+          <button type="button" role="tab" id="tab-forecast" data-tab="forecast" aria-controls="view" aria-selected="false" tabindex="-1">Forecast and market</button>
+        </div>
+        <button type="button" class="btn btn-quiet" id="table-toggle" aria-pressed="false">Table view</button>
+      </div>
+
+      <div class="view" id="view" role="tabpanel" aria-labelledby="tab-income">
+        <div class="view-head">
+          <div>
+            <h1 id="panel-title"></h1>
+            <p class="lede" id="panel-lede"></p>
+          </div>
+          <ul class="legend" id="legend" aria-label="Chart key"></ul>
+        </div>
+
+        <figure class="plot" id="plot" tabindex="0" role="group" aria-roledescription="chart">
+          <svg aria-hidden="true" focusable="false"></svg>
+          <div class="tip" role="status" hidden></div>
+        </figure>
+
+        <div class="bins" id="bins" hidden>
+          <table>
+            <thead id="bins-head"></thead>
+            <tbody id="bins-body"></tbody>
+          </table>
+        </div>
+
+        <div class="below">
+          <table class="compare">
+            <thead id="compare-head"></thead>
+            <tbody id="compare-body"></tbody>
+          </table>
+
+          <div class="hedge" id="hedge">
+            <div class="hedge-row">
+              <label for="hedge-range">Hedge size</label>
+              <output id="hedge-out" for="hedge-range"></output>
+            </div>
+            <div class="range-wrap">
+              <input type="range" id="hedge-range" min="0" max="100" step="1" value="0">
+              <span class="range-mark" id="range-mark" aria-hidden="true"></span>
+            </div>
+            <div class="hedge-row">
+              <div class="hedge-presets">
+                <button type="button" class="btn btn-quiet" id="hedge-none">None</button>
+                <button type="button" class="btn btn-quiet" id="hedge-steady">Steadiest</button>
+              </div>
+              <p class="hedge-cost" id="hedge-cost"></p>
+            </div>
+            <p class="note" id="hedge-note" hidden></p>
+          </div>
+
+          <p class="explain" id="explain" hidden></p>
+        </div>
+      </div>
+    </section>
+
+    <aside class="markets" aria-labelledby="markets-title">
+      <div class="markets-head">
+        <h2 id="markets-title">Markets</h2>
+        <p id="markets-note"></p>
+      </div>
+      <ul class="market-list" id="market-list"></ul>
+      <p class="empty" id="markets-empty" hidden>No saved markets yet. Use the ribbon beside a market to save it.</p>
+    </aside>
+
+  </main>
+
+  <footer class="dock">
+    <div class="dock-left">
+      <button type="button" class="btn btn-on-blue import" id="import-btn">
+        <svg class="icon" aria-hidden="true"><use href="#i-import"/></svg>
+        Import
+      </button>
+      <input type="file" id="file-input" accept=".csv,text/csv,text/plain" hidden>
+      <p class="status" id="farm-status"></p>
+    </div>
+
+    <div class="dock-right">
+      <button type="button" class="btn btn-on-blue saved-toggle" id="saved-toggle" aria-pressed="false">
+        <svg class="icon" aria-hidden="true"><use href="#i-saved"/></svg>
+        Saved <span class="count" id="saved-count">0</span>
+      </button>
+      <form class="upload" id="upload-form" novalidate>
+        <label class="visually-hidden" for="season-input">Add a season as year, bushels per acre</label>
+        <span class="chip" id="staged-chip" hidden>
+          <svg class="icon" aria-hidden="true"><use href="#i-file"/></svg>
+          <span id="staged-name"></span>
+          <button type="button" id="staged-remove" aria-label="Remove the imported file">
+            <svg class="icon" aria-hidden="true"><use href="#i-close"/></svg>
+          </button>
+        </span>
+        <input type="text" id="season-input" autocomplete="off" spellcheck="false" placeholder="Add a season: 2026, 192" aria-describedby="upload-status">
+        <button type="submit" class="send" aria-label="Upload">
+          <svg class="icon" aria-hidden="true"><use href="#i-send"/></svg>
+        </button>
+      </form>
+      <p class="status" id="upload-status" aria-live="polite"></p>
+    </div>
+
+    <p class="fineprint">Educational tool, not financial advice.</p>
+  </footer>
+
+</div>
+
+<script src="model.js"></script>
+<script src="sample-data.js"></script>
+<script src="charts.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
