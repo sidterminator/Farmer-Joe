@@ -155,6 +155,16 @@ def scenario(farm: FarmIn) -> dict:
     }
 
 
+@app.get("/api/price-ranges")
+def price_ranges() -> dict:
+    """Plausible futures price range per crop (same rule as check_price_input), for the farm form."""
+    out = {}
+    for crop in ("corn", "soybeans", "wheat"):
+        ref = load_hedge_settings(crop)["futures_price_usd_bu"]
+        out[crop] = {"lo": round(PRICE_BAND[0] * ref, 2), "hi": round(PRICE_BAND[1] * ref, 2)}
+    return out
+
+
 @app.get("/api/health")
 def health() -> dict:
     return {"ok": True}

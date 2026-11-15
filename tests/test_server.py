@@ -26,3 +26,13 @@ def test_corn_default_passes_and_strikes_near_futures():
     assert abs(np.mean(d["revenue"]) / (150 * 200 * 4.5) - 1) < 0.25
     qs = [m["question"] for m in d["markets"] if m["id"].startswith("price_")]
     assert any("$3.60" in q for q in qs) and not any("$9.00" in q for q in qs)
+
+
+def test_price_ranges_match_server_check():
+    r = client.get("/api/price-ranges").json()
+    assert r["corn"] == {"lo": 2.25, "hi": 9.0}
+    assert set(r) == {"corn", "soybeans", "wheat"}
+    # the server accepts the edges of the range the form shows
+    for price, code in ((r["corn"]["hi"], None), (r["corn"]["hi"] + 0.01, 422)):
+        if code:
+            assert client.post("/api/scenario", json={**CHAMPAIGN, "yield": 200, "price": price}).status_code == code

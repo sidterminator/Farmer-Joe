@@ -249,13 +249,23 @@
     if (!f.crop) miss.push('Crop');
     if (!(filled(f.acres) && f.acres > 0)) miss.push('Acres');
     if (!(filled(f.yield) && f.yield > 0)) miss.push('Normal Yield');
-    if (!(filled(f.price) && f.price > 0)) miss.push('Price');
+    if (!(filled(f.price) && f.price > 0) || priceProblem()) miss.push('Price');
     if (!(filled(f.budget) && f.budget >= 0)) miss.push('Budget For Hedging');
     if (!filled(f.lean)) miss.push('Priority');
     return miss;
   }
 
+  /* Price outside the crop's plausible range (from the server's config), as a message or ''. */
+  function priceProblem() {
+    const f = state.farm;
+    const r = state.priceRanges && f.crop && state.priceRanges[f.crop];
+    if (!r || !filled(f.price) || (f.price >= r.lo && f.price <= r.hi)) return '';
+    const name = f.crop.charAt(0).toUpperCase() + f.crop.slice(1);
+    return name + ' Prices Usually Run $' + r.lo.toFixed(2) + '\u2013$' + r.hi.toFixed(2) + ' Per Bushel';
+  }
+
   function updateSubmit() {
+    setError('price', priceProblem());
     const miss = missingFields();
     $('see-plan').disabled = miss.length > 0;
     $('form-missing').textContent = miss.length ? 'Still Needed: ' + miss.join(', ') : '';
@@ -408,7 +418,6 @@
       const v = $('price').value.trim() === '' ? null : numberFrom($('price'));
       state.farm.price = filled(v) ? v : null;
       state.touched.price = true;
-      setError('price', '');
       renderCropValue();
       updateSubmit();
       save();
@@ -584,12 +593,12 @@
     if (!kind) return;
     box.appendChild(make('p', 'plan-status-title', title));
     if (text) box.appendChild(make('p', 'plan-status-text', text));
-    if (action) {
-      const b = make('button', 'btn btn-primary', action.label);
+    (Array.isArray(action) ? action : action ? [action] : []).forEach(function (a, i) {
+      const b = make('button', i === 0 ? 'btn btn-primary' : 'btn btn-quiet', a.label);
       b.type = 'button';
-      b.addEventListener('click', action.run);
+      b.addEventListener('click', a.run);
       box.appendChild(b);
-    }
+    });
   }
 
   function showLoading() {
@@ -599,9 +608,11 @@
   }
 
   function showError(err, fallback) {
-    console.error('Farmer Joe:', err);
-    setStatus('error', 'Could Not Get The Model\u2019s Advice', (err && err.message) || String(err),
-      { label: 'Use Sample Data', run: function () { setStatus('loading', 'Loading Sample Data\u2026'); fallback(); } });
+    console.error('Farmer Joe:', err);   // details stay in the console, not on screen
+    setStatus('error', 'We Couldn\u2019t Build Your Plan',
+      'Something in your farm details doesn\u2019t look right, or the model is unavailable. Please check your farm details.',
+      [{ label: 'Back To Farm', run: function () { location.hash = '#/farm'; } },
+       { label: 'Use Sample Data', run: function () { setStatus('loading', 'Loading Sample Data\u2026'); fallback(); } }]);
   }
 
   /* "Illustration" switches to the exaggerated sample scenario; a label says so while on. */
@@ -1004,6 +1015,10 @@
       updatePlan(true);
     });
     wireIllustration();
+    if (location.protocol !== 'file:') {
+      fetch('/api/price-ranges').then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (j) { if (j) { state.priceRanges = j; updateSubmit(); } }).catch(function () {});
+    }
     $('start').addEventListener('click', function () {
       try { sessionStorage.removeItem(STORE_KEY); } catch (e) { /* nothing saved */ }
       Object.assign(state.farm, { lat: null, lon: null, label: '', stationId: null, miles: 0, crop: null,
