@@ -951,3 +951,8 @@ body:not(.real-data) .real-only { display: none; }
 .bad-tag { font-size: 11px; font-weight: 600; fill: #8e1f14; paint-order: stroke; stroke: #fff; stroke-width: 3.5px;
   stroke-linejoin: round; pointer-events: none; }
 .sw-bad { width: 9px; height: 9px; border-radius: 50%; background: #c0392b; box-shadow: 0 0 0 2px #fff, 0 0 0 3.5px #c0392b; margin: 0 3px; }
+
+/* Empty farm form: what is still needed before "See My Plan". */
+.form-missing { margin: 0.5rem 0 0; font-size: 0.8125rem; text-align: right; color: var(--ink-2); }
+.form-missing[hidden] { display: none; }
+#see-plan:disabled { opacity: 0.45; cursor: not-allowed; }

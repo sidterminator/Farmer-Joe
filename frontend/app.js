@@ -71,9 +71,9 @@
 
   const state = {
     farm: {
-      // Default farm: the parameter sweep's best case (150 ac Champaign corn, $40K, Most Stability).
-      lat: 40.12, lon: -88.24, label: 'Champaign, IL', stationId: 'ind', miles: 107,
-      crop: 'corn', acres: 150, yield: 200, price: 4.5, budget: 40000, lean: 5
+      // The form starts empty: the farmer fills in every field (no defaults).
+      lat: null, lon: null, label: '', stationId: null, miles: 0,
+      crop: null, acres: null, yield: null, price: null, budget: null, lean: null
     },
     touched: { yield: false, price: false },
     scenario: null,
@@ -102,7 +102,7 @@
   function restore() {
     try {
       const saved = JSON.parse(sessionStorage.getItem(STORE_KEY) || 'null');
-      if (saved && saved.farm && B.crops[saved.farm.crop]) {
+      if (saved && saved.farm && (saved.farm.crop === null || B.crops[saved.farm.crop])) {
         Object.assign(state.farm, saved.farm);
         Object.assign(state.touched, saved.touched || {});
       }
@@ -165,9 +165,8 @@
 
   function route() {
     const name = routeName();
-    if (name === 'plan' && !hasLocation()) {
+    if (name === 'plan' && missingFields().length) {
       location.replace('#/farm');
-      setError('where', 'Pin your farm first.');
       return;
     }
     show(name);
@@ -183,9 +182,7 @@
       }
       screen.hidden = !on;
     });
-    document.querySelectorAll('.steps a[href="#/plan"]').forEach(function (a) {
-      if (hasLocation()) a.removeAttribute('aria-disabled'); else a.setAttribute('aria-disabled', 'true');
-    });
+    updateSubmit();
     if (name === 'farm') enterFarm();
     if (name === 'plan') enterPlan();
     if (!firstShow) {
@@ -221,24 +218,51 @@
 
   function cropValue() {
     const f = state.farm;
-    return f.acres * f.yield * f.price;
+    return filled(f.acres) && filled(f.yield) && filled(f.price) ? f.acres * f.yield * f.price : NaN;
   }
 
   function syncForm() {
     const f = state.farm;
     $('where').value = f.label;
     document.querySelectorAll('input[name="crop"]').forEach(function (r) { r.checked = r.value === f.crop; });
-    $('acres').value = f.acres;
-    $('acres-range').value = f.acres;
-    $('yield').value = f.yield;
-    $('price').value = f.price.toFixed(2);
-    $('budget').value = f.budget;
-    $('budget-range').value = f.budget;
-    $('stability').value = f.lean;
-    $('stability-out').textContent = LEAN[f.lean - 1].label;
+    $('acres').value = filled(f.acres) ? f.acres : '';
+    $('acres-range').value = filled(f.acres) ? f.acres : $('acres-range').min;
+    $('yield').value = filled(f.yield) ? f.yield : '';
+    $('price').value = filled(f.price) ? f.price.toFixed(2) : '';
+    $('budget').value = filled(f.budget) ? f.budget : '';
+    $('budget-range').value = filled(f.budget) ? f.budget : $('budget-range').min;
+    $('stability').value = filled(f.lean) ? f.lean : $('stability').min;
+    $('stability-out').textContent = filled(f.lean) ? LEAN[f.lean - 1].label : 'Choose One';
     ['acres-range', 'budget-range', 'stability'].forEach(function (id) { paintRange($(id)); });
     renderWhere();
     renderCropValue();
+    updateSubmit();
+  }
+
+  function filled(v) { return v !== null && v !== undefined && v !== '' && isFinite(v); }
+
+  /* What is still missing before "See My Plan" can be pressed. */
+  function missingFields() {
+    const f = state.farm;
+    const miss = [];
+    if (!hasLocation()) miss.push('Farm');
+    if (!f.crop) miss.push('Crop');
+    if (!(filled(f.acres) && f.acres > 0)) miss.push('Acres');
+    if (!(filled(f.yield) && f.yield > 0)) miss.push('Normal Yield');
+    if (!(filled(f.price) && f.price > 0)) miss.push('Price');
+    if (!(filled(f.budget) && f.budget >= 0)) miss.push('Budget For Hedging');
+    if (!filled(f.lean)) miss.push('Priority');
+    return miss;
+  }
+
+  function updateSubmit() {
+    const miss = missingFields();
+    $('see-plan').disabled = miss.length > 0;
+    $('form-missing').textContent = miss.length ? 'Still Needed: ' + miss.join(', ') : '';
+    $('form-missing').hidden = !miss.length;
+    document.querySelectorAll('.steps a[href="#/plan"]').forEach(function (a) {
+      if (!miss.length) a.removeAttribute('aria-disabled'); else a.setAttribute('aria-disabled', 'true');
+    });
   }
 
   function renderCropValue() {
@@ -265,7 +289,7 @@
     setError('where', '');
     renderWhere();
     if (map) map.setFarm(mapFarm(), animate);
-    document.querySelectorAll('.steps a[href="#/plan"]').forEach(function (a) { a.removeAttribute('aria-disabled'); });
+    updateSubmit();
     save();
   }
 
@@ -338,14 +362,9 @@
       r.addEventListener('change', function () {
         const f = state.farm;
         f.crop = r.value;
-        const crop = B.crops[f.crop];
-        // A yield or price typed for one crop never carries over to another: reset both to the
-        // new crop's defaults (a soybean price of ~$10 was being sent as the corn futures price).
-        f.yield = crop.yield;
-        f.price = crop.price;
-        state.touched.yield = false;
-        state.touched.price = false;
-        syncForm();
+        // No auto-fill: the farmer types yield and price (the server rejects a price that is
+        // implausible for the chosen crop, e.g. a soybean price sent for corn).
+        updateSubmit();
         save();
       });
     });
@@ -354,10 +373,13 @@
       const number = $(numberId);
       const range = $(rangeId);
       number.addEventListener('input', function () {
-        const v = numberFrom(number);
-        state.farm[key] = v;
-        if (isFinite(v)) { range.value = v; paintRange(range); setError(numberId, ''); }
+        const v = number.value.trim() === '' ? null : numberFrom(number);
+        state.farm[key] = filled(v) ? v : null;
+        range.value = filled(v) ? v : range.min;
+        paintRange(range);
+        setError(numberId, '');
         renderCropValue();
+        updateSubmit();
         save();
       });
       range.addEventListener('input', function () {
@@ -366,6 +388,7 @@
         paintRange(range);
         setError(numberId, '');
         renderCropValue();
+        updateSubmit();
         save();
       });
     }
@@ -373,30 +396,37 @@
     pair('budget', 'budget-range', 'budget');
 
     $('yield').addEventListener('input', function () {
-      state.farm.yield = numberFrom($('yield'));
+      const v = $('yield').value.trim() === '' ? null : numberFrom($('yield'));
+      state.farm.yield = filled(v) ? v : null;
       state.touched.yield = true;
       setError('yield', '');
       renderCropValue();
+      updateSubmit();
       save();
     });
     $('price').addEventListener('input', function () {
-      state.farm.price = numberFrom($('price'));
+      const v = $('price').value.trim() === '' ? null : numberFrom($('price'));
+      state.farm.price = filled(v) ? v : null;
       state.touched.price = true;
       setError('price', '');
       renderCropValue();
+      updateSubmit();
       save();
     });
 
-    $('stability').addEventListener('input', function () {
+    // Priority counts as chosen once the farmer moves (or clicks/taps, or keys) the slider.
+    function chooseLean() {
       state.farm.lean = Number($('stability').value);
       $('stability-out').textContent = LEAN[state.farm.lean - 1].label;
       paintRange($('stability'));
+      updateSubmit();
       save();
-    });
+    }
+    ['input', 'change', 'pointerup', 'keyup'].forEach(function (ev) { $('stability').addEventListener(ev, chooseLean); });
 
     $('farm-form').addEventListener('submit', function (e) {
       e.preventDefault();
-      if (validateFarm()) location.hash = '#/plan';
+      if (validateFarm() && !missingFields().length) location.hash = '#/plan';
     });
   }
 
@@ -974,6 +1004,15 @@
       updatePlan(true);
     });
     wireIllustration();
+    $('start').addEventListener('click', function () {
+      try { sessionStorage.removeItem(STORE_KEY); } catch (e) { /* nothing saved */ }
+      Object.assign(state.farm, { lat: null, lon: null, label: '', stationId: null, miles: 0, crop: null,
+                                  acres: null, yield: null, price: null, budget: null, lean: null });
+      state.touched.yield = false;
+      state.touched.price = false;
+      if (map) map.setFarm(null);   // clear the old pin too
+      syncForm();
+    });
     window.addEventListener('hashchange', route);
     route();
   }
