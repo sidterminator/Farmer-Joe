@@ -9,6 +9,14 @@ farms:
   salina_wheat:   {lat: 38.8, lon: -97.6, crop: wheat}     # central Kansas (HRW wheat)
   enc_corn:       {lat: 35.4, lon: -77.6, crop: corn}      # eastern North Carolina (peripheral)
 
+# Demo farms for `run.py --prewarm`: coordinates exactly as the frontend's town picker sends them
+# (frontend/places.js). Runs are cached per 0.1-degree grid cell.
+demo_farms:
+  - {name: "Champaign, IL", lat: 40.12, lon: -88.24, crop: corn}
+  - {name: "Champaign, IL", lat: 40.12, lon: -88.24, crop: soybeans}
+  - {name: "Salina, KS",    lat: 38.84, lon: -97.61, crop: wheat}
+  - {name: "Kinston, NC",   lat: 35.26, lon: -77.58, crop: corn}
+
 year: null             # season year; null = next season that has not started yet
 
 # Crop calendar (REVENUE_MODEL.md section 4). Whole calendar months.

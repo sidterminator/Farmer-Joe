@@ -59,6 +59,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p.add_argument("--run-id", dest="run_id", help="override the generated run id")
     p.add_argument("--refit", action="store_true", help="refit params even if cached in data/params")
     p.add_argument("--skip-validation", action="store_true", help="skip history checks and plots")
+    p.add_argument("--prewarm", action="store_true",
+                   help="download data and build cached runs for the demo farms in config.yaml")
     p.add_argument("--run", help="--mode hedge: weather run folder (default outputs/latest_run.txt)")
     p.add_argument("--budget", type=float, dest="budget_usd")
     p.add_argument("--risk-weight", type=float, dest="risk_weight")
@@ -342,6 +344,20 @@ def print_validation(res: dict) -> None:
     print(f"Plots: {res['plots'].resolve()}")
 
 
+def prewarm(config_path: str | None = None) -> int:
+    """Build (or confirm) the cached web runs for the demo farms, so the demo never waits."""
+    import yaml
+    from farmerjoe.config import DEFAULT_CONFIG_PATH
+    from farmerjoe.webcache import snap, weather_run
+    farms = yaml.safe_load(Path(config_path or DEFAULT_CONFIG_PATH).read_text()).get("demo_farms", [])
+    for f in farms:
+        t = time.perf_counter()
+        out_dir, _ = weather_run(f["lat"], f["lon"], f["crop"])
+        print(f"{f['name']:16s} {f['crop']:9s} grid {snap(f['lat'], f['lon'])}  ready in "
+              f"{time.perf_counter() - t:6.1f}s  -> {out_dir.name}", flush=True)
+    return 0
+
+
 def run_hedge_cli(args: argparse.Namespace) -> int:
     """--mode hedge: hedge model v1 on the latest (or given) weather run."""
     from farmerjoe.hedge.pipeline import run_hedge
@@ -365,7 +381,9 @@ def run_hedge_cli(args: argparse.Namespace) -> int:
 
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
-    skip = {"config", "run_id", "refit", "skip_validation", "run", "budget_usd", "risk_weight", "acres"}
+    if args.prewarm:
+        return prewarm(args.config)
+    skip = {"config", "run_id", "refit", "skip_validation", "run", "budget_usd", "risk_weight", "acres", "prewarm"}
     if args.mode == "hedge":
         return run_hedge_cli(args)
     overrides = {k: v for k, v in vars(args).items() if k not in skip}

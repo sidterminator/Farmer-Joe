@@ -3,7 +3,7 @@
     .venv/bin/uvicorn server:app --port 8000      # then open http://localhost:8000
 
 POST /api/scenario  {lat, lon, crop, acres, yield, price, budget, stability, stationId}
- -> weather run (cached per farm location + crop) -> hedge model v1 -> JSON in the shape the
+ -> weather run (cached per 0.1-degree grid cell + crop) -> hedge model v1 -> JSON in the shape the
     frontend's `FarmerJoe.source.scenario()` expects (docs/INTEGRATION.md §3).
 """
 from __future__ import annotations
@@ -11,7 +11,6 @@ from __future__ import annotations
 import base64
 import calendar
 import math
-import threading
 import time
 from pathlib import Path
 
@@ -20,18 +19,14 @@ from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-import run as weather_cli
-from farmerjoe.config import load_config
+from farmerjoe.webcache import weather_run
 from farmerjoe.hedge.pipeline import run_hedge
 from farmerjoe.stations import haversine_km
 
 ROOT = Path(__file__).resolve().parent
-WEB_RUNS = ROOT / "outputs" / "web"
 KM_PER_MILE = 1.609344
 
 app = FastAPI(title="Farmer Joe")
-_locks: dict[str, threading.Lock] = {}
-_locks_guard = threading.Lock()
 
 
 class FarmIn(BaseModel):
@@ -44,22 +39,6 @@ class FarmIn(BaseModel):
     budget: float = Field(ge=0)
     stability: float = Field(ge=0, le=1)  # frontend "lean" 0.2..1 -> risk weight
     stationId: str | None = None
-
-
-def weather_run(lat: float, lon: float, crop: str) -> tuple[Path, object]:
-    """Weather run for this farm + crop, cached on disk (location rounded to 0.01 deg ~ 1 km)."""
-    lat, lon = round(lat, 2), round(lon, 2)
-    run_id = f"web_{crop}_{lat:.2f}_{lon:.2f}"
-    out_dir = WEB_RUNS / run_id
-    cfg = load_config(overrides={"lat": lat, "lon": lon, "crop": crop, "mode": "climatology",
-                                 "output_dir": str(WEB_RUNS)})
-    with _locks_guard:
-        lock = _locks.setdefault(run_id, threading.Lock())
-    with lock:
-        if not (out_dir / "run_meta.json").exists():
-            rng = np.random.default_rng(cfg.seed)
-            weather_cli.run_joint(cfg, out_dir, run_id, rng, refit=False, skip_validation=True)
-    return out_dir, cfg
 
 
 def _window_label(start: str, end: str) -> str:
