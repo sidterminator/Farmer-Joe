@@ -61,7 +61,6 @@
     if (r === 0) return '0%';
     return (r < 0 ? MINUS : '+') + Math.abs(r) + '%';
   }
-  function plural(n, word) { return whole.format(n) + ' ' + word + (n === 1 ? '' : 's'); }
   function aboutMiles(miles) {
     if (miles < 10) return 'under 10 mi';
     return whole.format(Math.round(miles / 5) * 5) + ' mi';
@@ -85,8 +84,7 @@
     inGraph: [],
     custom: false,
     trimmed: false,
-    tableView: false,
-    live: { status: 'idle', event: null, stationId: null }
+    tableView: false
   };
 
   let map = null;
@@ -477,7 +475,6 @@
       recommendPlan();
       renderTickets();
       updatePlan(true);
-      loadLive(false);
     });
   }
 
@@ -795,111 +792,6 @@
     if (state.tableView) renderBins();
     else if (full) plot.render(chartSpec());
     else plot.refresh();
-  }
-
-  /* ---------- live Kalshi markets ---------- */
-
-  function loadLive(force) {
-    const station = stationOf(state.farm);
-    if (!force && state.live.stationId === station.id && state.live.status === 'ok') { renderLive(); return; }
-    state.live = { status: 'loading', event: null, stationId: station.id };
-    renderLive();
-    B.source.liveMarkets(station).then(function (event) {
-      if (state.live.stationId !== station.id) return;
-      state.live.event = event;
-      state.live.status = event && event.markets.length ? 'ok' : 'empty';
-      renderLive();
-    }).catch(function () {
-      if (state.live.stationId !== station.id) return;
-      state.live.status = 'error';
-      renderLive();
-    });
-  }
-
-  function priceCell(cents, kind) {
-    return cents === null ? make('span', 'price-none', 'No offer') : make('span', 'price-' + kind, cents + '¢');
-  }
-
-  function renderLive() {
-    const station = stationOf(state.farm);
-    const status = $('live-status');
-    const body = $('live-body');
-    status.textContent = '';
-    body.textContent = '';
-    const live = state.live;
-
-    if (live.status === 'loading') {
-      status.textContent = 'Loading…';
-      const sk = make('div', 'skeleton');
-      sk.setAttribute('aria-hidden', 'true');
-      sk.appendChild(make('span'));
-      sk.appendChild(make('span'));
-      sk.appendChild(make('span'));
-      body.appendChild(sk);
-      return;
-    }
-
-    if (live.status === 'ok') {
-      const e = live.event;
-      const time = e.fetchedAt.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
-      const quoted = e.markets.some(function (m) { return m.yesCents !== null || m.noCents !== null; });
-      const tail = 'July isn’t listed yet, so the plan uses sample prices.';
-      status.appendChild(make('span', 'live-dot'));
-      body.appendChild(make('p', 'live-title', e.title));
-
-      if (!quoted) {
-        // Listed but nobody is quoting it: one row says so instead of a table of blanks.
-        status.appendChild(make('span', null, 'Listed, no quotes · ' + time));
-        const line = make('p', 'live-row');
-        line.appendChild(make('span', null, plural(e.markets.length, 'strike') + ' listed'));
-        line.appendChild(make('strong', null, 'No offers'));
-        body.appendChild(line);
-        body.appendChild(make('p', 'live-note', tail));
-        const again = make('button', 'btn btn-quiet', 'Retry');
-        again.type = 'button';
-        again.addEventListener('click', function () { loadLive(true); });
-        body.appendChild(again);
-        return;
-      }
-
-      status.appendChild(make('span', null, 'Live · ' + time));
-      const table = make('table', 'live-table');
-      const thead = make('thead');
-      thead.appendChild(row(['Pays if', 'Yes', 'No'], true));
-      const tbody = make('tbody');
-      e.markets.forEach(function (m) {
-        const tr = make('tr');
-        tr.appendChild(make('td', null, m.label));
-        const yes = make('td');
-        yes.appendChild(priceCell(m.yesCents, 'yes'));
-        const no = make('td');
-        no.appendChild(priceCell(m.noCents, 'no'));
-        tr.appendChild(yes);
-        tr.appendChild(no);
-        tbody.appendChild(tr);
-      });
-      table.appendChild(thead);
-      table.appendChild(tbody);
-      body.appendChild(table);
-      body.appendChild(make('p', 'live-note', tail));
-      return;
-    }
-
-    const fail = make('div', 'live-fail');
-    if (live.status === 'empty') {
-      status.textContent = 'Nothing open';
-      fail.appendChild(make('p', null, 'No open market for ' + station.city + '.'));
-    } else {
-      status.textContent = 'Offline';
-      fail.appendChild(make('p', null, 'Kalshi unreachable. The plan still works.'));
-    }
-    const retry = make('button', 'btn btn-quiet');
-    retry.type = 'button';
-    retry.appendChild(icon('retry'));
-    retry.appendChild(document.createTextNode('Retry'));
-    retry.addEventListener('click', function () { loadLive(true); });
-    fail.appendChild(retry);
-    body.appendChild(fail);
   }
 
   /* ---------- start ---------- */

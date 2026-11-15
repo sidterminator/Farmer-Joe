@@ -4,8 +4,7 @@
  * gap between hedging and not hedging. See the note above buildScenario.
  *
  * The simulated seasons, the three July markets and their prices are made up
- * for the demo. Nothing built here is a live quote or a real forecast. The one
- * live piece is `liveMarkets`, which reads open markets from Kalshi's demo API.
+ * for the demo. Nothing built here is a live quote or a real forecast.
  *
  * `FarmerJoe.source` is the only data interface app.js uses. Replace its
  * functions with calls to the team's server and keep the shapes documented in
@@ -168,12 +167,6 @@
     /* Later: POST the farm to the team's server and return its scenario. */
     scenario: function (farm) {
       return Promise.resolve(buildScenario(farm));
-    },
-
-    /* Live: the open market at the farm's nearest station, read from Kalshi's
-     * demo API in the browser. */
-    liveMarkets: function (station) {
-      return B.kalshi.openEvent(station.series);
     },
 
     /* Orders need a signed Kalshi API key, which a web page cannot keep safe,

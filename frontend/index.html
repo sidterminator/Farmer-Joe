@@ -18,7 +18,6 @@
   <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
   <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 4 3.5 19h17zM12 10v4.5M12 16.8v.2"/></symbol>
   <symbol id="i-equal" viewBox="0 0 24 24"><path d="M6 9.5h12M6 14.5h12"/></symbol>
-  <symbol id="i-retry" viewBox="0 0 24 24"><path d="M19 12a7 7 0 1 1-2.2-5.1M19 5v4.5h-4.5"/></symbol>
 </svg>
 
 <div class="app">
@@ -158,46 +157,51 @@
     </header>
 
     <div class="plan-grid">
-      <div class="plan-main">
+      <div class="plan-head">
         <h1 id="plan-title" tabindex="-1"></h1>
         <p class="lede" id="plan-lede"></p>
         <p class="plan-effect" id="plan-effect" hidden></p>
-        <p class="farm-line"><span id="farm-line"></span> <a href="#/farm">Edit</a></p>
+      </div>
 
-        <div class="tag chart-tag">
-          <div class="tag-head">
-            <h2>Revenue by harvest</h2>
-            <span class="stamped stamp-small">Sample</span>
-            <button type="button" class="btn btn-quiet" id="table-toggle" aria-pressed="false">Table</button>
-          </div>
-          <ul class="legend" id="legend" aria-label="Chart key">
-            <li><span class="sw-base"></span>Without Farmer Joe</li>
-            <li id="legend-plan"><span class="sw-plan"></span>With Farmer Joe</li>
-          </ul>
-          <figure class="plot" id="plot" tabindex="0" role="group" aria-roledescription="chart">
-            <svg aria-hidden="true" focusable="false"></svg>
-            <div class="tip" role="status" hidden></div>
-          </figure>
-          <div class="bins" id="bins" hidden>
-            <table>
-              <thead id="bins-head"></thead>
-              <tbody id="bins-body"></tbody>
-            </table>
-          </div>
-          <table class="ruled analysis">
-            <thead id="analysis-head"></thead>
-            <tbody id="analysis-body"></tbody>
+      <div class="tag chart-tag">
+        <div class="tag-head">
+          <h2>Revenue by harvest</h2>
+          <span class="stamped stamp-small">Sample</span>
+          <button type="button" class="btn btn-quiet" id="table-toggle" aria-pressed="false">Table</button>
+        </div>
+        <ul class="legend" id="legend" aria-label="Chart key">
+          <li><span class="sw-base"></span>Without Farmer Joe</li>
+          <li id="legend-plan"><span class="sw-plan"></span>With Farmer Joe</li>
+        </ul>
+        <figure class="plot" id="plot" tabindex="0" role="group" aria-roledescription="chart">
+          <svg aria-hidden="true" focusable="false"></svg>
+          <div class="tip" role="status" hidden></div>
+        </figure>
+        <div class="bins" id="bins" hidden>
+          <table>
+            <thead id="bins-head"></thead>
+            <tbody id="bins-body"></tbody>
           </table>
+        </div>
+        <table class="ruled analysis">
+          <thead id="analysis-head"></thead>
+          <tbody id="analysis-body"></tbody>
+        </table>
+      </div>
+
+      <div class="side-top">
+        <p class="farm-line"><span id="farm-line"></span> <a href="#/farm">Edit</a></p>
+        <div class="side-intro">
+          <div class="side-head">
+            <h2 id="contracts-title">Hedges</h2>
+            <span class="stamped stamp-small stamp-on-green">Sample</span>
+            <p class="plan-state" id="plan-state"></p>
+          </div>
+          <p class="side-hint">Tick hedges and set the dollars. The graph follows.</p>
         </div>
       </div>
 
       <aside class="plan-side" aria-labelledby="contracts-title">
-        <div class="side-head">
-          <h2 id="contracts-title">Hedges</h2>
-          <span class="stamped stamp-small stamp-on-green">Sample</span>
-          <p class="plan-state" id="plan-state"></p>
-        </div>
-        <p class="side-hint">Tick hedges and set the dollars. The graph follows.</p>
         <p class="plan-result" id="plan-result" aria-live="polite"></p>
         <ul class="tickets" id="tickets"></ul>
 
@@ -215,13 +219,6 @@
         </div>
       </aside>
 
-      <div class="tag live-tag">
-        <div class="tag-head">
-          <h2>Live on Kalshi</h2>
-          <p class="live-status" id="live-status" aria-live="polite"></p>
-        </div>
-        <div id="live-body"></div>
-      </div>
     </div>
 
     <p class="fine plan-fine">Sample data from a placeholder model, no real money. Town list from GeoNames.</p>
@@ -234,7 +231,6 @@
 <script src="stations.js"></script>
 <script src="model.js"></script>
 <script src="advisor.js"></script>
-<script src="kalshi.js"></script>
 <script src="sample-data.js"></script>
 <script src="map.js"></script>
 <script src="charts.js"></script>

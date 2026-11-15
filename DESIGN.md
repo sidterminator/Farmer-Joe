@@ -298,7 +298,7 @@ Each screen is a full-height field of green with a two-column split that hands t
 - **Intro:** a 62/38 grid. The white panel runs from the top edge to the bottom edge with 48px padding, the name at the top and the promise at the bottom, nothing between them. The green side stacks the three numbered steps at the top and the Start tag with one line of fine print at the bottom.
 - **Bar (screens 2 and 3):** wordmark, three numbered steps (Start, Farm, Advice), and the sample-data note pushed to the right; 14px top padding, 28px page padding (`pad`).
 - **Farm:** map column at 1.32fr beside the tag at 1fr (minimum 400px), 32px gap. The map column is sticky on wide screens.
-- **Advice:** main column at 1.25fr (title, lede, effect line, chart tag, live-markets tag) beside the hedges column at 1fr, minimum 400px (tickets, order tag), 28px column gap and 20px row gap.
+- **Advice:** four blocks set as one rectangle: the advice (title, lede, effect line) beside the farm line and hedges heading, sharing a top and a bottom; then the chart tag at 1.25fr beside the hedges column at 1fr, minimum 400px, also sharing a top and a bottom, with the plot and the order tag taking up any spare height (tickets, order tag), 28px column gap and 20px row gap.
 - **Inside a tag:** rows bleed to the tag's edges with negative margins so the hairlines and the wash run the full width; the content inset is 22px on the farm tag and 20px on the advice screen's tags. A form row is a two-column grid, label at 0.78fr and control at 1.22fr.
 
 Responsive steps are fixed breakpoints, not fluid padding: at 1100px the advice screen stacks to one column and a sticky strip in `green-800` carries the effect line above the tickets; at 900px the farm stacks and the map is capped at 42dvh; at 820px the intro stacks and the Start tag moves directly under the panel; at 560px page padding drops to 14px (`pad-narrow`), form rows stack label over control, the ticket stub narrows to 44px, and the Yes and No sides split the ticket's width.
@@ -350,7 +350,7 @@ Three numbered links in the bar: Start, Farm, Advice. Each has a 22px outlined c
 - **Head:** a 16px/700 title on the left, with a stamp or a quiet button on the right.
 
 ### Ruled rows
-The system's one data form, used at every size: form rows, the analysis table, order lines, live-market rows. Label left, value right, 1px hairline between rows, a 2px ink rule above the first row and above a total. In the form, the row that holds focus takes the wash edge to edge with a 2px sack-green rule inside its top and bottom edges (150ms). Notes and errors sit under the control in the value column.
+The system's one data form, used at every size: form rows, the analysis table, order lines. Label left, value right, 1px hairline between rows, a 2px ink rule above the first row and above a total. In the form, the row that holds focus takes the wash edge to edge with a 2px sack-green rule inside its top and bottom edges (150ms). Notes and errors sit under the control in the value column.
 
 ### Inputs / Fields
 - **Style:** white fill, 1.5px `rule-strong` border, 3px corners, 40px tall. The unit sits inside the field: a leading "$" in ink at 600, a trailing unit ("acres", "bu/acre", "/bu") in `ink-3`.

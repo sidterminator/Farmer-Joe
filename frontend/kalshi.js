@@ -1,5 +1,9 @@
 /* Kalshi market data, read straight from the browser.
  *
+ * NOT WIRED TO A SCREEN RIGHT NOW: the "Live on Kalshi" panel was removed from
+ * the advice screen, and index.html no longer loads this file. It is kept as
+ * the working client for when live prices come back.
+ *
  * This uses Kalshi's DEMO exchange, which answers market-data requests from a
  * web page. The production API refuses requests that carry a browser Origin,
  * and placing orders needs a signed API key on either one, so anything beyond

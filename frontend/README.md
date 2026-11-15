@@ -24,7 +24,7 @@ Screens are addressed by hash: `#/`, `#/farm`, `#/plan`. The farm answers are ke
 | Part | Status |
 |---|---|
 | Map, town list, nearest-station lookup and distance | Real geometry and coordinates (station positions are approximate) |
-| "Open on Kalshi now" on the plan screen | **Live**: read from Kalshi's demo exchange in the browser |
+| Live Kalshi prices | **Not shown.** The live panel was removed from the advice screen; `kalshi.js` still works but nothing loads it |
 | The three July markets, their prices and the model's chances | **Sample**, generated in `sample-data.js` from a fixed seed |
 | The 20,000 simulated seasons and the farm's income in each | **Sample** |
 | How much distance to the station weakens the hedge | Not modelled: the sample treats the farm's weather as the station's |
@@ -32,7 +32,7 @@ Screens are addressed by hash: `#/`, `#/farm`, `#/plan`. The farm answers are ke
 
 **The sample is deliberately exaggerated** (the user's request, 2026-11-14) so the graph shows a large gap. In it a hot or dry July knocks a large, fixed amount off the farm's yield, little else moves it, and the contracts that pay in those years cost about 28 points less than the model's own chance of them paying. On the default farm that gives 71% less swing and $21,100 more per average harvest for a $15,000 hedge. Those figures are an illustration, not a result; the constants are at the top of `buildScenario` in `sample-data.js`.
 
-The screens label sample data. Nothing is sent anywhere except one market-data request to Kalshi's demo API, which carries only a series ticker such as `KXRAININDM`.
+The screens label sample data. Nothing is sent anywhere: the page makes no network requests.
 
 ## The model is a placeholder
 
@@ -53,11 +53,11 @@ The 20 harvests are sample seasons from the simulation, not a forecast of partic
 
 ## Kalshi
 
-- `kalshi.js` reads open markets from `https://demo-api.kalshi.co/trade-api/v2`, which accepts requests from a web page. The production API refuses requests that carry a browser `Origin`, so live production prices have to come through a server.
+- `kalshi.js` can read open markets from `https://demo-api.kalshi.co/trade-api/v2`, which accepts requests from a web page, but no screen uses it now and `index.html` does not load it. The production API refuses requests that carry a browser `Origin`, so live production prices have to come through a server.
 - On the demo exchange many markets are listed with nobody quoting them. The panel shows "No offer" for those sides.
 - Placing an order needs a signed API key. A web page cannot keep one safe, so `FarmerJoe.source.placeOrders` is a stub and `ordersConnected` is `false`. Wire it to the team's server and set the flag to enable the button.
 - `stations.js` lists 38 cities with a Kalshi rain or temperature market (snow-only cities are left out). Each `series` ticker is real, read from Kalshi's series list on 2026-11-14; Great Falls and Orlando exist on production but not on the demo exchange. The `julyHot` and `julyRain` figures are round numbers used only to give the sample markets believable thresholds.
-- Kalshi lists monthly markets month by month, so July markets are not open in November. That is why the plan runs on sample July prices and the live panel shows the current month.
+- Kalshi lists monthly markets month by month, so July markets are not open in November. That is why the advice runs on sample July prices.
 
 ## Files
 
@@ -65,13 +65,13 @@ The 20 harvests are sample seasons from the simulation, not a forecast of partic
 |---|---|
 | `index.html` | The three screens and the icon sprite |
 | `styles.css` | The seed-sack look: layout, colours, states, responsive rules |
-| `app.js` | Routing, the farm form, the advice screen, the order, the live panel |
+| `app.js` | Routing, the farm form, the advice screen, the order |
 | `map.js` | The map, the Albers projection, the pin and its drop animation |
 | `charts.js` | The one chart: revenue by harvest, two lines |
 | `advisor.js` | **Placeholder model**: which markets to hedge with and how many dollars in each |
 | `model.js` | Hedge maths and the sample-harvest picker (pure functions, no DOM) |
 | `sample-data.js` | Sample scenario and the `FarmerJoe.source` seam for the backend |
-| `kalshi.js` | Kalshi demo API client |
+| `kalshi.js` | Kalshi demo API client, kept but not loaded by any screen |
 | `stations.js` | The 38 station cities, and distance helpers |
 | `us-map.js`, `places.js` | Generated data: state outlines and 3,355 towns |
 | `tools/build-geo.mjs` | Regenerates the two data files; not needed to run the app |
@@ -101,8 +101,6 @@ The 20 harvests are sample seasons from the simulation, not a forecast of partic
 ```
 
 All per-season arrays share one order, so index `s` is one simulated season everywhere. Plain JSON arrays work too.
-
-`source.liveMarkets(station)` resolves to `{ ticker, title, fetchedAt, markets: [{ ticker, label, yesCents, noCents }] }`, or `null` when nothing is open. A side with no offer has `null` cents.
 
 `source.placeOrders([{ market, side, contracts, cents }])` should resolve when the server has accepted the orders.
 

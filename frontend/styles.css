@@ -583,29 +583,40 @@ input[type="range"]:disabled { cursor: not-allowed; opacity: 0.45; }
   line-height: 0.95;
 }
 
-/* ---------- 3. the plan ---------- */
+/* ---------- 3. the advice ---------- */
 
+/* Four blocks set as one rectangle: the advice and the hedges heading share a
+ * top and a bottom, and the chart and the hedges column share a top and a
+ * bottom. Every block starts on its column's left edge. */
 .plan-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.25fr) minmax(400px, 1fr);
-  grid-template-areas: "main side" "live side";
-  gap: 20px 28px;
-  align-items: start;
+  grid-template-areas: "head sidetop" "chart side";
+  gap: 16px 28px;
+  align-items: stretch;
   padding: 10px var(--pad) 20px;
 }
-.plan-main { grid-area: main; min-width: 0; }
-.plan-side { grid-area: side; min-width: 0; }
-.live-tag { grid-area: live; }
+.plan-head { grid-area: head; min-width: 0; }
+.side-top {
+  grid-area: sidetop;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+  padding-top: 9px;   /* the small line starts level with the title's capitals */
+}
+.chart-tag { grid-area: chart; display: flex; flex-direction: column; min-width: 0; }
+.plan-side { grid-area: side; display: flex; flex-direction: column; min-width: 0; }
 
 .lede { margin-top: 12px; max-width: 62ch; color: var(--on-green); font-size: 18px; line-height: 1.4; }
 .plan-effect { margin-top: 6px; max-width: 62ch; color: var(--on-green); font-size: 16px; font-weight: 650; font-variant-numeric: tabular-nums; }
-.farm-line { margin-top: 10px; color: var(--on-green-2); font-size: 14px; max-width: 80ch; }
+.farm-line { color: var(--on-green-2); font-size: 14px; }
 .farm-line a { color: var(--on-green); font-weight: 650; text-underline-offset: 3px; }
 
-.chart-tag, .live-tag, .order-tag { padding: 16px 20px 18px; }
-.chart-tag { margin-top: 20px; }
+.chart-tag, .order-tag { padding: 16px 20px 18px; }
 
-.plot { position: relative; height: 300px; outline-offset: 3px; }
+.plot { position: relative; flex: 1 1 300px; min-height: 300px; outline-offset: 3px; }
 .plot svg { display: block; position: absolute; inset: 0; }
 
 .rule-h { stroke: var(--rule); stroke-width: 1; }
@@ -658,7 +669,7 @@ input[type="range"]:disabled { cursor: not-allowed; opacity: 0.45; }
 .tip-key-base { background: var(--green-300); }
 .tip-key-plan { background: var(--ink); }
 
-.bins { height: 300px; overflow: auto; border: 1px solid var(--rule); border-radius: 3px; scrollbar-color: var(--rule-strong) transparent; }
+.bins { flex: 1 1 300px; min-height: 300px; max-height: 520px; overflow: auto; border: 1px solid var(--rule); border-radius: 3px; scrollbar-color: var(--rule-strong) transparent; }
 .bins table { width: 100%; }
 .bins thead th { position: sticky; top: 0; background: var(--tag-2); }
 
@@ -675,45 +686,18 @@ tbody tr { border-top: 1px solid var(--rule); }
 .ruled th:last-child, .ruled td:last-child { padding-right: 0; }
 .ruled tbody tr:first-child { border-top: 2px solid var(--ink); }
 
-/* Live Kalshi markets */
-.live-status { display: flex; align-items: center; gap: 7px; color: var(--ink-2); font-size: 13px; }
-.live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green-700); }
-.live-title { font-weight: 650; }
-.live-note { margin-top: 10px; color: var(--ink-2); font-size: 13.5px; max-width: 70ch; }
-.live-row {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 4px 16px;
-  margin-top: 8px;
-  padding: 8px 0;
-  border-top: 2px solid var(--ink);
-  border-bottom: 1px solid var(--rule);
-  font-size: 14px;
-}
-.live-row strong { font-weight: 650; }
-.live-tag .live-note + .btn { margin-top: 10px; }
-.live-table { width: 100%; margin-top: 8px; }
-.live-table td:first-child { text-align: left; font-weight: 500; color: var(--ink); padding-left: 0; }
-.live-table th:last-child, .live-table td:last-child { padding-right: 0; }
 .price-yes, .price-no { display: inline-block; min-width: 52px; padding: 2px 8px; border-radius: 3px; text-align: center; font-weight: 700; }
 .price-yes { background: var(--yes-tint); color: var(--ink); }
 .price-no { background: var(--no-tint); color: var(--no-ink); }
-.price-none { display: inline-block; min-width: 52px; text-align: center; color: var(--ink-3); font-weight: 500; }
-.skeleton { display: grid; gap: 10px; margin-top: 10px; }
-.skeleton span { display: block; height: 18px; border-radius: 3px; background: var(--tag-2); }
-.skeleton span:nth-child(2) { width: 82%; }
-.skeleton span:nth-child(3) { width: 64%; }
-.live-fail { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 14px; margin-top: 6px; color: var(--ink-2); }
 
-/* Contracts */
-.side-head { display: flex; align-items: baseline; gap: 12px; padding: 12px 0 10px; }
+/* Hedges */
+.side-head { display: flex; align-items: baseline; gap: 12px; }
 .side-head h2 { font-family: var(--display); font-weight: 800; font-size: 30px; line-height: 1; text-transform: uppercase; }
 .plan-state { margin-left: auto; color: var(--on-green-2); font-size: 13.5px; text-align: right; }
 .plan-result { display: none; }
 .plan-state .link { color: var(--on-green); }
 
-.side-hint { margin: -2px 0 12px; color: var(--on-green-2); font-size: 14px; max-width: 56ch; }
+.side-hint { margin-top: 6px; color: var(--on-green-2); font-size: 14px; }
 
 .tickets { display: grid; gap: 12px; }
 
@@ -806,7 +790,7 @@ tbody tr { border-top: 1px solid var(--rule); }
 .ticket-flag .icon { width: 16px; height: 16px; margin-top: 1px; }
 
 /* Order */
-.order-tag { margin-top: 12px; display: grid; gap: 10px; }
+.order-tag { margin-top: 12px; flex: 1 0 auto; display: grid; gap: 10px; align-content: start; }
 .order-tag .tag-head { margin-bottom: 0; }
 .meter { height: 10px; border-radius: 2px; background: var(--rule); overflow: hidden; }
 .meter span {
@@ -850,7 +834,8 @@ tbody tr { border-top: 1px solid var(--rule); }
 
 @media (max-width: 1100px) {
   .farm-grid { grid-template-columns: minmax(0, 1fr) minmax(380px, 0.9fr); gap: 24px; }
-  .plan-grid { grid-template-columns: minmax(0, 1fr); grid-template-areas: "main" "side" "live"; gap: 22px; }
+  .plan-grid { grid-template-columns: minmax(0, 1fr); grid-template-areas: "head" "chart" "sidetop" "side"; gap: 18px; }
+  .side-top { padding-top: 0; }
   /* The graph is above the fold here, so its result rides along with the tickets. */
   .plan-result {
     display: block;
@@ -904,7 +889,7 @@ tbody tr { border-top: 1px solid var(--rule); }
   .farm-tag { padding: 38px 14px 18px; }
   .tag-foot { margin: 0 -14px; padding: 14px 14px 0; }
   .where-out, .row > .note, .row > .error { padding-top: 6px; }
-  .chart-tag, .live-tag, .order-tag { padding: 14px 14px 16px; }
+  .chart-tag, .order-tag { padding: 14px 14px 16px; }
   th, td { padding-left: 6px; padding-right: 6px; }
   .ruled { font-size: 13px; }
   .ruled thead th, .ruled tbody th { white-space: normal; }

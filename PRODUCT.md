@@ -43,7 +43,7 @@ Market facts:
 ## Capabilities and Constraints
 
 - The adviser is a placeholder model (`frontend/advisor.js`) until the team's model replaces it. No weather model or order server is connected yet. Forecasts, the July markets and their prices are sample data, and the screen must say so.
-- The live part today is reading currently open markets from the Kalshi demo API for the station nearest the farm.
+- No screen shows live Kalshi prices: the user removed the live panel on 2026-11-14. `frontend/kalshi.js` still reads the demo API if it is wired back in.
 - Undecided: which real markets map to a farm's July heat and drought risk, how distance to the settlement station reduces the hedge (the sample ignores it), and whether a market for crop yield exists.
 - The earlier parcel-carrier code in this repo (`app.py`, `bizfax/`, `tests/`) is a different idea. It stays on disk and is not part of this frontend.
 
