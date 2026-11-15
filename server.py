@@ -52,11 +52,11 @@ def _market(row, yes_col: np.ndarray, city: dict, crop: str, window: str, presel
     if row.family == "rain":
         where = city.get(row.location, row.location)
         q = f"{where} {window} rain {'below' if row.comparator == 'lt' else 'at least'} {t:.1f} in"
-        name = f"{where} rain {'<' if row.comparator == 'lt' else '≥'}{t:.1f} in"
+        name = f"{where} Rain {'<' if row.comparator == 'lt' else '≥'}{t:.1f} In"
     elif row.family == "heat":
         where = city.get(row.location, row.location)
         q = f"{where} has {int(t)}+ days at 95°F or hotter in {window}"
-        name = f"{where} heat ≥{int(t)}d"
+        name = f"{where} Heat ≥{int(t)} Days"
     else:
         q = f"{crop.capitalize()} harvest price {'below' if row.comparator == 'lt' else 'at or above'} ${t:.2f}/bu"
         name = f"Price {'<' if row.comparator == 'lt' else '≥'}${t:.2f}"

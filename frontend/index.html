@@ -57,15 +57,15 @@
         <li><a href="#/farm" aria-current="step">Farm</a></li>
         <li><a href="#/plan">Advice</a></li>
       </ol>
-      <p class="sample-note sample-only"><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg><span>Sample data</span></p>
+      <p class="sample-note sample-only"><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg><span>Sample Data</span></p>
     </header>
 
     <div class="farm-grid">
       <div class="map-side">
-        <h1 id="farm-title" tabindex="-1">Your farm</h1>
+        <h1 id="farm-title" tabindex="-1">Your Farm</h1>
         <p class="map-hint">Click the map or type a town.</p>
         <svg class="map" id="map" role="img" focusable="false"></svg>
-        <p class="map-key"><span class="key-dot" aria-hidden="true"></span>Kalshi weather stations</p>
+        <p class="map-key"><span class="key-dot" aria-hidden="true"></span>Kalshi Weather Stations</p>
         <details class="station-list">
           <summary id="station-count"></summary>
           <p id="station-names"></p>
@@ -104,7 +104,7 @@
         </div>
 
         <div class="row" id="row-yield">
-          <label for="yield">Normal yield</label>
+          <label for="yield">Normal Yield</label>
           <div class="control">
             <span class="field"><input type="number" id="yield" inputmode="decimal" min="1" max="500" step="1" value="200" aria-describedby="yield-error"><span class="unit">bu/acre</span></span>
           </div>
@@ -120,7 +120,7 @@
         </div>
 
         <div class="row" id="row-budget">
-          <label for="budget">Budget for hedging</label>
+          <label for="budget">Budget For Hedging</label>
           <div class="control pair">
             <span class="field"><span class="unit unit-lead">$</span><input type="number" id="budget" inputmode="numeric" min="0" max="1000000" step="500" value="15000" aria-describedby="budget-error"></span>
             <input type="range" id="budget-range" min="0" max="50000" step="500" value="15000" aria-label="Budget for hedging, slider">
@@ -133,13 +133,13 @@
           <div class="control lean">
             <input type="range" id="stability" min="1" max="5" step="1" value="4" aria-describedby="stability-out">
             <div class="lean-ends" aria-hidden="true"><span>Cost</span><span>Stability</span></div>
-            <output id="stability-out" for="stability">Mostly stability</output>
+            <output id="stability-out" for="stability">Mostly Stability</output>
           </div>
         </div>
 
         <div class="tag-foot">
-          <p class="crop-value"><span>Crop value</span><strong id="crop-value"></strong></p>
-          <button type="submit" class="btn btn-primary">See my plan<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+          <p class="crop-value"><span>Crop Value</span><strong id="crop-value"></strong></p>
+          <button type="submit" class="btn btn-primary">See My Plan<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button>
         </div>
       </form>
     </div>
@@ -154,7 +154,7 @@
         <li><a href="#/farm">Farm</a></li>
         <li><a href="#/plan" aria-current="step">Advice</a></li>
       </ol>
-      <p class="sample-note sample-only"><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg><span>Sample data</span></p>
+      <p class="sample-note sample-only"><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg><span>Sample Data</span></p>
     </header>
 
     <div class="plan-grid">
@@ -163,7 +163,7 @@
           <p class="plan-verdict" id="plan-verdict" hidden></p>
           <label class="illus-toggle"><input type="checkbox" id="illus-toggle"> Illustration</label>
         </div>
-        <p class="illus-label" id="illus-label" hidden>Illustration, not model output</p>
+        <p class="illus-label" id="illus-label" hidden>Illustration, Not Model Output</p>
         <h1 id="plan-title" tabindex="-1"></h1>
         <p class="lede" id="plan-lede"></p>
         <p class="plan-effect" id="plan-effect" hidden></p>
@@ -171,15 +171,15 @@
 
       <div class="tag chart-tag">
         <div class="tag-head">
-          <h2>Revenue by year</h2>
-          <span class="illus-label illus-chip" hidden>Illustration, not model output</span>
+          <h2>Revenue By Year</h2>
+          <span class="illus-label illus-chip" hidden>Illustration, Not Model Output</span>
           <span class="stamped stamp-small sample-only">Sample</span>
           <button type="button" class="btn btn-quiet" id="table-toggle" aria-pressed="false">Table</button>
         </div>
         <ul class="legend" id="legend" aria-label="Chart key">
           <li><span class="sw-base"></span>Without Farmer Joe</li>
           <li id="legend-plan"><span class="sw-plan"></span>With Farmer Joe</li>
-          <li class="legend-bad"><span class="sw-bad" aria-hidden="true"></span>Bad year (bottom 20% of seasons)</li>
+          <li class="legend-bad"><span class="sw-bad" aria-hidden="true"></span>Bad Year, Hedge Helped</li>
         </ul>
         <figure class="plot" id="plot" tabindex="0" role="group" aria-roledescription="chart">
           <svg aria-hidden="true" focusable="false"></svg>
@@ -217,13 +217,13 @@
         <div class="tag order-tag">
           <div class="tag-head">
             <h2>Order</h2>
-            <span class="stamped stamp-small">Demo only</span>
+            <span class="stamped stamp-small">Demo Only</span>
           </div>
           <div class="meter" id="meter" aria-hidden="true"><span id="meter-fill"></span></div>
           <p class="budget-line" id="budget-line" aria-live="polite"></p>
           <ul class="order-lines" id="order-lines"></ul>
           <p class="order-total"><span>Total</span><strong id="order-total"></strong></p>
-          <button type="button" class="btn btn-primary" id="send-order" disabled aria-describedby="order-note">Send to Kalshi demo</button>
+          <button type="button" class="btn btn-primary" id="send-order" disabled aria-describedby="order-note">Send To Kalshi Demo</button>
           <p class="note" id="order-note">Not connected yet. Orders need the team's server. No real money.</p>
         </div>
       </aside>

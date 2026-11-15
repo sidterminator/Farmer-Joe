@@ -10,11 +10,11 @@
   const HARVESTS = 20;   // sample seasons on the chart, shown as Year 1-20
   const YIELD_TREND = 0.015;   // default chart yield trend per year (server meta.yieldTrend overrides)
   const LEAN = [
-    { label: 'Lowest cost', value: 0.2 },
-    { label: 'Mostly cost', value: 0.4 },
+    { label: 'Lowest Cost', value: 0.2 },
+    { label: 'Mostly Cost', value: 0.4 },
     { label: 'Balanced', value: 0.6 },
-    { label: 'Mostly stability', value: 0.8 },
-    { label: 'Most stability', value: 1 }
+    { label: 'Mostly Stability', value: 0.8 },
+    { label: 'Most Stability', value: 1 }
   ];
 
   function $(id) { return document.getElementById(id); }
@@ -283,7 +283,7 @@
   function enterFarm() {
     if (!map) {
       const names = B.stations.map(function (s) { return s.city; }).sort();
-      $('station-count').textContent = names.length + ' station cities';
+      $('station-count').textContent = names.length + ' Station Cities';
       $('station-names').textContent = names.join(' \u00b7 ');
       map = B.createMap($('map'), {
         onPick: function (p) { setLocation(p.lat, p.lon, labelFor(p.lat, p.lon), true); }
@@ -561,14 +561,14 @@
 
   function showLoading() {
     $('plan-verdict').hidden = true;
-    setStatus('loading', 'Simulating 10,000 seasons\u2026',
+    setStatus('loading', 'Simulating 10,000 Seasons\u2026',
       'A farm the model has not seen before can take a minute or two the first time.');
   }
 
   function showError(err, fallback) {
     console.error('Farmer Joe:', err);
-    setStatus('error', 'Could not get the model\u2019s advice.', (err && err.message) || String(err),
-      { label: 'Use sample data', run: function () { setStatus('loading', 'Loading sample data\u2026'); fallback(); } });
+    setStatus('error', 'Could Not Get The Model\u2019s Advice', (err && err.message) || String(err),
+      { label: 'Use Sample Data', run: function () { setStatus('loading', 'Loading Sample Data\u2026'); fallback(); } });
   }
 
   /* "Illustration" switches to the exaggerated sample scenario; a label says so while on. */
@@ -602,8 +602,8 @@
     if (!rec) { el.hidden = true; return; }
     el.dataset.decision = rec.decision;
     el.textContent = rec.decision === 'hedge' ? 'Hedge'
-      : rec.decision === 'partial' ? 'Partial hedge'
-      : 'Don\u2019t hedge \u2014 ' + rec.reason;
+      : rec.decision === 'partial' ? 'Partial Hedge'
+      : 'Don\u2019t Hedge \u2014 ' + rec.reason;
     el.title = rec.reason;
     el.hidden = false;
   }
@@ -611,9 +611,9 @@
   function verdict(points) {
     const chip = make('span', 'verdict');
     let name = 'equal';
-    let text = 'Fair price';
-    if (points >= 2) { name = 'check'; text = 'Cheap by ' + points; }
-    else if (points <= -2) { name = 'alert'; text = 'Pricey by ' + Math.abs(points); }
+    let text = 'Fair Price';
+    if (points >= 2) { name = 'check'; text = 'Cheap By ' + points; }
+    else if (points <= -2) { name = 'alert'; text = 'Pricey By ' + Math.abs(points); }
     chip.appendChild(icon(name));
     chip.appendChild(make('span', null, text));
     return chip;
@@ -822,20 +822,21 @@
   function grown(i, k) { return state.revenue[i] * Math.pow(1 + (state.trend || 0), k); }
   function grownPlan(i, k) { return grown(i, k) + (state.planArr[i] - state.revenue[i]); }
 
-  function moneyK(v) { return '$' + whole.format(Math.round(v / 1000)) + 'K'; }
-
   function chartSpec() {
     const picks = state.harvests;
     return {
       ariaLabel: 'Revenue over years 1 to ' + picks.length + ', without a hedge and with your plan. Arrow keys read values.',
       xTitle: 'Year',
-      bad: picks.map(function (i) { return state.revenue[i] <= state.badCut; }),
-      badLabel: function (i, base, plan) {
-        return 'Bad year: ' + moneyK(base[i]) + (plan ? ' \u2192 ' + moneyK(plan[i]) + ' with hedge' : '');
+      // Mark a year only if it is a bad year (unhedged revenue in the bottom 20% of all simulated
+      // seasons) AND the plan's revenue is higher than the unhedged revenue that year.
+      bad: function () {
+        return picks.map(function (i) {
+          return state.inGraph.length > 0 && state.revenue[i] <= state.badCut && state.planArr[i] > state.revenue[i];
+        });
       },
       base: { label: 'Without', values: picks.map(function (i, k) { return grown(i, k); }) },
       plan: {
-        label: 'With plan',
+        label: 'With Plan',
         values: function () { return state.inGraph.length ? picks.map(function (i, k) { return grownPlan(i, k); }) : null; }
       },
       money: moneyShort,
@@ -843,15 +844,15 @@
       tip: function (i, base, plan) {
         const rows = [{ key: 'base', value: money(base[i]), label: 'without' }];
         if (plan) rows.push({ key: 'plan', value: money(plan[i]), label: 'with plan' });
-        const isBad = state.revenue[picks[i]] <= state.badCut;
-        return { title: 'Year ' + (i + 1) + (isBad ? ' \u00b7 bad year' : ''), rows: rows };
+        const helped = state.inGraph.length > 0 && state.revenue[picks[i]] <= state.badCut && state.planArr[picks[i]] > state.revenue[picks[i]];
+        return { title: 'Year ' + (i + 1) + (helped ? ' \u00b7 Bad Year, Hedge Helped' : ''), rows: rows };
       }
     };
   }
 
   function renderBins() {
     const picks = state.harvests;
-    fill('bins-head', [['Year', 'Without', 'With plan']], true);
+    fill('bins-head', [['Year', 'Without', 'With Plan']], true);
     fill('bins-body', picks.map(function (s, i) {
       return [String(i + 1), money(grown(s, i)), money(grownPlan(s, i))];
     }));
@@ -874,11 +875,11 @@
     const hedging = active.length > 0;
 
     state.tickets.forEach(function (t) {
-      t.refs.meta.textContent = t.on ? whole.format(t.contracts) + ' contracts' : 'Not in plan';
+      t.refs.meta.textContent = t.on ? whole.format(t.contracts) + ' contracts' : 'Not In Plan';
     });
 
     // The advice, in dollars per hedge.
-    $('plan-title').textContent = hedging ? 'Hedge ' + dollars(cost) : 'No hedge yet';
+    $('plan-title').textContent = hedging ? 'Hedge ' + dollars(cost) : 'No Hedge Yet';
     $('plan-lede').textContent = !hedging
       ? (chosen.length ? 'Raise an amount to see the effect.' : 'Tick a hedge to start.')
       : (state.custom ? 'Your mix: ' : 'Suggested: ') + active.map(function (t) {
@@ -887,7 +888,7 @@
     let effect = '';
     if (hedging) {
       effect = b.sd < a.sd
-        ? Math.round((1 - b.sd / a.sd) * 100) + '% steadier. Bad harvest ' + signedMoney(b.bad - a.bad) + '. ' + (a.mean >= b.mean ? 'Cost of protection: ' + dollars(a.mean - b.mean) + '/yr.' : 'Expected gain: ' + dollars(b.mean - a.mean) + '/yr.')
+        ? Math.round((1 - b.sd / a.sd) * 100) + '% steadier. Bad harvest ' + signedMoney(b.bad - a.bad) + '. ' + (a.mean >= b.mean ? 'Cost Of Protection: ' + dollars(a.mean - b.mean) + '/yr.' : 'Expected Gain: ' + dollars(b.mean - a.mean) + '/yr.')
         : 'This mix adds swing. Check the sides.';
     }
     $('plan-effect').textContent = effect;
@@ -895,11 +896,11 @@
     $('plan-result').textContent = hedging ? effect : 'Nothing in the plan yet.';
     $('farm-line').textContent = whole.format(f.acres) + ' ac ' + crop.label.toLowerCase() + ' · ' + f.label + ' · ' + station.city + ' station';
 
-    fill('analysis-head', [['', 'Without', 'With plan', 'Change']], true);
+    fill('analysis-head', [['', 'Without', 'With Plan', 'Change']], true);
     fill('analysis-body', [
-      ['Average harvest', money(a.mean), money(b.mean), hedging ? signedMoney(b.mean - a.mean) : '—'],
+      ['Average Harvest', money(a.mean), money(b.mean), hedging ? signedMoney(b.mean - a.mean) : '—'],
       ['Swing', '±' + money(a.sd), '±' + money(b.sd), hedging ? signedPercent(b.sd / a.sd - 1) : '—'],
-      ['Bad harvest (1 in 20)', money(a.bad), money(b.bad), hedging ? signedMoney(b.bad - a.bad) : '—'],
+      ['Bad Harvest (1 In 20)', money(a.bad), money(b.bad), hedging ? signedMoney(b.bad - a.bad) : '—'],
       ['Cost', '$0', dollars(cost), hedging ? percent(cost / cropValue(), 1) + ' of crop' : '—']
     ]);
 
@@ -945,7 +946,7 @@
       });
       stateLine.appendChild(back);
     } else {
-      stateLine.textContent = !chosen.length ? 'None picked' : state.trimmed ? 'Trimmed to budget' : 'Sized for you';
+      stateLine.textContent = !chosen.length ? 'None Picked' : state.trimmed ? 'Trimmed To Budget' : 'Sized For You';
     }
 
     const toggle = $('table-toggle');

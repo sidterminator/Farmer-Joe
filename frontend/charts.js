@@ -7,8 +7,7 @@
  * spec = {
  *   ariaLabel: string,
  *   xTitle: string,                                    // x-axis title (default 'Harvest')
- *   bad: boolean[],                                    // optional: bad years (red ringed dots + tags)
- *   badLabel(i, base, plan) -> string,                 // full tag for bad year i
+ *   bad: boolean[],                                    // optional: years to mark (red ringed dot)
  *   base: { label, values: number[] },                 // revenue per harvest, no hedge
  *   plan: { label, values() -> number[] | null },      // with the plan; null: no line
  *   money(v) -> string,                                // axis and tooltip format
@@ -166,60 +165,16 @@
       drawBad();
     }
 
-    /* Bad years: a red, larger dot with an outer ring on the "without" line (the ring keeps it
-     * readable without colour), a thin connector up to the matching "with" dot, and a tag. If the
-     * full tags would overlap, only the 3 worst get values; the rest say "Bad year". */
+    /* Marked years (spec.bad): a red, larger dot with an outer ring on the "without" line. The
+     * ring is a shape cue, so the mark does not rely on colour alone. No text inside the chart:
+     * the legend explains the mark. */
     function drawBad() {
       gBad.textContent = '';
-      const flags = spec.bad || [];
-      const idx = [];
-      for (let i = 0; i < base.length; i++) if (flags[i]) idx.push(i);
+      const flags = (typeof spec.bad === 'function' ? spec.bad() : spec.bad) || [];
       gBaseDots.childNodes.forEach(function (c, i) {
-        if (flags[i]) c.setAttribute('class', (c.getAttribute('class') + ' is-bad').trim());
-      });
-      if (!idx.length) return;
-      const left = MARGIN.l + 4;
-      const right = MARGIN.l + geom.innerW - 4;
-      const items = idx.map(function (i) {
-        const yb = yOf(base[i]);
-        const yp = plan ? yOf(plan[i]) : yb;
-        return { i: i, x: xOf(i), yb: yb, yp: yp, text: spec.badLabel ? spec.badLabel(i, base, plan) : 'Bad year' };
-      });
-      // Measure real text widths, then clamp each tag inside the plot.
-      function layout() {
-        items.forEach(function (it) {
-          if (it.el) gBad.removeChild(it.el);
-          it.el = svgEl('text', { class: 'bad-tag', 'text-anchor': 'middle' }, gBad);
-          it.el.textContent = it.text;
-          it.w = it.el.getBBox ? it.el.getBBox().width : it.text.length * 6.5;
-          it.cx = Math.min(right - it.w / 2, Math.max(left + it.w / 2, it.x));
-        });
-      }
-      function clash(a, b) { return Math.abs(a.cx - b.cx) < (a.w + b.w) / 2 + 6; }
-      layout();
-      const anyClash = items.some(function (a, k) { return items.some(function (b, m) { return m > k && clash(a, b); }); });
-      if (anyClash) {
-        const worst = items.slice().sort(function (a, b) { return base[a.i] - base[b.i]; }).slice(0, 3)
-          .map(function (it) { return it.i; });
-        items.forEach(function (it) { if (worst.indexOf(it.i) < 0) it.text = 'Bad year'; });
-        layout();
-      }
-      // Stagger any remaining clashes into rows above the pair of dots.
-      const placed = [];
-      items.slice().sort(function (a, b) { return a.cx - b.cx; }).forEach(function (it) {
-        const top = Math.min(it.yb, it.yp);
-        let r = 0;
-        const yAt = function (row) { return Math.max(MARGIN.t + 10, top - 14 - row * 15); };
-        while (placed.some(function (o) { return Math.abs(o.y - yAt(r)) < 14 && clash(o, it); })) r++;
-        it.y = yAt(r);
-        placed.push(it);
-      });
-      items.forEach(function (it) {
-        if (plan) gBad.insertBefore(svgEl('line', { class: 'bad-link', x1: it.x, x2: it.x, y1: it.yb, y2: it.yp }), gBad.firstChild);
-        gBad.insertBefore(svgEl('circle', { class: 'bad-ring', cx: it.x, cy: it.yb, r: 8.5 }), gBad.firstChild);
-        if (plan) gBad.insertBefore(svgEl('circle', { class: 'bad-ring-plan', cx: it.x, cy: it.yp, r: 7 }), gBad.firstChild);
-        it.el.setAttribute('x', it.cx.toFixed(1));
-        it.el.setAttribute('y', it.y.toFixed(1));
+        if (!flags[i]) return;
+        c.setAttribute('class', (c.getAttribute('class') + ' is-bad').trim());
+        svgEl('circle', { class: 'bad-ring', cx: xOf(i).toFixed(1), cy: yOf(base[i]).toFixed(1), r: 8.5 }, gBad);
       });
     }
 
