@@ -219,7 +219,7 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
-# bizfax
+# Farmer Joe data
 data/raw/
 data/cache/
 
