@@ -160,5 +160,15 @@ def health() -> dict:
     return {"ok": True}
 
 
+@app.middleware("http")
+async def revalidate_static(request, call_next):
+    """Make browsers re-check frontend files on every load (cheap: ETag -> 304), so an updated
+    app.js / styles.css is never served from a stale cache during a demo."""
+    response = await call_next(request)
+    if not request.url.path.startswith("/api/"):
+        response.headers["Cache-Control"] = "no-cache"
+    return response
+
+
 # Static frontend last, so /api routes win. html=True serves index.html at "/".
 app.mount("/", StaticFiles(directory=ROOT / "frontend", html=True), name="frontend")

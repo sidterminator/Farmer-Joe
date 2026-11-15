@@ -944,3 +944,12 @@ body:not(.real-data) .real-only { display: none; }
   letter-spacing: 0.06em; padding: 0.4rem 0; }
 .ticket-more .tickets { padding: 0; margin: 0.4rem 0 0; }
 .plot-note { margin: 0.4rem 0 0.75rem; font-size: 0.8125rem; opacity: 0.85; }
+
+/* Bad years on the chart: red, larger, ringed dots (shape cue too, not colour alone). */
+.dots-base circle.is-bad { fill: #c0392b; r: 5.5px; }
+.bad-ring { fill: none; stroke: #c0392b; stroke-width: 1.5; pointer-events: none; }
+.bad-ring-plan { fill: none; stroke: var(--ink); stroke-width: 1.25; stroke-dasharray: 2 2; pointer-events: none; }
+.bad-link { stroke: #c0392b; stroke-width: 1.25; pointer-events: none; }
+.bad-tag { font-size: 11px; font-weight: 600; fill: #8e1f14; paint-order: stroke; stroke: #fff; stroke-width: 3.5px;
+  stroke-linejoin: round; pointer-events: none; }
+.sw-bad { width: 9px; height: 9px; border-radius: 50%; background: #c0392b; box-shadow: 0 0 0 2px #fff, 0 0 0 3.5px #c0392b; margin: 0 3px; }

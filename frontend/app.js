@@ -492,6 +492,8 @@
         yieldSd: crop.spread * f.yield
       });
       state.base = M.summary(state.revenue);
+      // Bad year = unhedged revenue in the bottom 20% of ALL simulated seasons (not just the 20 shown).
+      state.badCut = (function () { const a = Float64Array.from(state.revenue).sort(); return a[Math.floor(0.2 * (a.length - 1))]; })();
       state.harvests = shuffled(M.representativeSeasons(state.revenue, scenario.markets.map(function (m) { return m.payoutYes; }), HARVESTS), 2027);
       const rec = scenario.recommendation;
       const picks = {};
@@ -820,11 +822,17 @@
   function grown(i, k) { return state.revenue[i] * Math.pow(1 + (state.trend || 0), k); }
   function grownPlan(i, k) { return grown(i, k) + (state.planArr[i] - state.revenue[i]); }
 
+  function moneyK(v) { return '$' + whole.format(Math.round(v / 1000)) + 'K'; }
+
   function chartSpec() {
     const picks = state.harvests;
     return {
       ariaLabel: 'Revenue over years 1 to ' + picks.length + ', without a hedge and with your plan. Arrow keys read values.',
       xTitle: 'Year',
+      bad: picks.map(function (i) { return state.revenue[i] <= state.badCut; }),
+      badLabel: function (i, base, plan) {
+        return 'Bad year: ' + moneyK(base[i]) + (plan ? ' \u2192 ' + moneyK(plan[i]) + ' with hedge' : '');
+      },
       base: { label: 'Without', values: picks.map(function (i, k) { return grown(i, k); }) },
       plan: {
         label: 'With plan',
@@ -835,7 +843,8 @@
       tip: function (i, base, plan) {
         const rows = [{ key: 'base', value: money(base[i]), label: 'without' }];
         if (plan) rows.push({ key: 'plan', value: money(plan[i]), label: 'with plan' });
-        return { title: 'Year ' + (i + 1), rows: rows };
+        const isBad = state.revenue[picks[i]] <= state.badCut;
+        return { title: 'Year ' + (i + 1) + (isBad ? ' \u00b7 bad year' : ''), rows: rows };
       }
     };
   }
