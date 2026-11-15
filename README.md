@@ -65,6 +65,9 @@ pip install -r requirements.txt
 uvicorn server:app --port 8000
 ```
 
+Before a demo, run `python prefetch_demo.py` once: it downloads and caches everything for the
+three demo farms (Champaign IL corn, Salina KS wheat, Kinston NC corn), so they answer instantly.
+
 Then open **http://localhost:8000**. The first time you ask about a new farm, the server downloads
 its weather history and builds the simulation (about 20–90 seconds); after that it answers in
 under a second. The website also opens straight from `frontend/index.html` on sample data if the

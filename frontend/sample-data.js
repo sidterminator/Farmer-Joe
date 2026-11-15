@@ -187,28 +187,41 @@
     }).catch(function () { /* sample mode */ });
   }
 
+  const TIMEOUT_MS = 240000;   // a farm the server has never seen can take a few minutes
+
   B.source = {
-    /* farm: { crop, station, miles, lat, lon, acres, yield, price, budget, stability, stationId } */
+    /* farm: { crop, station, miles, lat, lon, acres, yield, price, budget, stability, stationId }
+     * Served by server.py: the model's scenario, or a rejected Promise (the screen offers sample
+     * data). Opened from disk or without a location: the sample scenario. */
     scenario: function (farm) {
-      if (!online() || farm.lat === null || farm.lat === undefined) return Promise.resolve(buildScenario(farm));
+      if (!online() || farm.lat === null || farm.lat === undefined) return this.sample(farm);
+      const ctl = typeof AbortController === 'function' ? new AbortController() : null;
+      const timer = ctl ? setTimeout(function () { ctl.abort(); }, TIMEOUT_MS) : null;
       return fetch('/api/scenario', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        signal: ctl ? ctl.signal : undefined,
         body: JSON.stringify({
           lat: farm.lat, lon: farm.lon, crop: farm.crop, acres: farm.acres, yield: farm.yield,
           price: farm.price, budget: farm.budget, stability: farm.stability, stationId: farm.stationId
         })
       }).then(function (r) {
-        if (!r.ok) throw new Error('server answered ' + r.status);
+        if (!r.ok) {
+          return r.text().then(function (t) { throw new Error('The model server answered ' + r.status + (t ? ': ' + t.slice(0, 160) : '')); });
+        }
         return r.json();
       }).then(function (d) {
         document.body.classList.add('real-data');
         return decodeScenario(d);
-      }).catch(function (err) {
-        console.warn('Farmer Joe: using sample data (' + err.message + ')');
-        document.body.classList.remove('real-data');
-        return buildScenario(farm);
-      });
+      }, function (err) {
+        throw err.name === 'AbortError' ? new Error('The model took too long to answer.') : err;
+      }).finally(function () { if (timer) clearTimeout(timer); });
+    },
+
+    /* The built-in, deliberately exaggerated sample scenario. */
+    sample: function (farm) {
+      document.body.classList.remove('real-data');
+      return Promise.resolve(buildScenario(farm));
     },
 
     /* Orders need a signed Kalshi API key, which a web page cannot keep safe,

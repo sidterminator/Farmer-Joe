@@ -914,3 +914,16 @@ body.real-data .sample-only { display: none; }
 body:not(.real-data) .real-only { display: none; }
 .plan-verdict { margin: 0 0 0.35rem; font-weight: 700; letter-spacing: 0.01em; }
 .plan-verdict[data-decision="none"] { font-weight: 600; }
+.plan-status { margin: 0 0 1rem; padding: 0.9rem 1rem; border: 1px solid currentColor; border-radius: 6px; }
+.plan-status[hidden] { display: none; }
+.plan-status-title { margin: 0; font-weight: 700; }
+.plan-status-text { margin: 0.35rem 0 0; }
+.plan-status .btn { margin-top: 0.75rem; }
+.plan-status[data-kind="loading"] .plan-status-title::after { content: ""; display: inline-block; width: 0.8em; height: 0.8em;
+  margin-left: 0.5em; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%;
+  vertical-align: -0.1em; animation: fj-spin 0.9s linear infinite; }
+@keyframes fj-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .plan-status[data-kind="loading"] .plan-status-title::after { animation: none; } }
+/* With a long menu of hedges, keep the chart at a readable size and in view while scrolling. */
+.chart-tag { align-self: start; position: sticky; top: 1rem; }
+.chart-tag .plot { flex: none; height: min(60vh, 520px); }

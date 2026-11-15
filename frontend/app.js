@@ -455,10 +455,25 @@
     const f = state.farm;
     const station = stationOf(f);
     if (!plot) plot = B.createPlot($('plot'));
-    B.source.scenario({
+    const ask = {
       crop: f.crop, station: station, miles: f.miles, lat: f.lat, lon: f.lon, acres: f.acres,
       yield: f.yield, price: f.price, budget: f.budget, stability: LEAN[f.lean - 1].value, stationId: f.stationId
-    }).then(function (scenario) {
+    };
+    const req = (state.req = (state.req || 0) + 1);   // ignore answers to stale requests
+    showLoading();
+    B.source.scenario(ask).then(function (scenario) {
+      if (req === state.req) applyScenario(scenario);
+    }, function (err) {
+      if (req !== state.req) return;
+      showError(err, function () {
+        B.source.sample(ask).then(function (scenario) { if (req === state.req) applyScenario(scenario); });
+      });
+    });
+  }
+
+  function applyScenario(scenario) {
+    const f = state.farm;
+    {
       const crop = B.crops[f.crop];
       state.scenario = scenario;
       // Real model output carries revenue per season; the sample carries a yield shock.
@@ -489,9 +504,47 @@
       } else {
         recommendPlan();
       }
+      setStatus(null);
       renderTickets();
       updatePlan(true);
-    });
+    }
+  }
+
+  /* While the model runs, and if it fails: one status block at the top of the advice screen. */
+  function setStatus(kind, title, text, action) {
+    let box = $('plan-status');
+    if (!box) {
+      box = make('div', 'plan-status');
+      box.id = 'plan-status';
+      box.setAttribute('role', 'status');
+      box.setAttribute('aria-live', 'polite');
+      const head = $('plan-title').parentNode;
+      head.insertBefore(box, head.firstChild);
+    }
+    box.innerHTML = '';
+    box.hidden = !kind;
+    box.dataset.kind = kind || '';
+    if (!kind) return;
+    box.appendChild(make('p', 'plan-status-title', title));
+    if (text) box.appendChild(make('p', 'plan-status-text', text));
+    if (action) {
+      const b = make('button', 'btn btn-primary', action.label);
+      b.type = 'button';
+      b.addEventListener('click', action.run);
+      box.appendChild(b);
+    }
+  }
+
+  function showLoading() {
+    $('plan-verdict').hidden = true;
+    setStatus('loading', 'Simulating 10,000 seasons\u2026',
+      'A farm the model has not seen before can take a minute or two the first time.');
+  }
+
+  function showError(err, fallback) {
+    console.error('Farmer Joe:', err);
+    setStatus('error', 'Could not get the model\u2019s advice.', (err && err.message) || String(err),
+      { label: 'Use sample data', run: function () { setStatus('loading', 'Loading sample data\u2026'); fallback(); } });
   }
 
   /* The backend's verdict, one line: Hedge / Partial hedge / Don't hedge — reason. */
