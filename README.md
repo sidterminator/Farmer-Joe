@@ -39,7 +39,7 @@ Built at HackPrinceton Fall 2026.
 > protects her best.
 >
 > **Recommendation: partial hedge.** Spend about $7,500 on that contract (28,800 contracts at
-> 26¢). Her bad-year income rises by roughly $20,000, for an expected cost of about $800.
+> 26¢). Her bad-year income rises by roughly $19,000, for an expected cost of about $900.
 
 *These numbers come from our model with placeholder settings. They are an illustration, not
 financial advice.*
@@ -62,17 +62,13 @@ financial advice.*
 ```bash
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
+python run.py --prewarm        # once: caches the demo farms so they load instantly
 uvicorn server:app --port 8000
 ```
 
-Before a demo, run `python run.py --prewarm` once: it downloads and caches everything for the
-demo farms (Champaign IL corn and soybeans, Salina KS wheat, Kinston NC corn), so they answer
-instantly. Nearby pins reuse a cached farm (locations are grouped on a 0.1° grid, about 11 km).
-
-Then open **http://localhost:8000**. The first time you ask about a new farm, the server downloads
-its weather history and builds the simulation (about 20–90 seconds); after that it answers in
-under a second. The website also opens straight from `frontend/index.html` on sample data if the
-server isn't running.
+Then open **http://localhost:8000**. A farm far from the demo farms takes about 20–90 seconds the
+first time (it downloads weather history); after that it answers in under a second. The website
+also opens straight from `frontend/index.html` on sample data if the server isn't running.
 
 ---
 
