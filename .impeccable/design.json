@@ -1,0 +1,645 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-15T01:35:12Z",
+  "title": "Design System: Farmer Joe",
+  "extensions": {
+    "colorMeta": {
+      "green-700": {
+        "role": "primary",
+        "displayName": "Sack Green",
+        "canonical": "#17603a",
+        "tonalRamp": [
+          "oklch(15% 0.024 156)",
+          "oklch(26% 0.052 156)",
+          "oklch(38% 0.076 156)",
+          "oklch(49% 0.090 156)",
+          "oklch(61% 0.094 156)",
+          "oklch(72% 0.089 156)",
+          "oklch(84% 0.073 156)",
+          "oklch(95% 0.048 156)"
+        ]
+      },
+      "green-800": {
+        "role": "primary",
+        "displayName": "Sack Green, Deep",
+        "canonical": "#114a2c",
+        "tonalRamp": [
+          "oklch(15% 0.019 156)",
+          "oklch(26% 0.043 156)",
+          "oklch(38% 0.063 156)",
+          "oklch(49% 0.074 156)",
+          "oklch(61% 0.078 156)",
+          "oklch(72% 0.073 156)",
+          "oklch(84% 0.061 156)",
+          "oklch(95% 0.040 156)"
+        ]
+      },
+      "green-600": {
+        "role": "primary",
+        "displayName": "Sack Green, Hover",
+        "canonical": "#1f7446",
+        "tonalRamp": [
+          "oklch(15% 0.027 155)",
+          "oklch(26% 0.060 155)",
+          "oklch(38% 0.087 155)",
+          "oklch(49% 0.104 155)",
+          "oklch(61% 0.109 155)",
+          "oklch(72% 0.102 155)",
+          "oklch(84% 0.084 155)",
+          "oklch(95% 0.055 155)"
+        ]
+      },
+      "green-500": {
+        "role": "primary",
+        "displayName": "Rule on Green",
+        "canonical": "#3d8a5f",
+        "tonalRamp": [
+          "oklch(15% 0.025 157)",
+          "oklch(26% 0.056 157)",
+          "oklch(38% 0.082 157)",
+          "oklch(49% 0.097 157)",
+          "oklch(61% 0.102 157)",
+          "oklch(72% 0.096 157)",
+          "oklch(84% 0.079 157)",
+          "oklch(95% 0.052 157)"
+        ]
+      },
+      "green-300": {
+        "role": "primary",
+        "displayName": "Chart Green, Without Line",
+        "canonical": "#5a9c76",
+        "tonalRamp": [
+          "oklch(15% 0.022 157)",
+          "oklch(26% 0.049 157)",
+          "oklch(38% 0.072 157)",
+          "oklch(49% 0.085 157)",
+          "oklch(61% 0.089 157)",
+          "oklch(72% 0.084 157)",
+          "oklch(84% 0.069 157)",
+          "oklch(95% 0.046 157)"
+        ]
+      },
+      "wash": {
+        "role": "primary",
+        "displayName": "Wash",
+        "canonical": "#e8f3eb",
+        "tonalRamp": [
+          "oklch(15% 0.004 154)",
+          "oklch(26% 0.009 154)",
+          "oklch(38% 0.013 154)",
+          "oklch(49% 0.015 154)",
+          "oklch(61% 0.016 154)",
+          "oklch(72% 0.015 154)",
+          "oklch(84% 0.012 154)",
+          "oklch(95% 0.008 154)"
+        ]
+      },
+      "red": {
+        "role": "secondary",
+        "displayName": "Tag Red",
+        "canonical": "#c6321d",
+        "tonalRamp": [
+          "oklch(15% 0.047 31)",
+          "oklch(26% 0.103 31)",
+          "oklch(38% 0.151 31)",
+          "oklch(49% 0.179 31)",
+          "oklch(61% 0.188 31)",
+          "oklch(72% 0.177 31)",
+          "oklch(84% 0.146 31)",
+          "oklch(95% 0.096 31)"
+        ]
+      },
+      "red-deep": {
+        "role": "secondary",
+        "displayName": "Tag Red, Error Text",
+        "canonical": "#a32715",
+        "tonalRamp": [
+          "oklch(15% 0.041 31)",
+          "oklch(26% 0.090 31)",
+          "oklch(38% 0.131 31)",
+          "oklch(49% 0.156 31)",
+          "oklch(61% 0.163 31)",
+          "oklch(72% 0.153 31)",
+          "oklch(84% 0.127 31)",
+          "oklch(95% 0.083 31)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#0d3320",
+        "tonalRamp": [
+          "oklch(15% 0.014 158)",
+          "oklch(26% 0.030 158)",
+          "oklch(38% 0.045 158)",
+          "oklch(49% 0.053 158)",
+          "oklch(61% 0.055 158)",
+          "oklch(72% 0.052 158)",
+          "oklch(84% 0.043 158)",
+          "oklch(95% 0.028 158)"
+        ]
+      },
+      "ink-2": {
+        "role": "neutral",
+        "displayName": "Ink, Secondary",
+        "canonical": "#3c5547",
+        "tonalRamp": [
+          "oklch(15% 0.010 160)",
+          "oklch(26% 0.021 160)",
+          "oklch(38% 0.031 160)",
+          "oklch(49% 0.037 160)",
+          "oklch(61% 0.038 160)",
+          "oklch(72% 0.036 160)",
+          "oklch(84% 0.030 160)",
+          "oklch(95% 0.020 160)"
+        ]
+      },
+      "ink-3": {
+        "role": "neutral",
+        "displayName": "Ink, Quiet",
+        "canonical": "#5b7164",
+        "tonalRamp": [
+          "oklch(15% 0.008 159)",
+          "oklch(26% 0.018 159)",
+          "oklch(38% 0.027 159)",
+          "oklch(49% 0.032 159)",
+          "oklch(61% 0.033 159)",
+          "oklch(72% 0.031 159)",
+          "oklch(84% 0.026 159)",
+          "oklch(95% 0.017 159)"
+        ]
+      },
+      "black": {
+        "role": "neutral",
+        "displayName": "Black, Start Arrow Only",
+        "canonical": "#000000",
+        "tonalRamp": [
+          "oklch(15% 0.000 90)",
+          "oklch(26% 0.000 90)",
+          "oklch(38% 0.000 90)",
+          "oklch(49% 0.000 90)",
+          "oklch(61% 0.000 90)",
+          "oklch(72% 0.000 90)",
+          "oklch(84% 0.000 90)",
+          "oklch(95% 0.000 90)"
+        ]
+      },
+      "tag": {
+        "role": "neutral",
+        "displayName": "Tag Stock",
+        "canonical": "#fbfcf9",
+        "tonalRamp": [
+          "oklch(15% 0.001 122)",
+          "oklch(26% 0.002 122)",
+          "oklch(38% 0.003 122)",
+          "oklch(49% 0.004 122)",
+          "oklch(61% 0.004 122)",
+          "oklch(72% 0.004 122)",
+          "oklch(84% 0.003 122)",
+          "oklch(95% 0.002 122)"
+        ]
+      },
+      "tag-2": {
+        "role": "neutral",
+        "displayName": "Tag Stock, Quiet Fill",
+        "canonical": "#eef3ee",
+        "tonalRamp": [
+          "oklch(15% 0.002 146)",
+          "oklch(26% 0.005 146)",
+          "oklch(38% 0.007 146)",
+          "oklch(49% 0.008 146)",
+          "oklch(61% 0.008 146)",
+          "oklch(72% 0.008 146)",
+          "oklch(84% 0.007 146)",
+          "oklch(95% 0.004 146)"
+        ]
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Hairline Rule",
+        "canonical": "#d5ddd6",
+        "tonalRamp": [
+          "oklch(15% 0.003 149)",
+          "oklch(26% 0.007 149)",
+          "oklch(38% 0.010 149)",
+          "oklch(49% 0.012 149)",
+          "oklch(61% 0.013 149)",
+          "oklch(72% 0.012 149)",
+          "oklch(84% 0.010 149)",
+          "oklch(95% 0.007 149)"
+        ]
+      },
+      "rule-strong": {
+        "role": "neutral",
+        "displayName": "Control Rule",
+        "canonical": "#9fb0a5",
+        "tonalRamp": [
+          "oklch(15% 0.006 157)",
+          "oklch(26% 0.013 157)",
+          "oklch(38% 0.020 157)",
+          "oklch(49% 0.023 157)",
+          "oklch(61% 0.025 157)",
+          "oklch(72% 0.023 157)",
+          "oklch(84% 0.019 157)",
+          "oklch(95% 0.013 157)"
+        ]
+      },
+      "white": {
+        "role": "neutral",
+        "displayName": "White",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "oklch(15% 0.000 90)",
+          "oklch(26% 0.000 90)",
+          "oklch(38% 0.000 90)",
+          "oklch(49% 0.000 90)",
+          "oklch(61% 0.000 90)",
+          "oklch(72% 0.000 90)",
+          "oklch(84% 0.000 90)",
+          "oklch(95% 0.000 90)"
+        ]
+      },
+      "on-green-2": {
+        "role": "neutral",
+        "displayName": "On-Green Grey",
+        "canonical": "#d3e6d8",
+        "tonalRamp": [
+          "oklch(15% 0.007 154)",
+          "oklch(26% 0.015 154)",
+          "oklch(38% 0.022 154)",
+          "oklch(49% 0.026 154)",
+          "oklch(61% 0.028 154)",
+          "oklch(72% 0.026 154)",
+          "oklch(84% 0.021 154)",
+          "oklch(95% 0.014 154)"
+        ]
+      },
+      "on-green-3": {
+        "role": "neutral",
+        "displayName": "On-Green Grey, Disabled",
+        "canonical": "#b6d6c0",
+        "tonalRamp": [
+          "oklch(15% 0.011 155)",
+          "oklch(26% 0.025 155)",
+          "oklch(38% 0.037 155)",
+          "oklch(49% 0.043 155)",
+          "oklch(61% 0.046 155)",
+          "oklch(72% 0.043 155)",
+          "oklch(84% 0.035 155)",
+          "oklch(95% 0.023 155)"
+        ]
+      },
+      "yes-tint": {
+        "role": "primary",
+        "displayName": "Yes Tint",
+        "canonical": "#dcebdf",
+        "tonalRamp": [
+          "oklch(15% 0.006 152)",
+          "oklch(26% 0.012 152)",
+          "oklch(38% 0.018 152)",
+          "oklch(49% 0.022 152)",
+          "oklch(61% 0.023 152)",
+          "oklch(72% 0.021 152)",
+          "oklch(84% 0.018 152)",
+          "oklch(95% 0.012 152)"
+        ]
+      },
+      "no-tint": {
+        "role": "secondary",
+        "displayName": "No Tint",
+        "canonical": "#f8dfd9",
+        "tonalRamp": [
+          "oklch(15% 0.007 34)",
+          "oklch(26% 0.016 34)",
+          "oklch(38% 0.023 34)",
+          "oklch(49% 0.028 34)",
+          "oklch(61% 0.029 34)",
+          "oklch(72% 0.027 34)",
+          "oklch(84% 0.022 34)",
+          "oklch(95% 0.015 34)"
+        ]
+      },
+      "no-ink": {
+        "role": "secondary",
+        "displayName": "No Ink",
+        "canonical": "#8a2112",
+        "tonalRamp": [
+          "oklch(15% 0.036 31)",
+          "oklch(26% 0.078 31)",
+          "oklch(38% 0.115 31)",
+          "oklch(49% 0.136 31)",
+          "oklch(61% 0.143 31)",
+          "oklch(72% 0.134 31)",
+          "oklch(84% 0.111 31)",
+          "oklch(95% 0.073 31)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "The name on the intro panel, two stacked lines in sack green sized to the panel."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "One screen title per screen; on the advice screen it is the hedge (\"Hedge $14,945\")."
+      },
+      "action": {
+        "displayName": "Action",
+        "purpose": "The word on the Start tag only."
+      },
+      "name": {
+        "displayName": "Name",
+        "purpose": "Wordmark in the bar, the Hedges heading, each ticket's market name."
+      },
+      "figure": {
+        "displayName": "Figure",
+        "purpose": "Crop value at the foot of the farm tag and the order total."
+      },
+      "stamp": {
+        "displayName": "Stamp",
+        "purpose": "Red stamps: Sample, Demo only."
+      },
+      "promise": {
+        "displayName": "Promise",
+        "purpose": "The single sentence under the name."
+      },
+      "lede": {
+        "displayName": "Lede",
+        "purpose": "The one line under the advice title that says where the money goes."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "The heading of a tag."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Default reading text."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Form labels of one to three words, button text, table values."
+      },
+      "note": {
+        "displayName": "Note",
+        "purpose": "Hints, units, fine print, axis ticks, the chart key."
+      }
+    },
+    "shadows": [
+      {
+        "name": "tooltip-lift",
+        "value": "0 8px 18px rgba(9, 36, 22, 0.28)",
+        "purpose": "The chart tooltip only, the one element that floats over other content."
+      },
+      {
+        "name": "thumb-lift",
+        "value": "0 1px 4px rgba(13, 51, 32, 0.45)",
+        "purpose": "The slider thumb, so it reads as the grabbable part of the track."
+      },
+      {
+        "name": "eyelet-ring",
+        "value": "0 0 0 4px #d5ddd6",
+        "purpose": "A hard ring, not a shadow: the reinforcement around a tag's punched hole (5px on the Start tag)."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.23, 1, 0.32, 1)",
+        "purpose": "The one curve for every move: pin, ring, line, screens, presses, chart dots, the budget meter."
+      },
+      {
+        "name": "screen-in",
+        "value": "240ms, opacity 0 and translateY(18px) to rest",
+        "purpose": "A screen rising in. Reduced motion: 160ms fade."
+      },
+      {
+        "name": "pin-drop",
+        "value": "260ms, translateY(-52px) and opacity 0 to rest",
+        "purpose": "The pin landing on the map. Reduced motion: 150ms fade in place."
+      },
+      {
+        "name": "landing-ring",
+        "value": "280ms after a 200ms delay, scale 0.5 to 3.4, opacity 0.75 to 0",
+        "purpose": "The red ring that marks where the pin landed. Not played under reduced motion."
+      },
+      {
+        "name": "station-line",
+        "value": "280ms after a 240ms delay, stroke-dashoffset to 0",
+        "purpose": "The line running from the pin to the nearest station."
+      },
+      {
+        "name": "state-change",
+        "value": "150ms ease on background-color, border-color and color",
+        "purpose": "Hover, selection and the wash on the row being answered. The Start tag's face takes 160ms."
+      },
+      {
+        "name": "press",
+        "value": "120ms, scale(0.97); 140ms, scale(0.98) on the Start tag",
+        "purpose": "Buttons and Yes and No sides giving under the pointer."
+      },
+      {
+        "name": "arrow-nudge",
+        "value": "180ms, translateX(8px), only under (hover: hover) and (pointer: fine)",
+        "purpose": "The Start arrow sliding right under a real pointer; the face's colour change is plain :hover."
+      },
+      {
+        "name": "meter-move",
+        "value": "200ms on transform (scaleX)",
+        "purpose": "The budget meter moving to a new value."
+      },
+      {
+        "name": "dot-grow",
+        "value": "120ms on r, 4px to 5.5px",
+        "purpose": "A chart dot growing under the crosshair."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "advice-stack",
+        "value": "1100px"
+      },
+      {
+        "name": "farm-stack",
+        "value": "900px"
+      },
+      {
+        "name": "intro-stack",
+        "value": "820px"
+      },
+      {
+        "name": "bar-wrap",
+        "value": "760px"
+      },
+      {
+        "name": "narrow",
+        "value": "560px"
+      },
+      {
+        "name": "chart-worst-labels",
+        "value": "520px (plot width)"
+      },
+      {
+        "name": "map-names",
+        "value": "420px (map width)"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Start Tag",
+      "kind": "button",
+      "refersTo": "start-tag",
+      "description": "A white cut-cornered tag on the green side of the intro: an eyelet, the word START and a plain black arrow with no disc. Hover lays the pale green wash over the face.",
+      "html": "<div class=\"ds-start-ground\"><a class=\"ds-start-tag\" href=\"#\"><span class=\"ds-start-face\"><span class=\"ds-start-eyelet\"></span><span class=\"ds-start-word\">Start</span><svg class=\"ds-start-arrow\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M4 12h15M13 5.5l6.5 6.5-6.5 6.5\"/></svg></span></a></div>",
+      "css": ".ds-start-ground { padding: 28px; background: #17603a; } .ds-start-tag { display: block; max-width: 452px; color: #0d3320; text-decoration: none; transition: transform 140ms cubic-bezier(0.23, 1, 0.32, 1); } .ds-start-face { display: flex; align-items: center; gap: 18px; min-height: 132px; padding: 18px 30px 18px 26px; background: #fbfcf9; clip-path: polygon(26px 0, 100% 0, 100% 100%, 26px 100%, 0 calc(100% - 26px), 0 26px); transition: background-color 160ms ease; } .ds-start-eyelet { flex: none; width: 20px; height: 20px; border-radius: 50%; background: #17603a; box-shadow: 0 0 0 5px #d5ddd6; } .ds-start-word { flex: 1; font-family: var(--display, 'Big Shoulders', 'Arial Narrow', sans-serif); font-weight: 900; font-size: 88px; line-height: 0.9; text-transform: uppercase; } .ds-start-arrow { width: 52px; height: 52px; flex: none; fill: none; stroke: #000000; stroke-width: 2.25; stroke-linecap: round; stroke-linejoin: round; transition: transform 180ms cubic-bezier(0.23, 1, 0.32, 1); } .ds-start-tag:hover .ds-start-face { background: #e8f3eb; } @media (hover: hover) and (pointer: fine) { .ds-start-tag:hover .ds-start-arrow { transform: translateX(8px); } } .ds-start-tag:active { transform: scale(0.98); } .ds-start-tag:focus-visible { outline: 3px solid #ffffff; outline-offset: 4px; }"
+    },
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Solid sack green; the one forward action on a tag (\"See my plan\", \"Send to Kalshi demo\").",
+      "html": "<button class=\"ds-btn-primary\">See my plan<svg class=\"ds-icon\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M4 12h15M13 5.5l6.5 6.5-6.5 6.5\"/></svg></button>",
+      "css": ".ds-icon { width: 18px; height: 18px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; } .ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 20px; border: 1.5px solid transparent; border-radius: 3px; background: #17603a; color: #ffffff; font-family: var(--text, 'Archivo', system-ui, sans-serif); font-size: 16px; font-weight: 650; white-space: nowrap; cursor: pointer; transition: background-color 150ms ease, transform 120ms cubic-bezier(0.23, 1, 0.32, 1); } .ds-btn-primary:hover { background: #114a2c; } .ds-btn-primary:active { transform: scale(0.97); } .ds-btn-primary:focus-visible { outline: 2px solid #0d3320; outline-offset: 2px; } .ds-btn-primary:disabled { background: #eef3ee; color: #5b7164; border-color: #d5ddd6; cursor: not-allowed; transform: none; }"
+    },
+    {
+      "name": "Quiet Button",
+      "kind": "button",
+      "refersTo": "button-quiet",
+      "description": "Outlined secondary action on tag stock (\"Table\", \"Add\", \"Retry\"); fills ink when pressed as a toggle.",
+      "html": "<div class=\"ds-btn-quiet-wrap\"><button class=\"ds-btn-quiet\">Add</button><button class=\"ds-btn-quiet\" aria-pressed=\"true\">Table</button></div>",
+      "css": ".ds-btn-quiet-wrap { display: flex; gap: 12px; padding: 16px; background: #fbfcf9; } .ds-btn-quiet { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 38px; padding: 0 14px; border: 1.5px solid #9fb0a5; border-radius: 3px; background: none; color: #0d3320; font-family: var(--text, 'Archivo', system-ui, sans-serif); font-size: 14px; font-weight: 650; white-space: nowrap; cursor: pointer; transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, transform 120ms cubic-bezier(0.23, 1, 0.32, 1); } .ds-btn-quiet:hover { background: #eef3ee; border-color: #5b7164; } .ds-btn-quiet:active { transform: scale(0.97); } .ds-btn-quiet:focus-visible { outline: 2px solid #0d3320; outline-offset: 2px; } .ds-btn-quiet[aria-pressed=\"true\"] { background: #0d3320; border-color: #0d3320; color: #fbfcf9; }"
+    },
+    {
+      "name": "Steps",
+      "kind": "nav",
+      "refersTo": "step",
+      "description": "The bar on screens 2 and 3: wordmark and three numbered steps on sack green; the current step is a white pill.",
+      "html": "<header class=\"ds-bar\"><a class=\"ds-wordmark\" href=\"#\">Farmer Joe</a><ol class=\"ds-steps\"><li><a href=\"#\">Start</a></li><li><a href=\"#\" aria-current=\"step\">Farm</a></li><li><a href=\"#\" aria-disabled=\"true\">Advice</a></li></ol></header>",
+      "css": ".ds-bar { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 28px; padding: 14px 28px 10px; background: #17603a; color: #ffffff; } .ds-wordmark { font-family: var(--display, 'Big Shoulders', 'Arial Narrow', sans-serif); font-weight: 900; font-size: 30px; line-height: 1; text-transform: uppercase; text-decoration: none; color: inherit; } .ds-steps { display: flex; gap: 6px; margin: 0; padding: 0; list-style: none; counter-reset: ds-step; font-family: var(--text, 'Archivo', system-ui, sans-serif); font-size: 14px; } .ds-steps li { counter-increment: ds-step; } .ds-steps a { display: flex; align-items: center; gap: 8px; padding: 6px 12px 6px 8px; border-radius: 3px; color: #d3e6d8; font-weight: 600; text-decoration: none; transition: background-color 150ms ease, color 150ms ease; } .ds-steps a::before { content: counter(ds-step); display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid currentColor; font-size: 12.5px; font-variant-numeric: tabular-nums; } .ds-steps a:hover { color: #ffffff; background: #1f7446; } .ds-steps a:focus-visible { outline: 2px solid #ffffff; outline-offset: 2px; } .ds-steps a[aria-current=\"step\"] { background: #fbfcf9; color: #0d3320; } .ds-steps a[aria-disabled=\"true\"] { color: #b6d6c0; pointer-events: none; }"
+    },
+    {
+      "name": "Ruled Form Row",
+      "kind": "input",
+      "refersTo": "row",
+      "description": "One question per ruled row on the tag, a short label left and the control right; the row that holds focus takes the pale green wash and 2px sack-green rules. The field carries its unit inside.",
+      "html": "<div class=\"ds-rows\"><div class=\"ds-row ds-row-first\"><label for=\"ds-acres\">Acres</label><span class=\"ds-field\"><input id=\"ds-acres\" type=\"text\" inputmode=\"numeric\" value=\"300\"><span class=\"ds-unit\">acres</span></span></div><div class=\"ds-row\"><label for=\"ds-price\">Price</label><span class=\"ds-field\"><span class=\"ds-unit ds-unit-lead\">$</span><input id=\"ds-price\" type=\"text\" inputmode=\"decimal\" value=\"4.50\"><span class=\"ds-unit\">/bu</span></span></div></div>",
+      "css": ".ds-rows { background: #fbfcf9; color: #0d3320; font-family: var(--text, 'Archivo', system-ui, sans-serif); } .ds-row { display: grid; grid-template-columns: minmax(120px, 0.78fr) minmax(0, 1.22fr); align-items: center; gap: 6px 16px; padding: 10px 22px; border-top: 1px solid #d5ddd6; transition: background-color 150ms ease; } .ds-row-first { border-top: 2px solid #0d3320; } .ds-row:focus-within { background: #e8f3eb; box-shadow: inset 0 2px 0 #17603a, inset 0 -2px 0 #17603a; } .ds-row > label { font-size: 14.5px; font-weight: 650; line-height: 1.35; } .ds-field { display: flex; align-items: center; gap: 6px; min-height: 40px; padding: 4px 10px; border: 1.5px solid #9fb0a5; border-radius: 3px; background: #ffffff; transition: border-color 150ms ease; } .ds-field:focus-within { border-color: #0d3320; outline: 2px solid #0d3320; outline-offset: 1px; } .ds-field input { flex: 1; min-width: 0; width: 100%; height: 28px; padding: 0; border: 0; outline: 0; background: none; color: inherit; font: inherit; font-size: 15.5px; font-weight: 600; font-variant-numeric: tabular-nums; caret-color: #17603a; } .ds-unit { flex: none; color: #5b7164; font-size: 13.5px; white-space: nowrap; } .ds-unit-lead { color: #0d3320; font-weight: 600; font-size: 15.5px; }"
+    },
+    {
+      "name": "Segmented Control",
+      "kind": "input",
+      "refersTo": "segment-selected",
+      "description": "One of three (crop) as a segmented box. The chosen option is solid ink.",
+      "html": "<div class=\"ds-choice\"><div class=\"ds-seg\"><label><input type=\"radio\" name=\"ds-crop\" checked><span>Corn</span></label><label><input type=\"radio\" name=\"ds-crop\"><span>Soybeans</span></label><label><input type=\"radio\" name=\"ds-crop\"><span>Wheat</span></label></div></div>",
+      "css": ".ds-choice { padding: 16px 22px; background: #fbfcf9; color: #0d3320; font-family: var(--text, 'Archivo', system-ui, sans-serif); } .ds-seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 3px; padding: 3px; border: 1.5px solid #0d3320; border-radius: 3px; background: #ffffff; } .ds-seg label { position: relative; display: block; } .ds-seg input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; } .ds-seg span { display: grid; place-items: center; min-height: 32px; padding: 0 8px; border-radius: 2px; font-size: 14.5px; font-weight: 650; transition: background-color 150ms ease, color 150ms ease; } .ds-seg input:hover + span { background: #eef3ee; } .ds-seg input:checked + span { background: #0d3320; color: #ffffff; } .ds-seg input:focus-visible + span { outline: 2px solid #0d3320; outline-offset: 1px; } .ds-seg input:checked:focus-visible + span { outline-color: #ffffff; outline-offset: -4px; }"
+    },
+    {
+      "name": "Stamp",
+      "kind": "custom",
+      "refersTo": "stamp",
+      "description": "Red outlined capitals tilted 2 degrees: Sample or Demo only beside a heading, with a tag-stock fill when it sits on green.",
+      "html": "<div class=\"ds-stamps\"><span class=\"ds-stamped\">Sample</span><span class=\"ds-stamped\">Demo only</span></div>",
+      "css": ".ds-stamps { display: flex; align-items: center; gap: 20px; padding: 18px 22px; background: #fbfcf9; } .ds-stamped { display: inline-block; padding: 1px 9px 2px; border: 1.5px solid #c6321d; border-radius: 2px; color: #c6321d; font-family: var(--display, 'Big Shoulders', 'Arial Narrow', sans-serif); font-weight: 800; font-size: 15px; line-height: 1.1; letter-spacing: 0.02em; text-transform: uppercase; transform: rotate(-2deg); }"
+    },
+    {
+      "name": "Tag with Ruled Rows",
+      "kind": "card",
+      "refersTo": "tag",
+      "description": "A white tag on green: a head with a title and stamp, order lines as ruled rows, and a total closed by a 2px ink rule with the figure in Big Shoulders.",
+      "html": "<div class=\"ds-tag-ground\"><div class=\"ds-tag\"><div class=\"ds-tag-head\"><h2>Order</h2><span class=\"ds-tag-stamp\">Demo only</span></div><ul class=\"ds-lines\"><li><span>22,400 Yes · Temp · 40¢</span><span>$8,960</span></li><li><span>13,300 No · Rain · 45¢</span><span>$5,985</span></li></ul><p class=\"ds-total\"><span>Total</span><strong>$14,945</strong></p></div></div>",
+      "css": ".ds-tag-ground { padding: 24px; background: #17603a; } .ds-tag { display: grid; gap: 10px; padding: 16px 20px 18px; border-radius: 3px; background: #fbfcf9; color: #0d3320; font-family: var(--text, 'Archivo', system-ui, sans-serif); font-size: 14px; } .ds-tag-head { display: flex; align-items: center; gap: 12px; } .ds-tag-head h2 { margin: 0 auto 0 0; font-size: 16px; font-weight: 700; } .ds-tag-stamp { display: inline-block; padding: 1px 9px 2px; border: 1.5px solid #c6321d; border-radius: 2px; color: #c6321d; font-family: var(--display, 'Big Shoulders', 'Arial Narrow', sans-serif); font-weight: 800; font-size: 15px; line-height: 1.1; letter-spacing: 0.02em; text-transform: uppercase; transform: rotate(-2deg); } .ds-lines { display: grid; margin: 0; padding: 0; list-style: none; } .ds-lines li { display: flex; justify-content: space-between; gap: 16px; padding: 6px 0; border-top: 1px solid #d5ddd6; font-variant-numeric: tabular-nums; } .ds-lines li span:last-child { font-weight: 650; white-space: nowrap; } .ds-total { display: flex; justify-content: space-between; align-items: baseline; margin: 0; padding-top: 8px; border-top: 2px solid #0d3320; font-weight: 650; } .ds-total strong { font-family: var(--display, 'Big Shoulders', 'Arial Narrow', sans-serif); font-weight: 800; font-size: 34px; line-height: 1; }"
+    },
+    {
+      "name": "Hedge Ticket",
+      "kind": "custom",
+      "refersTo": "ticket",
+      "description": "One hedge on tag stock. The stub on the left turns deep green with a white box and a green check when the hedge is in the plan; Yes prints green and No prints red, tinted at rest and solid when pressed. The amount is a dollar field with a slider, the contract count sits quietly at the top right, then the model's chance and a verdict chip.",
+      "html": "<div class=\"ds-ticket-ground\"><div class=\"ds-ticket\"><label class=\"ds-pick\"><input type=\"checkbox\" checked><span class=\"ds-box\"><svg class=\"ds-icon\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"m5 12.5 4.5 4.5L19 7.5\"/></svg></span></label><div class=\"ds-ticket-body\"><div class=\"ds-ticket-top\"><span class=\"ds-ticket-name\">Temp</span><span class=\"ds-ticket-meta\">22,400 contracts</span></div><p class=\"ds-ticket-q\">Indianapolis hits 93°F in July</p><div class=\"ds-ticket-controls\"><div class=\"ds-sides\"><button class=\"ds-side ds-side-yes\" aria-pressed=\"true\"><span class=\"ds-side-word\">Yes</span><span class=\"ds-side-price\">40¢</span></button><button class=\"ds-side ds-side-no\" aria-pressed=\"false\"><span class=\"ds-side-word\">No</span><span class=\"ds-side-price\">60¢</span></button></div><div class=\"ds-qty\"><span class=\"ds-qty-field\"><span class=\"ds-qty-lead\">$</span><input type=\"text\" inputmode=\"numeric\" value=\"8960\" aria-label=\"Dollars into Temp\"></span><input class=\"ds-qty-range\" type=\"range\" min=\"0\" max=\"45000\" value=\"22400\" aria-label=\"Dollars into Temp, slider\"></div></div><p class=\"ds-ticket-why\">Model 45% <span class=\"ds-verdict\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"m5 12.5 4.5 4.5L19 7.5\"/></svg>Cheap by 5</span></p></div></div></div>",
+      "css": ".ds-ticket-ground { padding: 24px; background: #17603a; } .ds-ticket { display: grid; grid-template-columns: 52px minmax(0, 1fr); border-radius: 3px; overflow: hidden; background: #fbfcf9; color: #0d3320; font-family: var(--text, 'Archivo', system-ui, sans-serif); } .ds-pick { position: relative; display: block; background: #eef3ee; border-right: 1px solid #d5ddd6; transition: background-color 150ms ease; } .ds-pick:has(input:checked) { background: #114a2c; border-right-color: #114a2c; } .ds-pick input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; } .ds-box { position: absolute; top: 16px; left: 50%; display: grid; place-items: center; width: 24px; height: 24px; margin-left: -12px; border: 2px solid #0d3320; border-radius: 3px; background: #ffffff; transition: background-color 150ms ease; } .ds-box .ds-icon { width: 18px; height: 18px; fill: none; stroke: #17603a; stroke-width: 2.75; stroke-linecap: round; stroke-linejoin: round; opacity: 0; transition: opacity 120ms ease; } .ds-pick input:checked ~ .ds-box { background: #ffffff; border-color: #ffffff; } .ds-pick input:checked ~ .ds-box .ds-icon { opacity: 1; } .ds-pick input:focus-visible ~ .ds-box { outline: 2px solid #0d3320; outline-offset: 3px; } .ds-pick input:checked:focus-visible ~ .ds-box { outline-color: #ffffff; } .ds-ticket-body { display: grid; gap: 8px; padding: 12px 16px 14px; min-width: 0; } .ds-ticket-top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; } .ds-ticket-name { font-family: var(--display, 'Big Shoulders', 'Arial Narrow', sans-serif); font-weight: 800; font-size: 30px; line-height: 0.95; text-transform: uppercase; } .ds-ticket-meta { color: #5b7164; font-size: 13.5px; font-variant-numeric: tabular-nums; white-space: nowrap; } .ds-ticket-q { margin: 0; color: #3c5547; font-size: 14px; line-height: 1.35; } .ds-sides { display: grid; grid-template-columns: repeat(2, 68px); gap: 6px; } .ds-side { display: grid; justify-items: center; min-height: 50px; padding: 5px 4px; border: 0; border-radius: 3px; font: inherit; cursor: pointer; transition: background-color 150ms ease, color 150ms ease, transform 120ms cubic-bezier(0.23, 1, 0.32, 1); } .ds-side:active { transform: scale(0.97); } .ds-side:focus-visible { outline: 2px solid #0d3320; outline-offset: 2px; } .ds-side-word { font-size: 12px; font-weight: 650; } .ds-side-price { font-size: 18px; font-weight: 700; line-height: 1.1; font-variant-numeric: tabular-nums; } .ds-side-yes { background: #dcebdf; color: #0d3320; } .ds-side-yes:hover { background: #c9e0cf; } .ds-side-yes[aria-pressed=\"true\"] { background: #17603a; color: #ffffff; } .ds-side-no { background: #f8dfd9; color: #8a2112; } .ds-side-no:hover { background: #f3cdc5; } .ds-side-no[aria-pressed=\"true\"] { background: #c6321d; color: #ffffff; } .ds-ticket-why { margin: 0; color: #3c5547; font-size: 13.5px; line-height: 1.35; } .ds-verdict { display: inline-flex; align-items: center; gap: 5px; padding: 1px 8px 1px 6px; border-radius: 3px; background: #eef3ee; color: #0d3320; font-size: 13px; font-weight: 650; white-space: nowrap; } .ds-verdict svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2.25; stroke-linecap: round; stroke-linejoin: round; } .ds-ticket-controls { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 10px 14px; } .ds-qty { display: grid; grid-template-columns: minmax(104px, 0.8fr) minmax(0, 1fr); align-items: center; gap: 10px; } .ds-qty-field { display: flex; align-items: center; gap: 6px; min-height: 38px; padding: 4px 10px; border: 1.5px solid #9fb0a5; border-radius: 3px; background: #ffffff; transition: border-color 150ms ease; } .ds-qty-field:focus-within { border-color: #0d3320; outline: 2px solid #0d3320; outline-offset: 1px; } .ds-qty-field input { flex: 1; min-width: 0; width: 100%; height: 28px; padding: 0; border: 0; outline: 0; background: none; color: inherit; font: inherit; font-size: 15.5px; font-weight: 600; font-variant-numeric: tabular-nums; caret-color: #17603a; } .ds-qty-lead { font-size: 15.5px; font-weight: 600; } .ds-qty-range { width: 100%; height: 24px; margin: 0; background: none; -webkit-appearance: none; appearance: none; cursor: pointer; } .ds-qty-range::-webkit-slider-runnable-track { height: 6px; border-radius: 3px; background: linear-gradient(to right, #17603a 50%, #9fb0a5 50%); } .ds-qty-range::-moz-range-track { height: 6px; border-radius: 3px; background: #9fb0a5; } .ds-qty-range::-moz-range-progress { height: 6px; border-radius: 3px; background: #17603a; } .ds-qty-range::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; margin-top: -7px; border-radius: 50%; border: 2px solid #ffffff; background: #0d3320; box-shadow: 0 1px 4px rgba(13, 51, 32, 0.45); } .ds-qty-range::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; border: 2px solid #ffffff; background: #0d3320; box-shadow: 0 1px 4px rgba(13, 51, 32, 0.45); } .ds-qty-range:focus-visible { outline: none; } .ds-qty-range:focus-visible::-webkit-slider-thumb { outline: 2px solid #0d3320; outline-offset: 2px; }"
+    },
+    {
+      "name": "Revenue by Harvest Chart",
+      "kind": "custom",
+      "refersTo": "tag",
+      "description": "The one chart form: revenue by harvest on a ruled grid. A 2px light green line is the farm without the hedge; a 2.5px ink line with a tag-stock under-stroke is the farm with the plan. Ringed dots mark every harvest, a 1px rule marks each line's worst harvest, and an HTML key sits above the plot.",
+      "html": "<div class=\"ds-chart\"><ul class=\"ds-key\"><li><span class=\"ds-sw-base\"></span>Without Farmer Joe</li><li><span class=\"ds-sw-plan\"></span>With Farmer Joe</li></ul><svg viewBox=\"0 0 372 184\" role=\"img\" aria-label=\"Revenue by harvest: a light green line without the hedge and an ink line with the plan\"><line class=\"ds-rule\" x1=\"44\" x2=\"300\" y1=\"104.0\" y2=\"104.0\"/><line class=\"ds-rule\" x1=\"44\" x2=\"300\" y1=\"58.0\" y2=\"58.0\"/><line class=\"ds-rule\" x1=\"44\" x2=\"300\" y1=\"12.0\" y2=\"12.0\"/><text class=\"ds-tick\" x=\"37\" y=\"153.0\" text-anchor=\"end\">$200K</text><text class=\"ds-tick\" x=\"37\" y=\"107.0\" text-anchor=\"end\">$250K</text><text class=\"ds-tick\" x=\"37\" y=\"61.0\" text-anchor=\"end\">$300K</text><text class=\"ds-tick\" x=\"37\" y=\"15.0\" text-anchor=\"end\">$350K</text><line class=\"ds-baseline\" x1=\"44\" x2=\"300\" y1=\"150\" y2=\"150\"/><line class=\"ds-floor-base\" x1=\"44\" x2=\"305\" y1=\"132.5\" y2=\"132.5\"/><text class=\"ds-floor-label\" x=\"308\" y=\"135.5\">Worst $219K</text><line class=\"ds-floor-plan\" x1=\"44\" x2=\"305\" y1=\"115.0\" y2=\"115.0\"/><text class=\"ds-floor-label\" x=\"308\" y=\"118.0\">Worst $238K</text><path class=\"ds-line-base\" d=\"M44.0 37.8L57.5 132.5L70.9 66.3L84.4 73.6L97.9 95.7L111.4 83.8L124.8 76.4L138.3 62.6L151.8 70.9L165.3 58.0L178.7 46.0L192.2 79.2L205.7 89.3L219.2 85.6L232.6 107.7L246.1 33.2L259.6 103.1L273.1 92.0L286.5 116.0L300.0 112.3\"/><circle class=\"ds-dot-base\" cx=\"44.0\" cy=\"37.8\" r=\"3\"/><circle class=\"ds-dot-base\" cx=\"57.5\" cy=\"132.5\" r=\"3\"/><circle class=\"ds-dot-base\" cx=\"70.9\" cy=\"66.3\" r=\"3\"/><circle class=\"ds-dot-base\" cx=\"84.4\" cy=\"73.6\" r=\"3\"/><circle class=\"ds-dot-base\" cx=\"97.9\" cy=\"95.7\" r=\"3\"/><circle class=\"ds-dot-base\" cx=\"111.4\" cy=\"83.8\" r=\"3\"/><circle class=\"ds-dot-base\" cx=\"124.8\" cy=\"76.4\" r=\"3\"/><circle class=\"ds-dot-base\" cx=\"138.3\" cy=\"62.6\" r=\"3\"/><circle class=\"ds-dot-base\" cx=\"151.8\" cy=\"70.9\" r=\"3\"/><circle class=\"ds-dot-base\" cx=\"165.3\" cy=\"58.0\" r=\"3\"/><circle class=\"ds-dot-base\" cx=\"178.7\" cy=\"46.0\" r=\"3\"/><circle class=\"ds-dot-base\" cx=\"192.2\" cy=\"79.2\" r=\"3\"/><circle class=\"ds-dot-base\" cx=\"205.7\" cy=\"89.3\" r=\"3\"/><circle class=\"ds-dot-base\" cx=\"219.2\" cy=\"85.6\" r=\"3\"/><circle class=\"ds-dot-base\" cx=\"232.6\" cy=\"107.7\" r=\"3\"/><circle class=\"ds-dot-base\" cx=\"246.1\" cy=\"33.2\" r=\"3\"/><circle class=\"ds-dot-base\" cx=\"259.6\" cy=\"103.1\" r=\"3\"/><circle class=\"ds-dot-base\" cx=\"273.1\" cy=\"92.0\" r=\"3\"/><circle class=\"ds-dot-base\" cx=\"286.5\" cy=\"116.0\" r=\"3\"/><circle class=\"ds-dot-base\" cx=\"300.0\" cy=\"112.3\" r=\"3\"/><path class=\"ds-line-under\" d=\"M44.0 38.7L57.5 115.0L70.9 80.1L84.4 73.6L97.9 112.3L111.4 75.5L124.8 90.2L138.3 76.4L151.8 50.6L165.3 72.7L178.7 59.8L192.2 60.8L205.7 82.8L219.2 86.5L232.6 107.7L246.1 47.0L259.6 103.1L273.1 87.4L286.5 99.4L300.0 92.0\"/><path class=\"ds-line-plan\" d=\"M44.0 38.7L57.5 115.0L70.9 80.1L84.4 73.6L97.9 112.3L111.4 75.5L124.8 90.2L138.3 76.4L151.8 50.6L165.3 72.7L178.7 59.8L192.2 60.8L205.7 82.8L219.2 86.5L232.6 107.7L246.1 47.0L259.6 103.1L273.1 87.4L286.5 99.4L300.0 92.0\"/><circle class=\"ds-dot-plan\" cx=\"44.0\" cy=\"38.7\" r=\"3\"/><circle class=\"ds-dot-plan\" cx=\"57.5\" cy=\"115.0\" r=\"3\"/><circle class=\"ds-dot-plan\" cx=\"70.9\" cy=\"80.1\" r=\"3\"/><circle class=\"ds-dot-plan\" cx=\"84.4\" cy=\"73.6\" r=\"3\"/><circle class=\"ds-dot-plan\" cx=\"97.9\" cy=\"112.3\" r=\"3\"/><circle class=\"ds-dot-plan\" cx=\"111.4\" cy=\"75.5\" r=\"3\"/><circle class=\"ds-dot-plan\" cx=\"124.8\" cy=\"90.2\" r=\"3\"/><circle class=\"ds-dot-plan\" cx=\"138.3\" cy=\"76.4\" r=\"3\"/><circle class=\"ds-dot-plan\" cx=\"151.8\" cy=\"50.6\" r=\"3\"/><circle class=\"ds-dot-plan\" cx=\"165.3\" cy=\"72.7\" r=\"3\"/><circle class=\"ds-dot-plan\" cx=\"178.7\" cy=\"59.8\" r=\"3\"/><circle class=\"ds-dot-plan\" cx=\"192.2\" cy=\"60.8\" r=\"3\"/><circle class=\"ds-dot-plan\" cx=\"205.7\" cy=\"82.8\" r=\"3\"/><circle class=\"ds-dot-plan\" cx=\"219.2\" cy=\"86.5\" r=\"3\"/><circle class=\"ds-dot-plan\" cx=\"232.6\" cy=\"107.7\" r=\"3\"/><circle class=\"ds-dot-plan\" cx=\"246.1\" cy=\"47.0\" r=\"3\"/><circle class=\"ds-dot-plan\" cx=\"259.6\" cy=\"103.1\" r=\"3\"/><circle class=\"ds-dot-plan\" cx=\"273.1\" cy=\"87.4\" r=\"3\"/><circle class=\"ds-dot-plan\" cx=\"286.5\" cy=\"99.4\" r=\"3\"/><circle class=\"ds-dot-plan\" cx=\"300.0\" cy=\"92.0\" r=\"3\"/><text class=\"ds-tick\" x=\"44.0\" y=\"163\" text-anchor=\"middle\">1</text><text class=\"ds-tick\" x=\"97.9\" y=\"163\" text-anchor=\"middle\">5</text><text class=\"ds-tick\" x=\"165.3\" y=\"163\" text-anchor=\"middle\">10</text><text class=\"ds-tick\" x=\"232.6\" y=\"163\" text-anchor=\"middle\">15</text><text class=\"ds-tick\" x=\"300.0\" y=\"163\" text-anchor=\"middle\">20</text><text class=\"ds-axis-title\" x=\"172\" y=\"180\" text-anchor=\"middle\">Harvest</text></svg></div>",
+      "css": ".ds-chart { padding: 16px 20px 18px; border-radius: 3px; background: #fbfcf9; } .ds-key { display: flex; flex-wrap: wrap; gap: 4px 18px; margin: 0 0 8px; padding: 0; list-style: none; color: #3c5547; font-family: var(--text, 'Archivo', system-ui, sans-serif); font-size: 13px; } .ds-key li { display: flex; align-items: center; gap: 7px; } .ds-sw-base, .ds-sw-plan { width: 16px; height: 3px; border-radius: 1px; } .ds-sw-base { background: #5a9c76; } .ds-sw-plan { background: #0d3320; } .ds-chart svg { display: block; width: 100%; height: auto; } .ds-rule { stroke: #d5ddd6; stroke-width: 1; } .ds-baseline { stroke: #0d3320; stroke-width: 1; } .ds-floor-base { stroke: #5a9c76; stroke-width: 1; } .ds-floor-plan { stroke: #0d3320; stroke-width: 1; } .ds-line-base, .ds-line-plan, .ds-line-under { fill: none; stroke-linecap: round; stroke-linejoin: round; } .ds-line-base { stroke: #5a9c76; stroke-width: 1.5; } .ds-line-plan { stroke: #0d3320; stroke-width: 2; } .ds-line-under { stroke: #fbfcf9; stroke-width: 4.5; } .ds-dot-base, .ds-dot-plan { stroke: #fbfcf9; stroke-width: 1.5; } .ds-dot-base { fill: #5a9c76; } .ds-dot-plan { fill: #0d3320; } .ds-tick { fill: #5b7164; font-family: var(--text, 'Archivo', system-ui, sans-serif); font-size: 9px; font-variant-numeric: tabular-nums; } .ds-axis-title { fill: #3c5547; font-family: var(--text, 'Archivo', system-ui, sans-serif); font-size: 9.5px; font-weight: 600; } .ds-floor-label { fill: #0d3320; font-family: var(--text, 'Archivo', system-ui, sans-serif); font-size: 9px; font-weight: 650; font-variant-numeric: tabular-nums; paint-order: stroke; stroke: #fbfcf9; stroke-width: 3px; stroke-linejoin: round; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Seed Sack",
+    "overview": "Farmer Joe is a brand printed on a seed sack. The intro is the front of the sack: a white panel that runs edge to edge with the name in sack-green capitals as tall as the panel allows. The farm form is the sack's tag, filled in one ruled row at a time while a white map answers. The advice screen reads like the analysis tag sewn to a bag: a title that states the hedge, ruled figures, and hedges as tickets. Farmer Joe is the product's name only; nothing on screen speaks as a character.\n\nEverything is flat print. There are two inks (sack green and tag red) and one stock (white tag card). Green is the ground of every screen, so the white panel, tags and map are objects sitting on it, never a page behind them. Density is that of a filled-in form: 15px reading text, 10px row padding, rules instead of boxes. Wording is as short as the form allows: labels of one to three words, one line per ticket, a title that is the number. The system refuses the white onboarding wizard of progress bar and rounded cards.\n\nMotion is things landing and pressing. The pin drops onto the map (260ms) and a red ring spreads from the landing point (280ms), and a line runs out to the nearest station (280ms). Screens rise in 18px over 240ms. Every move shares one curve, `cubic-bezier(0.23, 1, 0.32, 1)`, and none runs longer than 280ms; state changes on controls take 120 to 200ms. Under reduced motion the pin fades in place, screens cross-fade in 160ms, and transitions are cut to nothing.\n\nThe finish review left four ideas open that are not in the build and are not part of this system yet: seam or lot devices on the sack front, eyelets and perforations on the plan's tags, a tag-pull screen change, and ruled rows under the map.",
+    "keyCharacteristics": [
+      "Sack green is the ground of all three screens; white is the intro panel, the tags, the map and type on green.",
+      "Active or chosen is shown without a third colour: a white pill for the current step, a pale green wash with 2px green rules for the row being answered, a deep green stub for a ticket that is in the plan.",
+      "Heavy condensed capitals for the name, screen titles and key figures; a plain grotesque for everything read or operated.",
+      "Data sits in ruled rows, label left and value right, opened by a 2px ink rule and separated by 1px hairlines.",
+      "One chart form: one plot of revenue by harvest, a light green line for the farm without the hedge and a heavier ink line over it for the farm with the plan.",
+      "Sample and demo data is stamped in red, tilted 2 degrees.",
+      "Short copy everywhere: one to three words per label, one line per ticket."
+    ],
+    "rules": [
+      {
+        "name": "The Green Ground Rule",
+        "body": "Every screen's background is sack green. White never becomes the page; it is always a panel, a tag, a ticket, the map or a field sitting on the green.",
+        "section": "colors"
+      },
+      {
+        "name": "The No Third Colour Rule",
+        "body": "Whatever is active or chosen is shown with green and white alone. On green, the current thing turns white (the current step is a tag-stock pill). On tag stock, the row being answered takes the wash plus 2px sack-green rules top and bottom, so the state never rests on a faint tint alone. A ticket that is in the plan gets a `green-800` stub with a white box and a green check. No yellow, no blue, no accent brought in to mean \"selected\".",
+        "section": "colors"
+      },
+      {
+        "name": "The Red Is Pressed On Rule",
+        "body": "Red is for the pin, the stamps, warnings, No, and the text-selection highlight. It never decorates and never becomes a ground, a panel or a tag.",
+        "section": "colors"
+      },
+      {
+        "name": "The Yes And No Rule",
+        "body": "Yes prints in green and No prints in red, tinted at rest and solid when pressed. The word is always printed beside the colour, so the pair never depends on hue alone.",
+        "section": "colors"
+      },
+      {
+        "name": "The Two Voices Rule",
+        "body": "Big Shoulders is for the name, screen titles, market names, key figures and stamps, always at 800 or 900 and never below 15px. Anything the farmer reads as a sentence or operates as a control is Archivo.",
+        "section": "typography"
+      },
+      {
+        "name": "The Tabular Figures Rule",
+        "body": "Every number that can change or be compared (prices, amounts, table cells, axis ticks, field values) uses tabular numerals.",
+        "section": "typography"
+      },
+      {
+        "name": "The Printed Flat Rule",
+        "body": "Surfaces are separated by ink and stock, never by shadow. A shadow is allowed only on something that floats above the print (the tooltip) or is physically grabbed (the slider thumb).",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do put every screen on sack green (`green-700`) and keep white for the panel, tags, tickets, the map, fields and type on green.",
+      "Do show the current or chosen thing with green and white alone: a white pill on green, the wash plus 2px green rules on tag stock, a `green-800` stub with a white box on a ticket.",
+      "Do keep the wash (`wash`) for responses to the farmer (the focused row, a hover) and `tag-2` for quiet resting fills.",
+      "Do set data as ruled rows, label left and value right, with a 2px ink rule opening the group and 1px `rule` hairlines between rows.",
+      "Do use Big Shoulders at 800 or 900 in capitals for the name, screen titles, market names, key figures and stamps, and Archivo for everything else.",
+      "Do print Yes in green and No in red with the word beside the colour, tinted at rest and solid when pressed.",
+      "Do stamp sample and demo data in red beside its heading, and keep the stamp's 2 degree tilt.",
+      "Do draw the comparison as one plot of two lines: `green-300` at 2px for the farm without the hedge and ink at 2.5px with a 6px tag-stock under-stroke for the farm with the plan, a ringed dot on every harvest, each line named in the key above the plot.",
+      "Do keep copy short: one to three words for a label, one line for a ticket, the number itself for a title.",
+      "Do keep moves on `cubic-bezier(0.23, 1, 0.32, 1)` at 120 to 280ms, and give each one a fade-only fallback under reduced motion.",
+      "Do use tabular numerals for every price, amount and table figure."
+    ],
+    "donts": [
+      "Don't make white the page background or lay tags out as a white wizard with a progress bar and rounded cards.",
+      "Don't bring in a third colour to mean active, chosen or new. Yellow was tried and dropped; the palette is green and white with red.",
+      "Don't use red for decoration or as a ground, a panel or a tag; it is the pin, the stamps, warnings, No and selected text.",
+      "Don't print true black anywhere but the Start arrow. Text and rules on tag stock are `ink`.",
+      "Don't put the Start arrow back in a disc; it is a bare black arrow on the tag.",
+      "Don't split the comparison across stacked charts or bring in a third line colour; the two lines share one plot in `green-300` and ink.",
+      "Don't add shadows to tags, tickets or buttons; only the chart tooltip and the slider thumb have one.",
+      "Don't round corners past 3px; circles are for eyelets, step numerals, dots and thumbs.",
+      "Don't write as Farmer Joe. It is the product's name, not a speaking character.",
+      "Don't show a sample or assumed number without its label."
+    ]
+  }
+}

@@ -1,0 +1,106 @@
+# Farmer Joe weather model configuration. run.py CLI flags override these values.
+
+# Default farm (CLI: --farm <name> or --lat/--lon/--crop).
+farm: champaign_corn
+
+# Reference farms used in acceptance tests (CLAUDE.md section 2).
+farms:
+  champaign_corn: {lat: 40.1, lon: -88.2, crop: corn}      # central Illinois (core Corn Belt)
+  salina_wheat:   {lat: 38.8, lon: -97.6, crop: wheat}     # central Kansas (HRW wheat)
+  enc_corn:       {lat: 35.4, lon: -77.6, crop: corn}      # eastern North Carolina (peripheral)
+
+# Demo farms for `run.py --prewarm`: coordinates exactly as the frontend's town picker sends them
+# (frontend/places.js). Runs are cached per 0.1-degree grid cell.
+demo_farms:
+  - {name: "Champaign, IL", lat: 40.12, lon: -88.24, crop: corn}
+  - {name: "Champaign, IL", lat: 40.12, lon: -88.24, crop: soybeans}
+  - {name: "Salina, KS",    lat: 38.84, lon: -97.61, crop: wheat}
+  - {name: "Kinston, NC",   lat: 35.26, lon: -77.58, crop: corn}
+
+year: null             # season year; null = next season that has not started yet
+
+# Crop calendar (REVENUE_MODEL.md section 4). Whole calendar months.
+crop_calendar:
+  corn:     {start_month: 7, end_month: 7, stage: pollination,          harvest_price_months: [10]}
+  soybeans: {start_month: 8, end_month: 8, stage: pod fill,             harvest_price_months: [10]}
+  wheat:    {start_month: 4, end_month: 5, stage: heading + grain fill, harvest_price_months: [7], class: HRW}
+
+# Settlement stations: "auto" = K nearest market stations; or a list of codes.
+stations: auto
+k_stations: 3
+max_station_km: 400    # warn (not filter) when the nearest selected station is farther
+
+# Market stations: the frontend's list of 38 Kalshi weather cities is the single source of
+# truth (frontend/stations.js; real series tickers, approximate coordinates). The GHCN ID of
+# each is looked up automatically from NCEI metadata and verified
+# (data/params/stations_resolved.json). verified_market is false for all: which airport each
+# series settles on is not yet confirmed.
+market_stations_file: frontend/stations.js
+
+# Production-region index locations (CLAUDE.md 6.8). Each index = daily mean of its points
+# (Open-Meteo grid), placed in the region's main production areas for that crop.
+regions:
+  corn: &corn_soy_regions
+    IDX_IA: [[42.6, -94.2], [42.0, -93.0], [42.9, -92.5], [41.4, -93.9]]
+    IDX_IL: [[40.2, -88.9], [41.0, -89.0], [39.8, -89.7], [40.6, -87.9]]
+    IDX_IN: [[40.4, -86.9], [40.0, -85.9], [41.0, -86.5], [39.6, -87.3]]
+    IDX_NE: [[41.0, -97.0], [40.7, -98.4], [41.9, -97.5], [40.4, -96.6]]
+    IDX_MN: [[44.0, -94.5], [44.5, -95.8], [43.7, -93.4], [45.2, -95.2]]
+  soybeans: *corn_soy_regions
+  wheat:
+    IDX_KS:  [[38.5, -98.5], [37.8, -99.8], [39.3, -99.0], [37.4, -97.6]]
+    IDX_OK:  [[36.4, -98.0], [35.5, -98.8], [36.7, -97.4], [34.8, -98.4]]
+    IDX_TXP: [[35.2, -101.8], [36.1, -101.4], [34.6, -102.3], [35.8, -102.6]]
+    IDX_NE:  [[41.1, -103.0], [40.5, -101.5], [41.3, -102.3], [40.2, -100.4]]
+
+n_scenarios: 10000
+seed: 42
+mode: climatology      # fake | climatology | forecast
+issue_date: null       # YYYY-MM-DD; replay a past forecast date (Phase 6)
+forecast_horizon_days: 14
+
+history:
+  start_year: 1995
+  end_year: 2024
+  holdout_years: 5
+
+output_dir: outputs
+data_dir: data         # cache (data/raw) and fitted params (data/params)
+
+climatology:
+  buffer_days: 0       # +-days around the window; 7 pulls in wetter late-June days (+6% rain)
+  interannual: true    # season-level variability component (see climatology.fit_interannual)
+  trend: false         # separate linear tmax/tmin trends; default set by Phase 2 holdout check
+
+# Default contract candidate grid (CLAUDE.md section 7).
+contracts:
+  rain_total_thresholds: {start: 1.0, stop: 7.0, step: 0.5}
+  rain_total_comparators: [lt, ge]   # drought hedge (lt) and wet-season (ge)
+  daily_tmax_thresholds: [85, 90, 95, 100]
+  daily_tmax_comparator: ge
+
+# Hedge model v1 (HEDGE_MODEL.md). ALL NUMBERS BELOW ARE ILLUSTRATIVE PLACEHOLDERS —
+# update prices, vols, yields and yield-rule coefficients before any demo.
+hedge:
+  acres: 500
+  basis_usd_bu: 0.0
+  budget_usd: 15000
+  risk_weight: 0.7          # w: 0 = only the average matters, 1 = only the worst 5%
+  max_legs: 3
+  cvar_alpha: 0.05
+  ask_markup: 0.03          # synthetic ask = min(0.99, p + markup)
+  lot: 100                  # contracts are sized in multiples of this
+  size_steps: 40            # grid points from 0 to budget/ask
+  min_leg: 100
+  rule:                     # HEDGE_MODEL.md section 6 (fractions)
+    hedge_dcvar_min: 0.25
+    hedge_cost_max: 0.02
+    partial_dcvar_min: 0.10
+    partial_cost_max: 0.04
+  crops:
+    corn:     {aph_yield_bu_ac: 200, futures_price_usd_bu: 4.50,  price_vol: 0.25, rho_price_region: -0.5,
+               R_opt: 4.0, R_wet: 8.0,  a_rain: 0.06, b_rain: 0.03, c_heat: 0.03, sigma_y: 0.05}
+    soybeans: {aph_yield_bu_ac: 60,  futures_price_usd_bu: 11.00, price_vol: 0.20, rho_price_region: -0.4,
+               R_opt: 3.5, R_wet: 7.0,  a_rain: 0.06, b_rain: 0.03, c_heat: 0.025, sigma_y: 0.05}
+    wheat:    {aph_yield_bu_ac: 50,  futures_price_usd_bu: 5.75,  price_vol: 0.28, rho_price_region: -0.3,
+               R_opt: 5.0, R_wet: 12.0, a_rain: 0.04, b_rain: 0.02, c_heat: 0.03, sigma_y: 0.06}

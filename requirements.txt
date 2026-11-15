@@ -1,0 +1,14 @@
+numpy>=1.26
+pandas>=2.1
+scipy>=1.11
+matplotlib>=3.8
+requests>=2.31
+pyarrow>=14
+pyyaml>=6.0        # config.yaml loading (not in CLAUDE.md list; required for config)
+pymc>=5.10         # Phase 5
+arviz>=0.17        # Phase 5
+properscoring>=0.1 # Phase 6
+pytest>=7.4
+fastapi>=0.110
+uvicorn[standard]>=0.29
+httpx>=0.27        # FastAPI TestClient (tests)

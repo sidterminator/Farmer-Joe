@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Farmer Joe</title>
+  <meta name="description" content="Your personal agroeconomist: hedging advice for your farm.">
+  <meta name="theme-color" content="#17603a">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="fonts/fonts.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<svg class="sprite" aria-hidden="true" focusable="false">
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h15M13 5.5l6.5 6.5-6.5 6.5"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5M12 7.6v.2"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 4 3.5 19h17zM12 10v4.5M12 16.8v.2"/></symbol>
+  <symbol id="i-equal" viewBox="0 0 24 24"><path d="M6 9.5h12M6 14.5h12"/></symbol>
+</svg>
+
+<div class="app">
+
+  <!-- 1. Intro: the front of the sack -->
+  <section class="screen screen-intro" id="screen-intro" aria-labelledby="intro-title">
+    <div class="sack-panel">
+      <h1 class="brand" id="intro-title" tabindex="-1"><span>Farmer</span> <span>Joe</span></h1>
+      <p class="promise">Your Personal Agroeconomist</p>
+    </div>
+    <div class="sack-side">
+      <ol class="how">
+        <li>Pin your farm.</li>
+        <li>Get your advice.</li>
+        <li>Pick your hedges.</li>
+      </ol>
+      <div class="start-wrap">
+        <a class="start-tag" href="#/farm" id="start">
+          <span class="start-face">
+            <span class="eyelet" aria-hidden="true"></span>
+            <span class="start-word">Start</span>
+            <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
+          </span>
+        </a>
+        <p class="fine sample-only">Sample data, no real money.</p>
+        <p class="fine real-only">Model output with placeholder settings. No real money.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. The farm form: fill in the tag -->
+  <section class="screen screen-farm" id="screen-farm" aria-labelledby="farm-title" hidden>
+    <header class="bar">
+      <a class="wordmark" href="#/">Farmer Joe</a>
+      <ol class="steps" aria-label="Steps">
+        <li><a href="#/">Start</a></li>
+        <li><a href="#/farm" aria-current="step">Farm</a></li>
+        <li><a href="#/plan">Advice</a></li>
+      </ol>
+      <p class="sample-note sample-only"><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg><span>Sample data</span></p>
+    </header>
+
+    <div class="farm-grid">
+      <div class="map-side">
+        <h1 id="farm-title" tabindex="-1">Your farm</h1>
+        <p class="map-hint">Click the map or type a town.</p>
+        <svg class="map" id="map" role="img" focusable="false"></svg>
+        <p class="map-key"><span class="key-dot" aria-hidden="true"></span>Kalshi weather stations</p>
+        <details class="station-list">
+          <summary id="station-count"></summary>
+          <p id="station-names"></p>
+        </details>
+      </div>
+
+      <form class="tag farm-tag" id="farm-form" novalidate>
+        <span class="eyelet" aria-hidden="true"></span>
+
+        <div class="row row-where" id="row-where">
+          <label for="where">Farm</label>
+          <div class="control">
+            <input type="text" id="where" list="places" autocomplete="off" spellcheck="false" placeholder="Town" aria-describedby="where-out where-error">
+            <datalist id="places"></datalist>
+          </div>
+          <p class="where-out" id="where-out" hidden></p>
+          <p class="error" id="where-error" hidden></p>
+        </div>
+
+        <fieldset class="row">
+          <legend>Crop</legend>
+          <div class="control seg" id="crop">
+            <label><input type="radio" name="crop" value="corn" checked><span>Corn</span></label>
+            <label><input type="radio" name="crop" value="soybeans"><span>Soybeans</span></label>
+            <label><input type="radio" name="crop" value="wheat"><span>Wheat</span></label>
+          </div>
+        </fieldset>
+
+        <div class="row" id="row-acres">
+          <label for="acres">Acres</label>
+          <div class="control pair">
+            <span class="field"><input type="number" id="acres" inputmode="numeric" min="1" max="100000" step="1" value="300" aria-describedby="acres-error"><span class="unit">acres</span></span>
+            <input type="range" id="acres-range" min="10" max="5000" step="10" value="300" aria-label="Acres, slider">
+          </div>
+          <p class="error" id="acres-error" hidden></p>
+        </div>
+
+        <div class="row" id="row-yield">
+          <label for="yield">Normal yield</label>
+          <div class="control">
+            <span class="field"><input type="number" id="yield" inputmode="decimal" min="1" max="500" step="1" value="200" aria-describedby="yield-error"><span class="unit">bu/acre</span></span>
+          </div>
+          <p class="error" id="yield-error" hidden></p>
+        </div>
+
+        <div class="row" id="row-price">
+          <label for="price">Price</label>
+          <div class="control">
+            <span class="field"><span class="unit unit-lead">$</span><input type="number" id="price" inputmode="decimal" min="0.01" max="100" step="0.05" value="4.50" aria-describedby="price-error"><span class="unit">/bu</span></span>
+          </div>
+          <p class="error" id="price-error" hidden></p>
+        </div>
+
+        <div class="row" id="row-budget">
+          <label for="budget">Budget for hedging</label>
+          <div class="control pair">
+            <span class="field"><span class="unit unit-lead">$</span><input type="number" id="budget" inputmode="numeric" min="0" max="1000000" step="500" value="15000" aria-describedby="budget-error"></span>
+            <input type="range" id="budget-range" min="0" max="50000" step="500" value="15000" aria-label="Budget for hedging, slider">
+          </div>
+          <p class="error" id="budget-error" hidden></p>
+        </div>
+
+        <div class="row">
+          <label for="stability">Priority</label>
+          <div class="control lean">
+            <input type="range" id="stability" min="1" max="5" step="1" value="4" aria-describedby="stability-out">
+            <div class="lean-ends" aria-hidden="true"><span>Cost</span><span>Stability</span></div>
+            <output id="stability-out" for="stability">Mostly stability</output>
+          </div>
+        </div>
+
+        <div class="tag-foot">
+          <p class="crop-value"><span>Crop value</span><strong id="crop-value"></strong></p>
+          <button type="submit" class="btn btn-primary">See my plan<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- 3. The plan: results, advice and the order -->
+  <section class="screen screen-plan" id="screen-plan" aria-labelledby="plan-title" hidden>
+    <header class="bar">
+      <a class="wordmark" href="#/">Farmer Joe</a>
+      <ol class="steps" aria-label="Steps">
+        <li><a href="#/">Start</a></li>
+        <li><a href="#/farm">Farm</a></li>
+        <li><a href="#/plan" aria-current="step">Advice</a></li>
+      </ol>
+      <p class="sample-note sample-only"><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg><span>Sample data</span></p>
+    </header>
+
+    <div class="plan-grid">
+      <div class="plan-head">
+        <p class="plan-verdict" id="plan-verdict" hidden></p>
+        <h1 id="plan-title" tabindex="-1"></h1>
+        <p class="lede" id="plan-lede"></p>
+        <p class="plan-effect" id="plan-effect" hidden></p>
+      </div>
+
+      <div class="tag chart-tag">
+        <div class="tag-head">
+          <h2>Revenue by harvest</h2>
+          <span class="stamped stamp-small sample-only">Sample</span>
+          <button type="button" class="btn btn-quiet" id="table-toggle" aria-pressed="false">Table</button>
+        </div>
+        <ul class="legend" id="legend" aria-label="Chart key">
+          <li><span class="sw-base"></span>Without Farmer Joe</li>
+          <li id="legend-plan"><span class="sw-plan"></span>With Farmer Joe</li>
+        </ul>
+        <figure class="plot" id="plot" tabindex="0" role="group" aria-roledescription="chart">
+          <svg aria-hidden="true" focusable="false"></svg>
+          <div class="tip" role="status" hidden></div>
+        </figure>
+        <div class="bins" id="bins" hidden>
+          <table>
+            <thead id="bins-head"></thead>
+            <tbody id="bins-body"></tbody>
+          </table>
+        </div>
+        <table class="ruled analysis">
+          <thead id="analysis-head"></thead>
+          <tbody id="analysis-body"></tbody>
+        </table>
+      </div>
+
+      <div class="side-top">
+        <p class="farm-line"><span id="farm-line"></span> <a href="#/farm">Edit</a></p>
+        <div class="side-intro">
+          <div class="side-head">
+            <h2 id="contracts-title">Hedges</h2>
+            <span class="stamped stamp-small stamp-on-green sample-only">Sample</span>
+            <p class="plan-state" id="plan-state"></p>
+          </div>
+          <p class="side-hint">Tick hedges and set the dollars. The graph follows.</p>
+        </div>
+      </div>
+
+      <aside class="plan-side" aria-labelledby="contracts-title">
+        <p class="plan-result" id="plan-result" aria-live="polite"></p>
+        <ul class="tickets" id="tickets"></ul>
+
+        <div class="tag order-tag">
+          <div class="tag-head">
+            <h2>Order</h2>
+            <span class="stamped stamp-small">Demo only</span>
+          </div>
+          <div class="meter" id="meter" aria-hidden="true"><span id="meter-fill"></span></div>
+          <p class="budget-line" id="budget-line" aria-live="polite"></p>
+          <ul class="order-lines" id="order-lines"></ul>
+          <p class="order-total"><span>Total</span><strong id="order-total"></strong></p>
+          <button type="button" class="btn btn-primary" id="send-order" disabled aria-describedby="order-note">Send to Kalshi demo</button>
+          <p class="note" id="order-note">Not connected yet. Orders need the team's server. No real money.</p>
+        </div>
+      </aside>
+
+    </div>
+
+    <p class="fine plan-fine sample-only">Sample data from a placeholder model, no real money. Town list from GeoNames.</p>
+    <p class="fine plan-fine real-only">Model output — contracts are hypothetical, coefficients are placeholders. Educational tool, not financial advice. Town list from GeoNames.</p>
+  </section>
+
+</div>
+
+<script src="us-map.js"></script>
+<script src="places.js"></script>
+<script src="stations.js"></script>
+<script src="model.js"></script>
+<script src="advisor.js"></script>
+<script src="sample-data.js"></script>
+<script src="map.js"></script>
+<script src="charts.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

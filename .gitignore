@@ -218,3 +218,12 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Farmer Joe data
+data/raw/
+data/cache/
+
+# Farmer Joe backend
+/data/
+/outputs/
+.DS_Store

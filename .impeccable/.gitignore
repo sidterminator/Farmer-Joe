@@ -1,0 +1,7 @@
+# Local Impeccable working files. Surface briefs, config.json and design.json are shared.
+review/
+mocks/
+build/
+questions/
+hook.cache.json
+config.local.json
