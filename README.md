@@ -2,6 +2,8 @@
 
 **Weather and price protection advice for farmers, in plain numbers.**
 
+![Farmer Joe advice screen for a 500-acre corn farm near Champaign, Illinois: a partial hedge of $7,488 in a corn-price contract, with revenue by harvest with and without the hedge](docs/screenshot.png)
+
 A farmer's income depends on things they can't control: a dry July, a heat wave, or a drop in
 crop prices. Farmer Joe looks at one specific farm, imagines thousands of possible seasons, and
 recommends which prediction-market contracts would steady that farm's income — or tells the
