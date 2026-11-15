@@ -6,6 +6,8 @@
  *
  * spec = {
  *   ariaLabel: string,
+ *   xTitle: string,                                    // x-axis title (default 'Harvest')
+ *   bad: boolean[],                                    // optional: years to mark (red ringed dot)
  *   base: { label, values: number[] },                 // revenue per harvest, no hedge
  *   plan: { label, values() -> number[] | null },      // with the plan; null: no line
  *   money(v) -> string,                                // axis and tooltip format
@@ -46,6 +48,7 @@
     const planUnder = svgEl('path', { class: 'line line-under' }, svg);
     const planLine = svgEl('path', { class: 'line line-plan' }, svg);
     const gPlanDots = svgEl('g', { class: 'dots dots-plan' }, svg);
+    const gBad = svgEl('g', { class: 'bad-years' }, svg);   // rings, connectors and tags on top
 
     let spec = null;
     let geom = null;
@@ -105,7 +108,7 @@
         t.textContent = String(i + 1);
       }
       const title = svgEl('text', { class: 'axis-title', x: MARGIN.l + geom.innerW / 2, y: geom.H - 4, 'text-anchor': 'middle' }, gAxis);
-      title.textContent = 'Harvest';
+      title.textContent = spec.xTitle || 'Harvest';
     }
 
     function path(values) {
@@ -159,6 +162,20 @@
       planLine.setAttribute('d', d);
       planUnder.setAttribute('d', d);
       dots(gPlanDots, plan || []);
+      drawBad();
+    }
+
+    /* Marked years (spec.bad): a red, larger dot with an outer ring on the "without" line. The
+     * ring is a shape cue, so the mark does not rely on colour alone. No text inside the chart:
+     * the legend explains the mark. */
+    function drawBad() {
+      gBad.textContent = '';
+      const flags = (typeof spec.bad === 'function' ? spec.bad() : spec.bad) || [];
+      gBaseDots.childNodes.forEach(function (c, i) {
+        if (!flags[i]) return;
+        c.setAttribute('class', (c.getAttribute('class') + ' is-bad').trim());
+        svgEl('circle', { class: 'bad-ring', cx: xOf(i).toFixed(1), cy: yOf(base[i]).toFixed(1), r: 8.5 }, gBad);
+      });
     }
 
     function showTip(i) {

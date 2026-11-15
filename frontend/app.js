@@ -7,13 +7,14 @@
   const M = B.model;
   const STORE_KEY = 'farmerjoe.farm';
   const MINUS = '−';
-  const HARVESTS = 20;   // sample harvests on the chart
+  const HARVESTS = 20;   // sample seasons on the chart, shown as Year 1-20
+  const YIELD_TREND = 0.015;   // default chart yield trend per year (server meta.yieldTrend overrides)
   const LEAN = [
-    { label: 'Lowest cost', value: 0.2 },
-    { label: 'Mostly cost', value: 0.4 },
+    { label: 'Lowest Cost', value: 0.2 },
+    { label: 'Mostly Cost', value: 0.4 },
     { label: 'Balanced', value: 0.6 },
-    { label: 'Mostly stability', value: 0.8 },
-    { label: 'Most stability', value: 1 }
+    { label: 'Mostly Stability', value: 0.8 },
+    { label: 'Most Stability', value: 1 }
   ];
 
   function $(id) { return document.getElementById(id); }
@@ -70,8 +71,9 @@
 
   const state = {
     farm: {
+      // The form starts empty: the farmer fills in every field (no defaults).
       lat: null, lon: null, label: '', stationId: null, miles: 0,
-      crop: 'corn', acres: 300, yield: 200, price: 4.5, budget: 15000, lean: 4
+      crop: null, acres: null, yield: null, price: null, budget: null, lean: null
     },
     touched: { yield: false, price: false },
     scenario: null,
@@ -100,7 +102,7 @@
   function restore() {
     try {
       const saved = JSON.parse(sessionStorage.getItem(STORE_KEY) || 'null');
-      if (saved && saved.farm && B.crops[saved.farm.crop]) {
+      if (saved && saved.farm && (saved.farm.crop === null || B.crops[saved.farm.crop])) {
         Object.assign(state.farm, saved.farm);
         Object.assign(state.touched, saved.touched || {});
       }
@@ -163,9 +165,8 @@
 
   function route() {
     const name = routeName();
-    if (name === 'plan' && !hasLocation()) {
+    if (name === 'plan' && missingFields().length) {
       location.replace('#/farm');
-      setError('where', 'Pin your farm first.');
       return;
     }
     show(name);
@@ -181,9 +182,7 @@
       }
       screen.hidden = !on;
     });
-    document.querySelectorAll('.steps a[href="#/plan"]').forEach(function (a) {
-      if (hasLocation()) a.removeAttribute('aria-disabled'); else a.setAttribute('aria-disabled', 'true');
-    });
+    updateSubmit();
     if (name === 'farm') enterFarm();
     if (name === 'plan') enterPlan();
     if (!firstShow) {
@@ -219,24 +218,51 @@
 
   function cropValue() {
     const f = state.farm;
-    return f.acres * f.yield * f.price;
+    return filled(f.acres) && filled(f.yield) && filled(f.price) ? f.acres * f.yield * f.price : NaN;
   }
 
   function syncForm() {
     const f = state.farm;
     $('where').value = f.label;
     document.querySelectorAll('input[name="crop"]').forEach(function (r) { r.checked = r.value === f.crop; });
-    $('acres').value = f.acres;
-    $('acres-range').value = f.acres;
-    $('yield').value = f.yield;
-    $('price').value = f.price.toFixed(2);
-    $('budget').value = f.budget;
-    $('budget-range').value = f.budget;
-    $('stability').value = f.lean;
-    $('stability-out').textContent = LEAN[f.lean - 1].label;
+    $('acres').value = filled(f.acres) ? f.acres : '';
+    $('acres-range').value = filled(f.acres) ? f.acres : $('acres-range').min;
+    $('yield').value = filled(f.yield) ? f.yield : '';
+    $('price').value = filled(f.price) ? f.price.toFixed(2) : '';
+    $('budget').value = filled(f.budget) ? f.budget : '';
+    $('budget-range').value = filled(f.budget) ? f.budget : $('budget-range').min;
+    $('stability').value = filled(f.lean) ? f.lean : $('stability').min;
+    $('stability-out').textContent = filled(f.lean) ? LEAN[f.lean - 1].label : 'Choose One';
     ['acres-range', 'budget-range', 'stability'].forEach(function (id) { paintRange($(id)); });
     renderWhere();
     renderCropValue();
+    updateSubmit();
+  }
+
+  function filled(v) { return v !== null && v !== undefined && v !== '' && isFinite(v); }
+
+  /* What is still missing before "See My Plan" can be pressed. */
+  function missingFields() {
+    const f = state.farm;
+    const miss = [];
+    if (!hasLocation()) miss.push('Farm');
+    if (!f.crop) miss.push('Crop');
+    if (!(filled(f.acres) && f.acres > 0)) miss.push('Acres');
+    if (!(filled(f.yield) && f.yield > 0)) miss.push('Normal Yield');
+    if (!(filled(f.price) && f.price > 0)) miss.push('Price');
+    if (!(filled(f.budget) && f.budget >= 0)) miss.push('Budget For Hedging');
+    if (!filled(f.lean)) miss.push('Priority');
+    return miss;
+  }
+
+  function updateSubmit() {
+    const miss = missingFields();
+    $('see-plan').disabled = miss.length > 0;
+    $('form-missing').textContent = miss.length ? 'Still Needed: ' + miss.join(', ') : '';
+    $('form-missing').hidden = !miss.length;
+    document.querySelectorAll('.steps a[href="#/plan"]').forEach(function (a) {
+      if (!miss.length) a.removeAttribute('aria-disabled'); else a.setAttribute('aria-disabled', 'true');
+    });
   }
 
   function renderCropValue() {
@@ -263,7 +289,7 @@
     setError('where', '');
     renderWhere();
     if (map) map.setFarm(mapFarm(), animate);
-    document.querySelectorAll('.steps a[href="#/plan"]').forEach(function (a) { a.removeAttribute('aria-disabled'); });
+    updateSubmit();
     save();
   }
 
@@ -282,7 +308,7 @@
   function enterFarm() {
     if (!map) {
       const names = B.stations.map(function (s) { return s.city; }).sort();
-      $('station-count').textContent = names.length + ' station cities';
+      $('station-count').textContent = names.length + ' Station Cities';
       $('station-names').textContent = names.join(' \u00b7 ');
       map = B.createMap($('map'), {
         onPick: function (p) { setLocation(p.lat, p.lon, labelFor(p.lat, p.lon), true); }
@@ -336,10 +362,9 @@
       r.addEventListener('change', function () {
         const f = state.farm;
         f.crop = r.value;
-        const crop = B.crops[f.crop];
-        if (!state.touched.yield) f.yield = crop.yield;
-        if (!state.touched.price) f.price = crop.price;
-        syncForm();
+        // No auto-fill: the farmer types yield and price (the server rejects a price that is
+        // implausible for the chosen crop, e.g. a soybean price sent for corn).
+        updateSubmit();
         save();
       });
     });
@@ -348,10 +373,13 @@
       const number = $(numberId);
       const range = $(rangeId);
       number.addEventListener('input', function () {
-        const v = numberFrom(number);
-        state.farm[key] = v;
-        if (isFinite(v)) { range.value = v; paintRange(range); setError(numberId, ''); }
+        const v = number.value.trim() === '' ? null : numberFrom(number);
+        state.farm[key] = filled(v) ? v : null;
+        range.value = filled(v) ? v : range.min;
+        paintRange(range);
+        setError(numberId, '');
         renderCropValue();
+        updateSubmit();
         save();
       });
       range.addEventListener('input', function () {
@@ -360,6 +388,7 @@
         paintRange(range);
         setError(numberId, '');
         renderCropValue();
+        updateSubmit();
         save();
       });
     }
@@ -367,30 +396,37 @@
     pair('budget', 'budget-range', 'budget');
 
     $('yield').addEventListener('input', function () {
-      state.farm.yield = numberFrom($('yield'));
+      const v = $('yield').value.trim() === '' ? null : numberFrom($('yield'));
+      state.farm.yield = filled(v) ? v : null;
       state.touched.yield = true;
       setError('yield', '');
       renderCropValue();
+      updateSubmit();
       save();
     });
     $('price').addEventListener('input', function () {
-      state.farm.price = numberFrom($('price'));
+      const v = $('price').value.trim() === '' ? null : numberFrom($('price'));
+      state.farm.price = filled(v) ? v : null;
       state.touched.price = true;
       setError('price', '');
       renderCropValue();
+      updateSubmit();
       save();
     });
 
-    $('stability').addEventListener('input', function () {
+    // Priority counts as chosen once the farmer moves (or clicks/taps, or keys) the slider.
+    function chooseLean() {
       state.farm.lean = Number($('stability').value);
       $('stability-out').textContent = LEAN[state.farm.lean - 1].label;
       paintRange($('stability'));
+      updateSubmit();
       save();
-    });
+    }
+    ['input', 'change', 'pointerup', 'keyup'].forEach(function (ev) { $('stability').addEventListener(ev, chooseLean); });
 
     $('farm-form').addEventListener('submit', function (e) {
       e.preventDefault();
-      if (validateFarm()) location.hash = '#/plan';
+      if (validateFarm() && !missingFields().length) location.hash = '#/plan';
     });
   }
 
@@ -460,8 +496,13 @@
       yield: f.yield, price: f.price, budget: f.budget, stability: LEAN[f.lean - 1].value, stationId: f.stationId
     };
     const req = (state.req = (state.req || 0) + 1);   // ignore answers to stale requests
+    state.ask = ask;
+    state.realScenario = null;
+    state.illustration = false;
+    $('illus-toggle').checked = false;
     showLoading();
     B.source.scenario(ask).then(function (scenario) {
+      if (!scenario.sample) state.realScenario = scenario;
       if (req === state.req) applyScenario(scenario);
     }, function (err) {
       if (req !== state.req) return;
@@ -482,20 +523,36 @@
         yieldSd: crop.spread * f.yield
       });
       state.base = M.summary(state.revenue);
+      // Bad year = unhedged revenue in the bottom 20% of ALL simulated seasons (not just the 20 shown).
+      state.badCut = (function () { const a = Float64Array.from(state.revenue).sort(); return a[Math.floor(0.2 * (a.length - 1))]; })();
+      state.badIdx = [];
+      for (let i = 0; i < state.revenue.length; i++) if (state.revenue[i] <= state.badCut) state.badIdx.push(i);
       state.harvests = shuffled(M.representativeSeasons(state.revenue, scenario.markets.map(function (m) { return m.payoutYes; }), HARVESTS), 2027);
       const rec = scenario.recommendation;
       const picks = {};
       if (rec) rec.picks.forEach(function (p) { picks[p.id] = p; });
+      const best = rec && rec.bestAvailable;
       state.tickets = scenario.markets.map(function (m) {
         const pick = picks[m.id];
+        const isBest = !!(best && best.id === m.id);
         return {
           market: m,
           on: rec ? !!pick : !!m.preselect,
-          side: pick ? pick.side : M.hedgeSide(state.revenue, m),
-          sideChosen: !!pick, contracts: pick ? pick.contracts : 0, max: 5000, adds: false, refs: null
+          // Lead with the recommendation: 'rec' first, 'best' when the verdict is don't hedge,
+          // everything else collapsed under "More Contracts".
+          group: pick || (!rec && m.preselect) ? 'rec' : isBest ? 'best' : 'more',
+          side: pick ? pick.side : isBest ? best.side : M.hedgeSide(state.revenue, m),
+          sideChosen: !!pick || isBest, contracts: pick ? pick.contracts : 0, max: 5000, adds: false, refs: null
         };
       });
+      state.tickets.sort(function (a, b) {
+        const rank = { rec: 0, best: 1, more: 2 };
+        return rank[a.group] - rank[b.group];
+      });
+      state.trend = (scenario.meta && isFinite(scenario.meta.yieldTrend)) ? scenario.meta.yieldTrend : YIELD_TREND;
+      state.bestReason = rec && rec.decision === 'none' ? rec.reason : '';
       showVerdict(rec);
+      showIllustration(!!scenario.sample);
       if (rec) {
         // Start from the model's own plan; the client adviser re-sizes after edits.
         state.tickets.forEach(function (t) { if (!t.on) t.contracts = 0; measure(t); });
@@ -537,14 +594,34 @@
 
   function showLoading() {
     $('plan-verdict').hidden = true;
-    setStatus('loading', 'Simulating 10,000 seasons\u2026',
+    setStatus('loading', 'Simulating 10,000 Seasons\u2026',
       'A farm the model has not seen before can take a minute or two the first time.');
   }
 
   function showError(err, fallback) {
     console.error('Farmer Joe:', err);
-    setStatus('error', 'Could not get the model\u2019s advice.', (err && err.message) || String(err),
-      { label: 'Use sample data', run: function () { setStatus('loading', 'Loading sample data\u2026'); fallback(); } });
+    setStatus('error', 'Could Not Get The Model\u2019s Advice', (err && err.message) || String(err),
+      { label: 'Use Sample Data', run: function () { setStatus('loading', 'Loading Sample Data\u2026'); fallback(); } });
+  }
+
+  /* "Illustration" switches to the exaggerated sample scenario; a label says so while on. */
+  function showIllustration(on) {
+    state.illustration = on;
+    $('illus-toggle').checked = on;
+    $('illus-toggle').disabled = !state.realScenario;   // nothing to switch back to without the server
+    if (on) $('plan-verdict').hidden = true;
+  }
+
+  function wireIllustration() {
+    $('illus-toggle').addEventListener('change', function () {
+      const on = $('illus-toggle').checked;
+      if (on) {
+        B.source.sample(state.ask).then(applyScenario);
+      } else if (state.realScenario) {
+        document.body.classList.add('real-data');
+        applyScenario(state.realScenario);
+      }
+    });
   }
 
   /* The backend's verdict, one line: Hedge / Partial hedge / Don't hedge — reason. */
@@ -553,9 +630,8 @@
     if (!el) return;
     if (!rec) { el.hidden = true; return; }
     el.dataset.decision = rec.decision;
-    el.textContent = rec.decision === 'hedge' ? 'Hedge'
-      : rec.decision === 'partial' ? 'Partial hedge'
-      : 'Don\u2019t hedge \u2014 ' + rec.reason;
+    if (rec.decision === 'hedge') { el.hidden = true; return; }   // the title already says "Hedge $X"
+    el.textContent = rec.decision === 'partial' ? 'Partial Hedge' : 'Don\u2019t Hedge \u2014 ' + rec.reason;
     el.title = rec.reason;
     el.hidden = false;
   }
@@ -563,18 +639,41 @@
   function verdict(points) {
     const chip = make('span', 'verdict');
     let name = 'equal';
-    let text = 'Fair price';
-    if (points >= 2) { name = 'check'; text = 'Cheap by ' + points; }
-    else if (points <= -2) { name = 'alert'; text = 'Pricey by ' + Math.abs(points); }
+    let text = 'Fair Price';
+    if (points >= 2) { name = 'check'; text = 'Cheap By ' + points; }
+    else if (points <= -2) { name = 'alert'; text = 'Pricey By ' + Math.abs(points); }
     chip.appendChild(icon(name));
     chip.appendChild(make('span', null, text));
     return chip;
   }
 
   function renderTickets() {
-    const list = $('tickets');
-    list.textContent = '';
-    state.tickets.forEach(function (t) {
+    const root = $('tickets');
+    root.textContent = '';
+    const groups = { rec: [], best: [], more: [] };
+    state.tickets.forEach(function (t) { groups[t.group || 'more'].push(t); });
+    function heading(text) { root.appendChild(make('li', 'ticket-group', text)); }
+    if (groups.rec.length) { heading('Recommended'); groups.rec.forEach(function (t) { renderTicket(t, root); }); }
+    if (groups.best.length) {
+      heading('Best Available');
+      if (state.bestReason) root.appendChild(make('li', 'ticket-group-note', 'Not recommended: ' + state.bestReason));
+      groups.best.forEach(function (t) { renderTicket(t, root); });
+    }
+    if (groups.more.length) {
+      const li = make('li', 'ticket-more');
+      const det = document.createElement('details');
+      det.open = groups.more.some(function (t) { return t.on; }) || (!groups.rec.length && !groups.best.length);
+      det.appendChild(make('summary', null, 'More Contracts (' + groups.more.length + ')'));
+      const ul = make('ul', 'tickets');
+      groups.more.forEach(function (t) { renderTicket(t, ul); });
+      det.appendChild(ul);
+      li.appendChild(det);
+      root.appendChild(li);
+    }
+  }
+
+  function renderTicket(t, list) {
+    {
       const m = t.market;
       const side = M.sideOf(m, t.side);
       const sideWord = t.side === 'yes' ? 'Yes' : 'No';
@@ -599,12 +698,6 @@
       top.appendChild(meta);
       body.appendChild(top);
       body.appendChild(make('p', 'ticket-q', m.question));
-      if (m.caveat) {
-        const caveat = make('p', 'ticket-flag');
-        caveat.appendChild(icon('info'));
-        caveat.appendChild(make('span', null, m.caveat));
-        body.appendChild(caveat);
-      }
       t.refs = { meta: meta };
 
       if (!t.on) {
@@ -694,7 +787,7 @@
         state.custom = true;
         updatePlan(false);
       });
-    });
+    }
   }
 
   /* Choosing which hedges are in the plan, or which side of one to buy, asks
@@ -746,30 +839,52 @@
 
   /* Revenue by harvest: the sample harvests along the bottom, dollars up the
    * side, one line without a hedge and one with the plan. */
+  /* Year k of the chart: the season's revenue grown by the yield trend; the hedge's payoff
+   * (planArr - revenue, real model output) is added on top unscaled. */
+  function grown(i, k) { return state.revenue[i] * Math.pow(1 + (state.trend || 0), k); }
+  function grownPlan(i, k) { return grown(i, k) + (state.planArr[i] - state.revenue[i]); }
+
+  const STATE_NAMES = {};
+  'AL Alabama|AK Alaska|AZ Arizona|AR Arkansas|CA California|CO Colorado|CT Connecticut|DE Delaware|DC District of Columbia|FL Florida|GA Georgia|HI Hawaii|ID Idaho|IL Illinois|IN Indiana|IA Iowa|KS Kansas|KY Kentucky|LA Louisiana|ME Maine|MD Maryland|MA Massachusetts|MI Michigan|MN Minnesota|MS Mississippi|MO Missouri|MT Montana|NE Nebraska|NV Nevada|NH New Hampshire|NJ New Jersey|NM New Mexico|NY New York|NC North Carolina|ND North Dakota|OH Ohio|OK Oklahoma|OR Oregon|PA Pennsylvania|RI Rhode Island|SC South Carolina|SD South Dakota|TN Tennessee|TX Texas|UT Utah|VT Vermont|VA Virginia|WA Washington|WV West Virginia|WI Wisconsin|WY Wyoming'.split('|').forEach(function (e) { STATE_NAMES[e.slice(0, 2)] = e.slice(3); });
+  /* 'Champaign, IL' -> 'Champaign, Illinois' */
+  function placeName(label) {
+    const m = /^(.*),\s*([A-Z]{2})$/.exec(label || '');
+    return m && STATE_NAMES[m[2]] ? m[1] + ', ' + STATE_NAMES[m[2]] : (label || '');
+  }
+
   function chartSpec() {
     const picks = state.harvests;
     return {
-      ariaLabel: 'Revenue over ' + picks.length + ' sample harvests, without a hedge and with your plan. Arrow keys read values.',
-      base: { label: 'Without', values: picks.map(function (i) { return state.revenue[i]; }) },
+      ariaLabel: 'Revenue over years 1 to ' + picks.length + ', without a hedge and with your plan. Arrow keys read values.',
+      xTitle: 'Year',
+      // Mark a year only if it is a bad year (unhedged revenue in the bottom 20% of all simulated
+      // seasons) AND the plan's revenue is higher than the unhedged revenue that year.
+      bad: function () {
+        return picks.map(function (i) {
+          return state.inGraph.length > 0 && state.revenue[i] <= state.badCut && state.planArr[i] > state.revenue[i];
+        });
+      },
+      base: { label: 'Without', values: picks.map(function (i, k) { return grown(i, k); }) },
       plan: {
-        label: 'With plan',
-        values: function () { return state.inGraph.length ? picks.map(function (i) { return state.planArr[i]; }) : null; }
+        label: 'With Plan',
+        values: function () { return state.inGraph.length ? picks.map(function (i, k) { return grownPlan(i, k); }) : null; }
       },
       money: moneyShort,
       worst: function (v) { return 'Worst ' + moneyShort(v); },
       tip: function (i, base, plan) {
         const rows = [{ key: 'base', value: money(base[i]), label: 'without' }];
         if (plan) rows.push({ key: 'plan', value: money(plan[i]), label: 'with plan' });
-        return { title: 'Harvest ' + (i + 1), rows: rows };
+        const helped = state.inGraph.length > 0 && state.revenue[picks[i]] <= state.badCut && state.planArr[picks[i]] > state.revenue[picks[i]];
+        return { title: 'Year ' + (i + 1) + (helped ? ' \u00b7 Bad Year, Hedge Helped' : ''), rows: rows };
       }
     };
   }
 
   function renderBins() {
     const picks = state.harvests;
-    fill('bins-head', [['Harvest', 'Without', 'With plan']], true);
+    fill('bins-head', [['Year', 'Without', 'With Plan']], true);
     fill('bins-body', picks.map(function (s, i) {
-      return [String(i + 1), money(state.revenue[s]), money(state.planArr[s])];
+      return [String(i + 1), money(grown(s, i)), money(grownPlan(s, i))];
     }));
   }
 
@@ -790,33 +905,35 @@
     const hedging = active.length > 0;
 
     state.tickets.forEach(function (t) {
-      t.refs.meta.textContent = t.on ? whole.format(t.contracts) + ' contracts' : 'Not in plan';
+      t.refs.meta.textContent = t.on ? whole.format(t.contracts) + ' contracts' : 'Not In Plan';
     });
 
     // The advice, in dollars per hedge.
-    $('plan-title').textContent = hedging ? 'Hedge ' + dollars(cost) : 'No hedge yet';
-    $('plan-lede').textContent = !hedging
-      ? (chosen.length ? 'Raise an amount to see the effect.' : 'Tick a hedge to start.')
-      : (state.custom ? 'Your mix: ' : 'Suggested: ') + active.map(function (t) {
-        return dollars(t.contracts * priceOf(t)) + ' in ' + t.market.name;
-      }).join(' · ');
+    $('plan-title').textContent = hedging ? 'Hedge ' + dollars(cost) : 'No Hedge Yet';
+    $('plan-lede').textContent = hedging ? '' : (chosen.length ? 'Raise an amount to see the effect.' : 'Tick a hedge to start.');
+    $('plan-lede').hidden = hedging;
     let effect = '';
     if (hedging) {
       effect = b.sd < a.sd
-        ? Math.round((1 - b.sd / a.sd) * 100) + '% steadier. Bad harvest ' + signedMoney(b.bad - a.bad) + '. Average ' + signedMoney(b.mean - a.mean) + '.'
-        : 'This mix adds swing. Check the sides.';
+        ? Math.round((1 - b.sd / a.sd) * 100) + '% Steadier \u00b7 Bad Harvest ' + signedMoney(b.bad - a.bad)
+        : 'This Mix Adds Swing \u00b7 Check The Sides';
     }
     $('plan-effect').textContent = effect;
     $('plan-effect').hidden = !effect;
     $('plan-result').textContent = hedging ? effect : 'Nothing in the plan yet.';
-    $('farm-line').textContent = whole.format(f.acres) + ' ac ' + crop.label.toLowerCase() + ' · ' + f.label + ' · ' + station.city + ' station';
+    $('farm-line').textContent = whole.format(f.acres) + ' Acres Of ' + crop.label + ' \u00b7 ' + placeName(f.label) + ' \u00b7 ' + station.city + ' Station \u00b7';
 
-    fill('analysis-head', [['', 'Without', 'With plan', 'Change']], true);
+    // Average Bad Harvest: mean over the bottom 20% of simulated seasons by unhedged revenue (the
+    // red-dot definition), for both columns over the same seasons.
+    const badMean = function (arr) { let t = 0; state.badIdx.forEach(function (i) { t += arr[i]; }); return t / state.badIdx.length; };
+    const protection = a.mean - b.mean;
+    fill('analysis-head', [['', 'Without', 'With Plan']], true);
     fill('analysis-body', [
-      ['Average harvest', money(a.mean), money(b.mean), hedging ? signedMoney(b.mean - a.mean) : '—'],
-      ['Swing', '±' + money(a.sd), '±' + money(b.sd), hedging ? signedPercent(b.sd / a.sd - 1) : '—'],
-      ['Bad harvest (1 in 20)', money(a.bad), money(b.bad), hedging ? signedMoney(b.bad - a.bad) : '—'],
-      ['Cost', '$0', dollars(cost), hedging ? percent(cost / cropValue(), 1) + ' of crop' : '—']
+      ['Average Bad Harvest', money(badMean(state.revenue)), money(badMean(state.planArr))],
+      ['Swing', '\u00b1' + money(a.sd), '\u00b1' + money(b.sd)],
+      ['Bad Harvest (1 In 20)', money(a.bad), money(b.bad)],
+      ['Amount Hedged', '$0', dollars(cost)],
+      ['Cost Of Protection', '$0/yr', (protection >= 0 ? dollars(protection) : MINUS + dollars(-protection)) + '/yr']
     ]);
 
     // The order
@@ -861,7 +978,7 @@
       });
       stateLine.appendChild(back);
     } else {
-      stateLine.textContent = !chosen.length ? 'None picked' : state.trimmed ? 'Trimmed to budget' : 'Sized for you';
+      stateLine.textContent = !chosen.length ? 'None Picked' : state.trimmed ? 'Trimmed To Budget' : 'Sized For You';
     }
 
     const toggle = $('table-toggle');
@@ -885,6 +1002,16 @@
     $('table-toggle').addEventListener('click', function () {
       state.tableView = !state.tableView;
       updatePlan(true);
+    });
+    wireIllustration();
+    $('start').addEventListener('click', function () {
+      try { sessionStorage.removeItem(STORE_KEY); } catch (e) { /* nothing saved */ }
+      Object.assign(state.farm, { lat: null, lon: null, label: '', stationId: null, miles: 0, crop: null,
+                                  acres: null, yield: null, price: null, budget: null, lean: null });
+      state.touched.yield = false;
+      state.touched.price = false;
+      if (map) map.setFarm(null);   // clear the old pin too
+      syncForm();
     });
     window.addEventListener('hashchange', route);
     route();

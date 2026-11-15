@@ -927,3 +927,32 @@ body:not(.real-data) .real-only { display: none; }
 /* With a long menu of hedges, keep the chart at a readable size and in view while scrolling. */
 .chart-tag { align-self: start; position: sticky; top: 1rem; }
 .chart-tag .plot { flex: none; height: min(60vh, 520px); }
+
+/* Advice screen: recommendation first, the rest collapsed; illustration mode label. */
+.plan-topline { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+.illus-toggle { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.875rem; line-height: 1; cursor: pointer; }
+.illus-toggle input { width: 1rem; height: 1rem; margin: 0; vertical-align: middle; flex: none; }
+.illus-label { margin: 0 0 0.5rem; display: inline-block; padding: 0.2rem 0.55rem; border-radius: 4px;
+  background: #f2c94c; color: #1c1c1c; font-weight: 700; font-size: 0.8125rem; letter-spacing: 0.01em; }
+.illus-label[hidden] { display: none; }
+.illus-chip { margin: 0 0.5rem; }
+.ticket-group { list-style: none; margin: 0.75rem 0 0.4rem; font-weight: 700; font-size: 0.8125rem;
+  text-transform: uppercase; letter-spacing: 0.06em; }
+.ticket-group-note { list-style: none; margin: -0.2rem 0 0.5rem; font-size: 0.8125rem; }
+.ticket-more { list-style: none; margin-top: 0.75rem; }
+.ticket-more > details > summary { cursor: pointer; font-weight: 700; font-size: 0.8125rem; text-transform: uppercase;
+  letter-spacing: 0.06em; padding: 0.4rem 0; }
+.ticket-more .tickets { padding: 0; margin: 0.4rem 0 0; }
+.plot-note { margin: 0.4rem 0 0.75rem; font-size: 0.8125rem; opacity: 0.85; }
+
+/* Bad years on the chart: red, larger, ringed dots (shape cue too, not colour alone). */
+.dots-base circle.is-bad { fill: #c0392b; r: 5.5px; }
+.bad-ring { fill: none; stroke: #c0392b; stroke-width: 1.5; pointer-events: none; }
+.bad-tag { font-size: 11px; font-weight: 600; fill: #8e1f14; paint-order: stroke; stroke: #fff; stroke-width: 3.5px;
+  stroke-linejoin: round; pointer-events: none; }
+.sw-bad { width: 9px; height: 9px; border-radius: 50%; background: #c0392b; box-shadow: 0 0 0 2px #fff, 0 0 0 3.5px #c0392b; margin: 0 3px; }
+
+/* Empty farm form: what is still needed before "See My Plan". */
+.form-missing { margin: 0.5rem 0 0; font-size: 0.8125rem; text-align: right; color: var(--ink-2); }
+.form-missing[hidden] { display: none; }
+#see-plan:disabled { opacity: 0.45; cursor: not-allowed; }

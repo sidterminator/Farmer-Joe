@@ -92,6 +92,7 @@ hedge:
   lot: 100                  # contracts are sized in multiples of this
   size_steps: 40            # grid points from 0 to budget/ask
   min_leg: 100
+  chart_yield_trend: 0.015   # advice-screen chart only: assumed yield growth per year
   rule:                     # HEDGE_MODEL.md section 6 (fractions)
     hedge_dcvar_min: 0.25
     hedge_cost_max: 0.02

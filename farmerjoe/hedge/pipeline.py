@@ -44,8 +44,12 @@ def run_hedge(run_dir: str | Path, overrides: dict[str, Any] | None = None, seed
         legs = [(j, math.floor(k / 2 / s["lot"]) * s["lot"]) for j, k in legs]
         legs = [(j, k) for j, k in legs if k > 0]
         ev = evaluate(revenue, pay, asks, legs, test, a)
-    elif decision == "none":
-        shown = legs          # keep the would-be legs for transparency, but recommend nothing
+    best_available = None
+    if decision == "none" and legs:
+        # Recommend nothing, but report the single best contract the search found.
+        j, cnt = legs[0]
+        best_available = {"key": tab.key[j], "contract_id": tab.contract_id[j], "side": tab.side[j],
+                          "contracts": int(cnt), "dollars": float(cnt * asks[j])}
         legs = []
     rows = []
     for k, (j, cnt) in enumerate(legs):
@@ -63,7 +67,7 @@ def run_hedge(run_dir: str | Path, overrides: dict[str, Any] | None = None, seed
     hedged = revenue.copy()
     for j, cnt in legs:
         hedged = hedged + cnt * (pay[:, j] - asks[j])
-    rec = {"decision": decision, "reason": reason, "eval_half": ev,
+    rec = {"decision": decision, "reason": reason, "eval_half": ev, "best_available": best_available,
            "natural_hedge": nh, "hypothetical": True, "placeholders": True,
            "legs": legs_df.to_dict("records"), "settings": s, "weather_run": meta["run_id"],
            "note": "Educational tool, not financial advice. Contracts are hypothetical; "
