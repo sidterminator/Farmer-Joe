@@ -42,7 +42,8 @@
             <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
           </span>
         </a>
-        <p class="fine">Sample data, no real money.</p>
+        <p class="fine sample-only">Sample data, no real money.</p>
+        <p class="fine real-only">Model output with placeholder settings. No real money.</p>
       </div>
     </div>
   </section>
@@ -56,7 +57,7 @@
         <li><a href="#/farm" aria-current="step">Farm</a></li>
         <li><a href="#/plan">Advice</a></li>
       </ol>
-      <p class="sample-note"><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg><span>Sample data</span></p>
+      <p class="sample-note sample-only"><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg><span>Sample data</span></p>
     </header>
 
     <div class="farm-grid">
@@ -153,11 +154,12 @@
         <li><a href="#/farm">Farm</a></li>
         <li><a href="#/plan" aria-current="step">Advice</a></li>
       </ol>
-      <p class="sample-note"><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg><span>Sample data</span></p>
+      <p class="sample-note sample-only"><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg><span>Sample data</span></p>
     </header>
 
     <div class="plan-grid">
       <div class="plan-head">
+        <p class="plan-verdict" id="plan-verdict" hidden></p>
         <h1 id="plan-title" tabindex="-1"></h1>
         <p class="lede" id="plan-lede"></p>
         <p class="plan-effect" id="plan-effect" hidden></p>
@@ -166,7 +168,7 @@
       <div class="tag chart-tag">
         <div class="tag-head">
           <h2>Revenue by harvest</h2>
-          <span class="stamped stamp-small">Sample</span>
+          <span class="stamped stamp-small sample-only">Sample</span>
           <button type="button" class="btn btn-quiet" id="table-toggle" aria-pressed="false">Table</button>
         </div>
         <ul class="legend" id="legend" aria-label="Chart key">
@@ -194,7 +196,7 @@
         <div class="side-intro">
           <div class="side-head">
             <h2 id="contracts-title">Hedges</h2>
-            <span class="stamped stamp-small stamp-on-green">Sample</span>
+            <span class="stamped stamp-small stamp-on-green sample-only">Sample</span>
             <p class="plan-state" id="plan-state"></p>
           </div>
           <p class="side-hint">Tick hedges and set the dollars. The graph follows.</p>
@@ -221,7 +223,8 @@
 
     </div>
 
-    <p class="fine plan-fine">Sample data from a placeholder model, no real money. Town list from GeoNames.</p>
+    <p class="fine plan-fine sample-only">Sample data from a placeholder model, no real money. Town list from GeoNames.</p>
+    <p class="fine plan-fine real-only">Model output — contracts are hypothetical, coefficients are placeholders. Educational tool, not financial advice. Town list from GeoNames.</p>
   </section>
 
 </div>

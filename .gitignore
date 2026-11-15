@@ -222,3 +222,8 @@ __marimo__/
 # bizfax
 data/raw/
 data/cache/
+
+# Farmer Joe backend
+/data/
+/outputs/
+.DS_Store

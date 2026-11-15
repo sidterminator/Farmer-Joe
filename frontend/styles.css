@@ -908,3 +908,9 @@ tbody tr { border-top: 1px solid var(--rule); }
   @keyframes screen-fade { from { opacity: 0; } }
   *, *::before, *::after { transition-duration: 0.01ms !important; }
 }
+
+/* Real model output vs sample data (server.py). body.real-data is set when the API answers. */
+body.real-data .sample-only { display: none; }
+body:not(.real-data) .real-only { display: none; }
+.plan-verdict { margin: 0 0 0.35rem; font-weight: 700; letter-spacing: 0.01em; }
+.plan-verdict[data-decision="none"] { font-weight: 600; }

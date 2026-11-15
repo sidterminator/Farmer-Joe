@@ -163,10 +163,52 @@
 
   B.crops = CROPS;
 
+  /* Real data comes from server.py (POST /api/scenario) when the page is served by it.
+   * Opened from disk, served by a plain static server, or on any error, we fall back to the
+   * sample scenario above so the demo never shows a blank screen. */
+  function decodeScenario(d) {
+    const revenue = Float64Array.from(d.revenue);
+    d.markets.forEach(function (m) {
+      const bin = atob(m.payoutYes);
+      const pay = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) pay[i] = bin.charCodeAt(i);
+      m.payoutYes = pay;
+    });
+    d.revenue = revenue;
+    return d;
+  }
+
+  function online() { return location.protocol !== 'file:' && typeof fetch === 'function'; }
+
+  // Label the screens as real model output as soon as the API answers.
+  if (online()) {
+    fetch('/api/health').then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+      if (j && j.ok) document.body.classList.add('real-data');
+    }).catch(function () { /* sample mode */ });
+  }
+
   B.source = {
-    /* Later: POST the farm to the team's server and return its scenario. */
+    /* farm: { crop, station, miles, lat, lon, acres, yield, price, budget, stability, stationId } */
     scenario: function (farm) {
-      return Promise.resolve(buildScenario(farm));
+      if (!online() || farm.lat === null || farm.lat === undefined) return Promise.resolve(buildScenario(farm));
+      return fetch('/api/scenario', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          lat: farm.lat, lon: farm.lon, crop: farm.crop, acres: farm.acres, yield: farm.yield,
+          price: farm.price, budget: farm.budget, stability: farm.stability, stationId: farm.stationId
+        })
+      }).then(function (r) {
+        if (!r.ok) throw new Error('server answered ' + r.status);
+        return r.json();
+      }).then(function (d) {
+        document.body.classList.add('real-data');
+        return decodeScenario(d);
+      }).catch(function (err) {
+        console.warn('Farmer Joe: using sample data (' + err.message + ')');
+        document.body.classList.remove('real-data');
+        return buildScenario(farm);
+      });
     },
 
     /* Orders need a signed Kalshi API key, which a web page cannot keep safe,

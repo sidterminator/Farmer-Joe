@@ -455,27 +455,56 @@
     const f = state.farm;
     const station = stationOf(f);
     if (!plot) plot = B.createPlot($('plot'));
-    B.source.scenario({ crop: f.crop, station: station, miles: f.miles }).then(function (scenario) {
+    B.source.scenario({
+      crop: f.crop, station: station, miles: f.miles, lat: f.lat, lon: f.lon, acres: f.acres,
+      yield: f.yield, price: f.price, budget: f.budget, stability: LEAN[f.lean - 1].value, stationId: f.stationId
+    }).then(function (scenario) {
       const crop = B.crops[f.crop];
       state.scenario = scenario;
-      state.revenue = M.farmIncome(scenario.farmShock, {
+      // Real model output carries revenue per season; the sample carries a yield shock.
+      state.revenue = scenario.revenue ? scenario.revenue : M.farmIncome(scenario.farmShock, {
         acres: f.acres, price: f.price, yield: f.yield,
         yieldSd: crop.spread * f.yield
       });
       state.base = M.summary(state.revenue);
       state.harvests = shuffled(M.representativeSeasons(state.revenue, scenario.markets.map(function (m) { return m.payoutYes; }), HARVESTS), 2027);
+      const rec = scenario.recommendation;
+      const picks = {};
+      if (rec) rec.picks.forEach(function (p) { picks[p.id] = p; });
       state.tickets = scenario.markets.map(function (m) {
+        const pick = picks[m.id];
         return {
           market: m,
-          on: !!m.preselect,
-          side: M.hedgeSide(state.revenue, m),
-          sideChosen: false, contracts: 0, max: 5000, adds: false, refs: null
+          on: rec ? !!pick : !!m.preselect,
+          side: pick ? pick.side : M.hedgeSide(state.revenue, m),
+          sideChosen: !!pick, contracts: pick ? pick.contracts : 0, max: 5000, adds: false, refs: null
         };
       });
-      recommendPlan();
+      showVerdict(rec);
+      if (rec) {
+        // Start from the model's own plan; the client adviser re-sizes after edits.
+        state.tickets.forEach(function (t) { if (!t.on) t.contracts = 0; measure(t); });
+        state.custom = false;
+        state.trimmed = false;
+      } else {
+        recommendPlan();
+      }
       renderTickets();
       updatePlan(true);
     });
+  }
+
+  /* The backend's verdict, one line: Hedge / Partial hedge / Don't hedge — reason. */
+  function showVerdict(rec) {
+    const el = $('plan-verdict');
+    if (!el) return;
+    if (!rec) { el.hidden = true; return; }
+    el.dataset.decision = rec.decision;
+    el.textContent = rec.decision === 'hedge' ? 'Hedge'
+      : rec.decision === 'partial' ? 'Partial hedge'
+      : 'Don\u2019t hedge \u2014 ' + rec.reason;
+    el.title = rec.reason;
+    el.hidden = false;
   }
 
   function verdict(points) {
