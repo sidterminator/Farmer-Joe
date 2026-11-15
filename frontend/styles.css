@@ -118,10 +118,12 @@ h1:focus { outline: none; }
 .brand span { display: block; }
 
 .promise {
-  max-width: 24ch;
+  max-width: 34ch;   /* wide enough to keep the capitals on one line on desktop */
   font-size: clamp(20px, 2.1vw, 30px);
   line-height: 1.3;
   font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   text-wrap: balance;
 }
 

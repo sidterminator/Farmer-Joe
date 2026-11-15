@@ -62,6 +62,7 @@ typography:
     fontSize: "clamp(20px, 2.1vw, 30px)"
     fontWeight: 600
     lineHeight: 1.3
+    letterSpacing: "0.04em"
   lede:
     fontFamily: "Archivo, system-ui, -apple-system, Segoe UI, sans-serif"
     fontSize: "18px"
@@ -279,7 +280,7 @@ Two spot inks, green and red, on white tag stock, with the neutrals all drawn fr
 - **Name** (800 to 900, 30px, line-height 0.95 to 1, uppercase): the wordmark in the bar, the Hedges heading, and each ticket's market name.
 - **Figure** (800, 34 to 40px, line-height 0.95 to 1): the crop value at the foot of the farm tag and the order total. List numerals on the intro use the same face at 1.9em in white.
 - **Stamp** (800, 21px or 15px small, letter-spacing 0.02em, uppercase): red stamps.
-- **Promise** (Archivo 600, `clamp(20px, 2.1vw, 30px)`, line-height 1.3, max 24ch): the single sentence under the name ("Your Personal Agroeconomist").
+- **Promise** (Archivo 600, `clamp(20px, 2.1vw, 30px)`, line-height 1.3, letter-spacing 0.04em, uppercase, max 34ch): the single sentence under the name ("Your Personal Agroeconomist"), set in capitals on one line on desktop.
 - **Lede** (Archivo 400, 18px, line-height 1.4, max 62ch): the one line under the advice title that says where the money goes ("Suggested: $8,960 in Temp · $5,985 in Rain", or "Your mix: ..." after an edit). The effect line under it is 16px at 650 in white ("18% steadier. Bad harvest +$10,300. Average +$2,000.").
 - **Title** (Archivo 700, 16px): the heading of a tag ("Revenue by harvest", "Order").
 - **Body** (Archivo 400, 15px, line-height 1.45): default reading text. Field values are 15.5px at 600.
