@@ -6,6 +6,7 @@
  *
  * spec = {
  *   ariaLabel: string,
+ *   xTitle: string,                                    // x-axis title (default 'Harvest')
  *   base: { label, values: number[] },                 // revenue per harvest, no hedge
  *   plan: { label, values() -> number[] | null },      // with the plan; null: no line
  *   money(v) -> string,                                // axis and tooltip format
@@ -105,7 +106,7 @@
         t.textContent = String(i + 1);
       }
       const title = svgEl('text', { class: 'axis-title', x: MARGIN.l + geom.innerW / 2, y: geom.H - 4, 'text-anchor': 'middle' }, gAxis);
-      title.textContent = 'Harvest';
+      title.textContent = spec.xTitle || 'Harvest';
     }
 
     function path(values) {

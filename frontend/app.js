@@ -7,7 +7,8 @@
   const M = B.model;
   const STORE_KEY = 'farmerjoe.farm';
   const MINUS = '−';
-  const HARVESTS = 20;   // sample harvests on the chart
+  const HARVESTS = 20;   // sample seasons on the chart, shown as Year 1-20
+  const YIELD_TREND = 0.015;   // default chart yield trend per year (server meta.yieldTrend overrides)
   const LEAN = [
     { label: 'Lowest cost', value: 0.2 },
     { label: 'Mostly cost', value: 0.4 },
@@ -460,8 +461,13 @@
       yield: f.yield, price: f.price, budget: f.budget, stability: LEAN[f.lean - 1].value, stationId: f.stationId
     };
     const req = (state.req = (state.req || 0) + 1);   // ignore answers to stale requests
+    state.ask = ask;
+    state.realScenario = null;
+    state.illustration = false;
+    $('illus-toggle').checked = false;
     showLoading();
     B.source.scenario(ask).then(function (scenario) {
+      if (!scenario.sample) state.realScenario = scenario;
       if (req === state.req) applyScenario(scenario);
     }, function (err) {
       if (req !== state.req) return;
@@ -486,16 +492,28 @@
       const rec = scenario.recommendation;
       const picks = {};
       if (rec) rec.picks.forEach(function (p) { picks[p.id] = p; });
+      const best = rec && rec.bestAvailable;
       state.tickets = scenario.markets.map(function (m) {
         const pick = picks[m.id];
+        const isBest = !!(best && best.id === m.id);
         return {
           market: m,
           on: rec ? !!pick : !!m.preselect,
-          side: pick ? pick.side : M.hedgeSide(state.revenue, m),
-          sideChosen: !!pick, contracts: pick ? pick.contracts : 0, max: 5000, adds: false, refs: null
+          // Lead with the recommendation: 'rec' first, 'best' when the verdict is don't hedge,
+          // everything else collapsed under "More Contracts".
+          group: pick || (!rec && m.preselect) ? 'rec' : isBest ? 'best' : 'more',
+          side: pick ? pick.side : isBest ? best.side : M.hedgeSide(state.revenue, m),
+          sideChosen: !!pick || isBest, contracts: pick ? pick.contracts : 0, max: 5000, adds: false, refs: null
         };
       });
+      state.tickets.sort(function (a, b) {
+        const rank = { rec: 0, best: 1, more: 2 };
+        return rank[a.group] - rank[b.group];
+      });
+      state.trend = (scenario.meta && isFinite(scenario.meta.yieldTrend)) ? scenario.meta.yieldTrend : YIELD_TREND;
+      state.bestReason = rec && rec.decision === 'none' ? rec.reason : '';
       showVerdict(rec);
+      showIllustration(!!scenario.sample);
       if (rec) {
         // Start from the model's own plan; the client adviser re-sizes after edits.
         state.tickets.forEach(function (t) { if (!t.on) t.contracts = 0; measure(t); });
@@ -547,6 +565,30 @@
       { label: 'Use sample data', run: function () { setStatus('loading', 'Loading sample data\u2026'); fallback(); } });
   }
 
+  /* "Illustration" switches to the exaggerated sample scenario; a label says so while on. */
+  function showIllustration(on) {
+    state.illustration = on;
+    $('illus-toggle').checked = on;
+    $('illus-toggle').disabled = !state.realScenario;   // nothing to switch back to without the server
+    document.querySelectorAll('.illus-label').forEach(function (el) { el.hidden = !on; });
+    if (on) $('plan-verdict').hidden = true;
+    const pct = Math.round((state.trend || 0) * 1000) / 10;
+    $('plot-note').textContent = 'Years 1\u201320 are sample seasons from the simulation. Both lines include an assumed +' +
+      pct + '%/year yield trend' + (on ? '.' : '; the hedge payouts are model output.');
+  }
+
+  function wireIllustration() {
+    $('illus-toggle').addEventListener('change', function () {
+      const on = $('illus-toggle').checked;
+      if (on) {
+        B.source.sample(state.ask).then(applyScenario);
+      } else if (state.realScenario) {
+        document.body.classList.add('real-data');
+        applyScenario(state.realScenario);
+      }
+    });
+  }
+
   /* The backend's verdict, one line: Hedge / Partial hedge / Don't hedge — reason. */
   function showVerdict(rec) {
     const el = $('plan-verdict');
@@ -572,9 +614,32 @@
   }
 
   function renderTickets() {
-    const list = $('tickets');
-    list.textContent = '';
-    state.tickets.forEach(function (t) {
+    const root = $('tickets');
+    root.textContent = '';
+    const groups = { rec: [], best: [], more: [] };
+    state.tickets.forEach(function (t) { groups[t.group || 'more'].push(t); });
+    function heading(text) { root.appendChild(make('li', 'ticket-group', text)); }
+    if (groups.rec.length) { heading('Recommended'); groups.rec.forEach(function (t) { renderTicket(t, root); }); }
+    if (groups.best.length) {
+      heading('Best Available');
+      if (state.bestReason) root.appendChild(make('li', 'ticket-group-note', 'Not recommended: ' + state.bestReason));
+      groups.best.forEach(function (t) { renderTicket(t, root); });
+    }
+    if (groups.more.length) {
+      const li = make('li', 'ticket-more');
+      const det = document.createElement('details');
+      det.open = groups.more.some(function (t) { return t.on; }) || (!groups.rec.length && !groups.best.length);
+      det.appendChild(make('summary', null, 'More Contracts (' + groups.more.length + ')'));
+      const ul = make('ul', 'tickets');
+      groups.more.forEach(function (t) { renderTicket(t, ul); });
+      det.appendChild(ul);
+      li.appendChild(det);
+      root.appendChild(li);
+    }
+  }
+
+  function renderTicket(t, list) {
+    {
       const m = t.market;
       const side = M.sideOf(m, t.side);
       const sideWord = t.side === 'yes' ? 'Yes' : 'No';
@@ -694,7 +759,7 @@
         state.custom = true;
         updatePlan(false);
       });
-    });
+    }
   }
 
   /* Choosing which hedges are in the plan, or which side of one to buy, asks
@@ -746,30 +811,36 @@
 
   /* Revenue by harvest: the sample harvests along the bottom, dollars up the
    * side, one line without a hedge and one with the plan. */
+  /* Year k of the chart: the season's revenue grown by the yield trend; the hedge's payoff
+   * (planArr - revenue, real model output) is added on top unscaled. */
+  function grown(i, k) { return state.revenue[i] * Math.pow(1 + (state.trend || 0), k); }
+  function grownPlan(i, k) { return grown(i, k) + (state.planArr[i] - state.revenue[i]); }
+
   function chartSpec() {
     const picks = state.harvests;
     return {
-      ariaLabel: 'Revenue over ' + picks.length + ' sample harvests, without a hedge and with your plan. Arrow keys read values.',
-      base: { label: 'Without', values: picks.map(function (i) { return state.revenue[i]; }) },
+      ariaLabel: 'Revenue over years 1 to ' + picks.length + ', without a hedge and with your plan. Arrow keys read values.',
+      xTitle: 'Year',
+      base: { label: 'Without', values: picks.map(function (i, k) { return grown(i, k); }) },
       plan: {
         label: 'With plan',
-        values: function () { return state.inGraph.length ? picks.map(function (i) { return state.planArr[i]; }) : null; }
+        values: function () { return state.inGraph.length ? picks.map(function (i, k) { return grownPlan(i, k); }) : null; }
       },
       money: moneyShort,
       worst: function (v) { return 'Worst ' + moneyShort(v); },
       tip: function (i, base, plan) {
         const rows = [{ key: 'base', value: money(base[i]), label: 'without' }];
         if (plan) rows.push({ key: 'plan', value: money(plan[i]), label: 'with plan' });
-        return { title: 'Harvest ' + (i + 1), rows: rows };
+        return { title: 'Year ' + (i + 1), rows: rows };
       }
     };
   }
 
   function renderBins() {
     const picks = state.harvests;
-    fill('bins-head', [['Harvest', 'Without', 'With plan']], true);
+    fill('bins-head', [['Year', 'Without', 'With plan']], true);
     fill('bins-body', picks.map(function (s, i) {
-      return [String(i + 1), money(state.revenue[s]), money(state.planArr[s])];
+      return [String(i + 1), money(grown(s, i)), money(grownPlan(s, i))];
     }));
   }
 
@@ -886,6 +957,7 @@
       state.tableView = !state.tableView;
       updatePlan(true);
     });
+    wireIllustration();
     window.addEventListener('hashchange', route);
     route();
   }

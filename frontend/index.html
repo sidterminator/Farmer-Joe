@@ -159,7 +159,11 @@
 
     <div class="plan-grid">
       <div class="plan-head">
-        <p class="plan-verdict" id="plan-verdict" hidden></p>
+        <div class="plan-topline">
+          <p class="plan-verdict" id="plan-verdict" hidden></p>
+          <label class="illus-toggle"><input type="checkbox" id="illus-toggle"> Illustration</label>
+        </div>
+        <p class="illus-label" id="illus-label" hidden>Illustration, not model output</p>
         <h1 id="plan-title" tabindex="-1"></h1>
         <p class="lede" id="plan-lede"></p>
         <p class="plan-effect" id="plan-effect" hidden></p>
@@ -167,7 +171,8 @@
 
       <div class="tag chart-tag">
         <div class="tag-head">
-          <h2>Revenue by harvest</h2>
+          <h2>Revenue by year</h2>
+          <span class="illus-label illus-chip" hidden>Illustration, not model output</span>
           <span class="stamped stamp-small sample-only">Sample</span>
           <button type="button" class="btn btn-quiet" id="table-toggle" aria-pressed="false">Table</button>
         </div>
@@ -179,6 +184,7 @@
           <svg aria-hidden="true" focusable="false"></svg>
           <div class="tip" role="status" hidden></div>
         </figure>
+        <p class="plot-note" id="plot-note"></p>
         <div class="bins" id="bins" hidden>
           <table>
             <thead id="bins-head"></thead>

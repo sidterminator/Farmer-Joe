@@ -102,11 +102,15 @@ def scenario(farm: FarmIn) -> dict:
             "picks": [{"id": r["key"], "side": r["side"].lower(), "contracts": int(r["contracts"]),
                        "dollars": round(r["dollars"], 2), "maxCents": int(math.floor(r["max_entry_price"] * 100))}
                       for r in rec["legs"]],
+            "bestAvailable": None if not rec.get("best_available") else {
+                "id": rec["best_available"]["key"], "side": rec["best_available"]["side"].lower(),
+                "contracts": rec["best_available"]["contracts"]},
         },
         "meta": {
             "station": st["city"], "stationMiles": round(miles),
             "naturalHedgePct": round(100 * res["nh"]["natural_hedge_pct"], 1),
             "placeholders": True, "runId": meta["run_id"], "crop": farm.crop,
+            "yieldTrend": float(res["settings"].get("chart_yield_trend", 0.015)),
             "window": meta["window"],
             "modelStations": [{"code": s["code"], "city": city.get(s["code"], s["code"]),
                                "miles": round(s["distance_km"] / KM_PER_MILE), "seasons": s["record_years"]}
