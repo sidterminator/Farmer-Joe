@@ -21,6 +21,7 @@ from pydantic import BaseModel, Field
 
 from farmerjoe.webcache import weather_run
 from farmerjoe.hedge.pipeline import run_hedge
+from farmerjoe.hedge.settings import load_hedge_settings
 from farmerjoe.stations import haversine_km
 
 ROOT = Path(__file__).resolve().parent
@@ -67,16 +68,49 @@ def _market(row, yes_col: np.ndarray, city: dict, crop: str, window: str, presel
             "payoutYes": base64.b64encode(np.ascontiguousarray(yes_col, dtype=np.uint8).tobytes()).decode()}
 
 
+PRICE_BAND = (0.5, 2.0)        # plausible futures price vs the crop's reference price in config
+STRIKE_BAND = 0.30             # price-contract strikes within +-30% of the futures price used
+REVENUE_TOL = 0.25             # mean revenue within 25% of acres x yield x price
+
+
+def check_price_input(farm: "FarmIn") -> None:
+    """Reject a price that cannot belong to this crop (e.g. a soybean price sent for corn)."""
+    ref = load_hedge_settings(farm.crop)["futures_price_usd_bu"]
+    lo, hi = PRICE_BAND[0] * ref, PRICE_BAND[1] * ref
+    if not lo <= farm.price <= hi:
+        raise HTTPException(422, f"Price ${farm.price:.2f}/bu is not plausible for {farm.crop} "
+                                 f"(reference ${ref:.2f}/bu; allowed ${lo:.2f}-${hi:.2f}). "
+                                 f"Check that the price matches the crop.")
+
+
+def check_outputs(farm: "FarmIn", res: dict) -> None:
+    """Consistency checks on the model output before it reaches the screen."""
+    F = res["settings"]["futures_price_usd_bu"]
+    c = res["contracts"]
+    strikes = c.loc[c.family == "price", "threshold"].to_numpy()
+    bad = strikes[np.abs(strikes / F - 1) > STRIKE_BAND + 1e-9]
+    if len(bad):
+        raise HTTPException(500, f"Sanity check failed: price strikes {sorted(set(bad.round(2)))} are more than "
+                                 f"{STRIKE_BAND:.0%} from the futures price ${F:.2f}.")
+    expected = farm.acres * farm.yield_ * farm.price
+    mean_rev = float(res["rev"]["revenue_usd"].mean())
+    if abs(mean_rev / expected - 1) > REVENUE_TOL:
+        raise HTTPException(500, f"Sanity check failed: mean revenue ${mean_rev:,.0f} is more than "
+                                 f"{REVENUE_TOL:.0%} from acres x yield x price = ${expected:,.0f}.")
+
+
 @app.post("/api/scenario")
 def scenario(farm: FarmIn) -> dict:
     t0 = time.perf_counter()
     if farm.crop not in ("corn", "soybeans", "wheat"):
         raise HTTPException(422, f"crop must be corn, soybeans or wheat (got {farm.crop!r})")
+    check_price_input(farm)
     run_dir, cfg = weather_run(farm.lat, farm.lon, farm.crop)
     res = run_hedge(run_dir, {"acres": farm.acres, "aph_yield_bu_ac": farm.yield_,
                               "futures_price_usd_bu": farm.price, "budget_usd": farm.budget,
                               "risk_weight": farm.stability}, write=False)
     meta, rec, contracts, yes = res["meta"], res["rec"], res["contracts"], res["yes"]
+    check_outputs(farm, res)
     city = {code: m["city"] for code, m in cfg.market_stations.items()}
     picked = {r["key"] for r in rec["legs"]}
     window = _window_label(meta["window"]["start"], meta["window"]["end"])

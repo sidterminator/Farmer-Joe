@@ -338,8 +338,12 @@
         const f = state.farm;
         f.crop = r.value;
         const crop = B.crops[f.crop];
-        if (!state.touched.yield) f.yield = crop.yield;
-        if (!state.touched.price) f.price = crop.price;
+        // A yield or price typed for one crop never carries over to another: reset both to the
+        // new crop's defaults (a soybean price of ~$10 was being sent as the corn futures price).
+        f.yield = crop.yield;
+        f.price = crop.price;
+        state.touched.yield = false;
+        state.touched.price = false;
         syncForm();
         save();
       });
@@ -874,7 +878,7 @@
     let effect = '';
     if (hedging) {
       effect = b.sd < a.sd
-        ? Math.round((1 - b.sd / a.sd) * 100) + '% steadier. Bad harvest ' + signedMoney(b.bad - a.bad) + '. Average ' + signedMoney(b.mean - a.mean) + '.'
+        ? Math.round((1 - b.sd / a.sd) * 100) + '% steadier. Bad harvest ' + signedMoney(b.bad - a.bad) + '. ' + (a.mean >= b.mean ? 'Cost of protection: ' + dollars(a.mean - b.mean) + '/yr.' : 'Expected gain: ' + dollars(b.mean - a.mean) + '/yr.')
         : 'This mix adds swing. Check the sides.';
     }
     $('plan-effect').textContent = effect;
