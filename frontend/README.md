@@ -4,7 +4,7 @@ Three screens for the weather-hedging tool, built for farmers:
 
 1. **Intro.** The name, one promise and a Start button.
 2. **Your farm.** The farmer drops a pin on a map (or types a town) and answers seven more questions: crop, acres, normal yield, expected price, what worries them, the most they'll spend, and stability versus cost.
-3. **Your plan.** The farmer ticks the markets they want. The amounts are sized together inside the budget, and the graph shows season income without protection and with that combination. They can change the side or the amount on each market and review the order.
+3. **Your plan.** The farmer ticks the markets they want. The amounts are sized together inside the budget, and one graph overlays season income without protection (columns) and with that mix (a line). They can change the side or the amount on each market and review the order.
 
 Plain HTML, CSS and JavaScript. No install and no build step.
 
@@ -35,9 +35,10 @@ The screens label sample data. Nothing is sent anywhere except one market-data r
 ## How the plan screen behaves
 
 - Ticking or unticking a market, or switching a market between Yes and No, re-sizes the whole combination inside the budget.
-- Typing or dragging an amount changes only that market. Those amounts stand until the next tick or side change, and "Back to the recommended amounts" re-sizes on request.
-- The lower band of the graph is labelled with the markets that are in it, for example "With your plan: Temp + Rain".
-- Going over the budget shows a warning and a "Trim to fit" action.
+- Typing or dragging an amount changes only that market. Those amounts stand until the next tick or side change, and "Reset" re-sizes on request.
+- The line on the graph is labelled with the markets in it, for example "With Temp + Rain". With nothing ticked there is no line.
+- Going over the budget shows a warning and a "Trim" action.
+- Wording is kept short on purpose: labels and results, no explanations.
 
 ## Kalshi
 
@@ -55,7 +56,7 @@ The screens label sample data. Nothing is sent anywhere except one market-data r
 | `styles.css` | The seed-sack look: layout, colours, states, responsive rules |
 | `app.js` | Routing, the farm form, the plan, the order, the live panel |
 | `map.js` | The map, the Albers projection, the pin and its drop animation |
-| `charts.js` | The one chart form: two distributions on a shared ruled grid |
+| `charts.js` | The one chart form: columns for one distribution with a line for the other laid over them |
 | `model.js` | Hedge maths (pure functions, no DOM) |
 | `sample-data.js` | Sample scenario and the `FarmerJoe.source` seam for the backend |
 | `kalshi.js` | Kalshi demo API client |
@@ -80,7 +81,8 @@ The screens label sample data. Nothing is sent anywhere except one market-data r
   markets: [{
     id, name,                      // name is the short label on the ticket
     worry,                         // 'heat' | 'drought' | 'crop': which answer pre-selects it
-    question, yesPaysWhen, noPaysWhen, settles,
+    question,                      // one short line shown on the ticket
+    caveat,                        // optional short warning, e.g. "May not exist on Kalshi."
     yesCents, noCents,             // ask prices in cents
     payoutYes: Uint8Array(N)       // 1 where Yes pays, else 0
   }]

@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Farmer Joe: weather protection for your crop</title>
-  <meta name="description" content="Tell Farmer Joe about your farm and see which weather contracts would steady your season's income.">
+  <title>Farmer Joe</title>
+  <meta name="description" content="Weather protection, sized to your farm.">
   <meta name="theme-color" content="#17603a">
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="fonts/fonts.css">
@@ -28,20 +28,13 @@
   <section class="screen screen-intro" id="screen-intro" aria-labelledby="intro-title">
     <div class="sack-panel">
       <h1 class="brand" id="intro-title" tabindex="-1"><span>Farmer</span> <span>Joe</span></h1>
-      <div class="sack-foot">
-        <p class="promise">Weather protection for your crop, sized to your farm and your budget.</p>
-        <dl class="spec">
-          <div><dt>Crops</dt><dd>Corn, soybeans, wheat</dd></div>
-          <div><dt>Markets</dt><dd>Kalshi weather contracts, demo exchange</dd></div>
-          <div><dt>Covers</dt><dd>The lower 48 states</dd></div>
-        </dl>
-      </div>
+      <p class="promise">Weather protection, sized to your farm.</p>
     </div>
     <div class="sack-side">
       <ol class="how">
-        <li>Tell it where you farm and what you grow.</li>
-        <li>See which weather contracts would steady your season.</li>
-        <li>Choose the ones you want, and how many.</li>
+        <li>Pin your farm.</li>
+        <li>See your plan.</li>
+        <li>Pick your markets.</li>
       </ol>
       <div class="start-wrap">
         <a class="start-tag" href="#/farm" id="start">
@@ -51,7 +44,7 @@
             <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
           </span>
         </a>
-        <p class="fine">Educational tool, not financial advice. Forecasts, markets and prices are sample data. No real money is traded.</p>
+        <p class="fine">Sample data. Not financial advice. No real money.</p>
       </div>
     </div>
   </section>
@@ -62,27 +55,27 @@
       <a class="wordmark" href="#/">Farmer Joe</a>
       <ol class="steps" aria-label="Steps">
         <li><a href="#/">Start</a></li>
-        <li><a href="#/farm" aria-current="step">Your farm</a></li>
-        <li><a href="#/plan">Your plan</a></li>
+        <li><a href="#/farm" aria-current="step">Farm</a></li>
+        <li><a href="#/plan">Plan</a></li>
       </ol>
-      <p class="sample-note"><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg><span>Forecasts, markets and prices are sample data</span></p>
+      <p class="sample-note"><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg><span>Sample data</span></p>
     </header>
 
     <div class="farm-grid">
       <div class="map-side">
         <h1 id="farm-title" tabindex="-1">Your farm</h1>
-        <p class="map-hint">Click the map where you farm, or type a town on the tag.</p>
+        <p class="map-hint">Click the map or type a town.</p>
         <svg class="map" id="map" role="img" focusable="false"></svg>
-        <p class="map-key"><span class="key-dot" aria-hidden="true"></span>Weather stations with Kalshi markets</p>
+        <p class="map-key"><span class="key-dot" aria-hidden="true"></span>Kalshi weather stations</p>
       </div>
 
       <form class="tag farm-tag" id="farm-form" novalidate>
         <span class="eyelet" aria-hidden="true"></span>
 
         <div class="row row-where" id="row-where">
-          <label for="where">Where is your farm?</label>
+          <label for="where">Farm</label>
           <div class="control">
-            <input type="text" id="where" list="places" autocomplete="off" spellcheck="false" placeholder="Town, or click the map" aria-describedby="where-out where-error">
+            <input type="text" id="where" list="places" autocomplete="off" spellcheck="false" placeholder="Town" aria-describedby="where-out where-error">
             <datalist id="places"></datalist>
           </div>
           <p class="where-out" id="where-out" hidden>
@@ -93,7 +86,7 @@
         </div>
 
         <fieldset class="row">
-          <legend>What crop?</legend>
+          <legend>Crop</legend>
           <div class="control seg" id="crop">
             <label><input type="radio" name="crop" value="corn" checked><span>Corn</span></label>
             <label><input type="radio" name="crop" value="soybeans"><span>Soybeans</span></label>
@@ -102,7 +95,7 @@
         </fieldset>
 
         <div class="row" id="row-acres">
-          <label for="acres">How many acres?</label>
+          <label for="acres">Acres</label>
           <div class="control pair">
             <span class="field"><input type="number" id="acres" inputmode="numeric" min="1" max="100000" step="1" value="300" aria-describedby="acres-error"><span class="unit">acres</span></span>
             <input type="range" id="acres-range" min="10" max="5000" step="10" value="300" aria-label="Acres, slider">
@@ -111,11 +104,11 @@
         </div>
 
         <div class="row" id="row-yield">
-          <label for="yield">Normal yield?</label>
+          <label for="yield">Normal yield</label>
           <div class="control pair pair-wrap">
             <span class="field"><input type="number" id="yield" inputmode="decimal" min="1" max="500" step="1" value="200" aria-describedby="yield-note yield-error"><span class="unit">bu/acre</span></span>
             <button type="button" class="btn btn-quiet" id="import-btn">
-              <svg class="icon" aria-hidden="true"><use href="#i-import"/></svg>Import history
+              <svg class="icon" aria-hidden="true"><use href="#i-import"/></svg>Import
             </button>
             <input type="file" id="file-input" accept=".csv,text/csv,text/plain" hidden>
           </div>
@@ -124,42 +117,42 @@
         </div>
 
         <div class="row" id="row-price">
-          <label for="price">Expected price?</label>
+          <label for="price">Price</label>
           <div class="control">
-            <span class="field"><span class="unit unit-lead">$</span><input type="number" id="price" inputmode="decimal" min="0.01" max="100" step="0.05" value="4.50" aria-describedby="price-error"><span class="unit">per bushel</span></span>
+            <span class="field"><span class="unit unit-lead">$</span><input type="number" id="price" inputmode="decimal" min="0.01" max="100" step="0.05" value="4.50" aria-describedby="price-error"><span class="unit">/bu</span></span>
           </div>
           <p class="error" id="price-error" hidden></p>
         </div>
 
         <fieldset class="row">
-          <legend>What worries you?</legend>
+          <legend>Worries</legend>
           <div class="control chips">
-            <label><input type="checkbox" name="worry" value="heat" checked><span><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Heat in July</span></label>
-            <label><input type="checkbox" name="worry" value="drought" checked><span><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Drought in July</span></label>
-            <label><input type="checkbox" name="worry" value="crop"><span><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>A poor crop year</span></label>
+            <label><input type="checkbox" name="worry" value="heat" checked><span><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Heat</span></label>
+            <label><input type="checkbox" name="worry" value="drought" checked><span><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Drought</span></label>
+            <label><input type="checkbox" name="worry" value="crop"><span><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Poor crop</span></label>
           </div>
         </fieldset>
 
         <div class="row" id="row-budget">
-          <label for="budget">Most you'll spend on protection?</label>
+          <label for="budget">Max spend</label>
           <div class="control pair">
             <span class="field"><span class="unit unit-lead">$</span><input type="number" id="budget" inputmode="numeric" min="0" max="1000000" step="500" value="15000" aria-describedby="budget-error"></span>
-            <input type="range" id="budget-range" min="0" max="50000" step="500" value="15000" aria-label="Most you'll spend, slider">
+            <input type="range" id="budget-range" min="0" max="50000" step="500" value="15000" aria-label="Max spend, slider">
           </div>
           <p class="error" id="budget-error" hidden></p>
         </div>
 
         <div class="row">
-          <label for="stability">Stability or cost?</label>
+          <label for="stability">Priority</label>
           <div class="control lean">
             <input type="range" id="stability" min="1" max="5" step="1" value="4" aria-describedby="stability-out">
-            <div class="lean-ends" aria-hidden="true"><span>Lowest cost</span><span>Most stability</span></div>
+            <div class="lean-ends" aria-hidden="true"><span>Cost</span><span>Stability</span></div>
             <output id="stability-out" for="stability">Mostly stability</output>
           </div>
         </div>
 
         <div class="tag-foot">
-          <p class="crop-value"><span>Crop value in a normal year</span><strong id="crop-value"></strong></p>
+          <p class="crop-value"><span>Crop value</span><strong id="crop-value"></strong></p>
           <button type="submit" class="btn btn-primary">See my plan<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button>
         </div>
       </form>
@@ -172,24 +165,28 @@
       <a class="wordmark" href="#/">Farmer Joe</a>
       <ol class="steps" aria-label="Steps">
         <li><a href="#/">Start</a></li>
-        <li><a href="#/farm">Your farm</a></li>
-        <li><a href="#/plan" aria-current="step">Your plan</a></li>
+        <li><a href="#/farm">Farm</a></li>
+        <li><a href="#/plan" aria-current="step">Plan</a></li>
       </ol>
-      <p class="sample-note"><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg><span>Forecasts, markets and prices are sample data</span></p>
+      <p class="sample-note"><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg><span>Sample data</span></p>
     </header>
 
     <div class="plan-grid">
       <div class="plan-main">
         <h1 id="plan-title" tabindex="-1"></h1>
         <p class="lede" id="plan-lede"></p>
-        <p class="farm-line"><span id="farm-line"></span> <a href="#/farm">Change</a></p>
+        <p class="farm-line"><span id="farm-line"></span> <a href="#/farm">Edit</a></p>
 
         <div class="tag chart-tag">
           <div class="tag-head">
             <h2>Season income</h2>
             <span class="stamped stamp-small">Sample</span>
-            <button type="button" class="btn btn-quiet" id="table-toggle" aria-pressed="false">Table view</button>
+            <button type="button" class="btn btn-quiet" id="table-toggle" aria-pressed="false">Table</button>
           </div>
+          <ul class="legend" id="legend" aria-label="Chart key">
+            <li><span class="sw-base"></span>Without protection</li>
+            <li><span class="sw-plan"></span>With your plan</li>
+          </ul>
           <figure class="plot" id="plot" tabindex="0" role="group" aria-roledescription="chart">
             <svg aria-hidden="true" focusable="false"></svg>
             <div class="tip" role="status" hidden></div>
@@ -209,17 +206,17 @@
 
       <aside class="plan-side" aria-labelledby="contracts-title">
         <div class="side-head">
-          <h2 id="contracts-title">Contracts</h2>
+          <h2 id="contracts-title">Markets</h2>
           <span class="stamped stamp-small stamp-on-green">Sample</span>
           <p class="plan-state" id="plan-state"></p>
         </div>
-        <p class="side-hint">Tick the markets you want. Their amounts are sized together, and the graph shows the combination.</p>
+        <p class="side-hint">Tick markets. The graph shows your mix.</p>
         <p class="plan-result" id="plan-result" aria-live="polite"></p>
         <ul class="tickets" id="tickets"></ul>
 
         <div class="tag order-tag">
           <div class="tag-head">
-            <h2>Your order</h2>
+            <h2>Order</h2>
             <span class="stamped stamp-small">Demo only</span>
           </div>
           <div class="meter" id="meter" aria-hidden="true"><span id="meter-fill"></span></div>
@@ -227,20 +224,20 @@
           <ul class="order-lines" id="order-lines"></ul>
           <p class="order-total"><span>Total</span><strong id="order-total"></strong></p>
           <button type="button" class="btn btn-primary" id="send-order" disabled aria-describedby="order-note">Send to Kalshi demo</button>
-          <p class="note" id="order-note">Sending isn't connected yet. A Kalshi order has to be signed with an API key, and a web page can't keep one safe, so orders will go through the team's server. Nothing is sent from this page, and no real money is traded.</p>
+          <p class="note" id="order-note">Not connected yet. Orders need the team's server. No real money.</p>
         </div>
       </aside>
 
       <div class="tag live-tag">
         <div class="tag-head">
-          <h2>Open on Kalshi now</h2>
+          <h2>Live on Kalshi</h2>
           <p class="live-status" id="live-status" aria-live="polite"></p>
         </div>
         <div id="live-body"></div>
       </div>
     </div>
 
-    <p class="fine plan-fine">Educational tool, not financial advice. The simulated seasons, the July markets and their prices are sample data. How closely a station’s weather tracks a farm at that distance is an assumption. Town list from GeoNames.</p>
+    <p class="fine plan-fine">Sample data and assumptions. Not financial advice. Towns: GeoNames.</p>
   </section>
 
 </div>

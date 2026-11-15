@@ -51,7 +51,9 @@ Market facts:
 
 - The name is **Farmer Joe**. It is the product's name only, not a character the app speaks as (user, 2026-11-14).
 - Visual direction chosen by the user on 2026-11-14: **seed sack**. It replaced the earlier blue and corn gold look.
-- Palette set by the user on 2026-11-14: **green and white with red highlights**. The corn yellow the seed sack look first shipped with was removed.
+- Palette set by the user on 2026-11-14: **green and white**, with red kept for the pin, stamps, No and warnings. The user went back and forth with a yellow version the same day and settled here. The Start button is white with a plain black arrow (no circle).
+- Copy: keep wording short. The user asked for only the important information on every screen.
+- The plan's graph overlays the two income shapes on one plot.
 
 ## Evidence on Hand
 

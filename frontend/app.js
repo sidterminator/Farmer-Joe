@@ -67,16 +67,9 @@
     return (r < 0 ? MINUS : '+') + Math.abs(r) + '%';
   }
   function plural(n, word) { return whole.format(n) + ' ' + word + (n === 1 ? '' : 's'); }
-  /* "Near Champaign, IL" -> "near Champaign, IL"; a bare town -> "at Champaign, IL". */
-  function placePhrase(label) {
-    if (/^Near /.test(label)) return 'near ' + label.slice(5);
-    if (/^\d/.test(label)) return label;
-    if (/^Farm at /.test(label)) return label.slice(5);
-    return 'at ' + label;
-  }
   function aboutMiles(miles) {
-    if (miles < 10) return 'under 10 miles away';
-    return 'about ' + whole.format(Math.round(miles / 5) * 5) + ' miles away';
+    if (miles < 10) return 'under 10 mi';
+    return whole.format(Math.round(miles / 5) * 5) + ' mi';
   }
 
   /* ---------- state ---------- */
@@ -181,7 +174,7 @@
     const name = routeName();
     if (name === 'plan' && !hasLocation()) {
       location.replace('#/farm');
-      setError('where', 'Put your farm on the map first. Click the map, or type a town.');
+      setError('where', 'Pin your farm first.');
       return;
     }
     show(name);
@@ -268,7 +261,7 @@
     if (!hasLocation()) return;
     const station = stationOf(f);
     $('where-stamp').textContent = f.label;
-    $('where-station').textContent = 'Nearest station: ' + station.city + ', ' + aboutMiles(f.miles) + '.';
+    $('where-station').textContent = 'Station: ' + station.city + ', ' + aboutMiles(f.miles);
     if (animate && $('where-stamp').animate) {
       // The place is stamped onto the tag just after the pin lands.
       $('where-stamp').animate(reducedMotion()
@@ -300,7 +293,7 @@
     if (hasLocation() && text === state.farm.label) return;
     const place = findPlace(text);
     if (!place) {
-      setError('where', 'No town by that name in the list. Try a larger town nearby, or click the map.');
+      setError('where', 'Town not found. Try a bigger one, or click the map.');
       return;
     }
     setLocation(place.lat, place.lon, place.name + ', ' + place.state, true);
@@ -358,11 +351,11 @@
   function importHistory(file) {
     const note = $('yield-note');
     const reader = new FileReader();
-    reader.onerror = function () { setError('yield', 'Could not read ' + file.name + '. Try importing it again.'); };
+    reader.onerror = function () { setError('yield', 'Could not read ' + file.name + '.'); };
     reader.onload = function () {
       const parsed = parseSeasonsCsv(String(reader.result));
       if (!parsed.yields.length) {
-        setError('yield', 'No seasons found in ' + file.name + '. It needs a year column and a yield column in bushels per acre.');
+        setError('yield', 'No seasons in ' + file.name + '. It needs year and yield columns.');
         return;
       }
       const f = state.farm;
@@ -375,8 +368,8 @@
       setError('yield', '');
       syncForm();
       note.hidden = false;
-      note.textContent = 'From ' + plural(parsed.yields.length, 'season') + ' in ' + file.name +
-        (f.yieldSd !== null ? ': normal ' + f.yield + ', swing ±' + Math.round(f.yieldSd) + ' bushels.' : ': normal ' + f.yield + '. Three or more seasons would also set the swing.');
+      note.textContent = plural(parsed.yields.length, 'season') + ': normal ' + f.yield +
+        (f.yieldSd !== null ? ', swing ±' + Math.round(f.yieldSd) : '');
       save();
     };
     reader.readAsText(file);
@@ -389,11 +382,11 @@
       setError(key, ok ? '' : text);
       if (!ok && !first) first = key;
     }
-    check('where', hasLocation(), 'Put your farm on the map first. Click the map, or type a town.');
-    check('acres', f.acres > 0, 'Enter the acres you farm, such as 300.');
-    check('yield', f.yield > 0, 'Enter a normal yield in bushels per acre, such as 200.');
-    check('price', f.price > 0, 'Enter the price you expect per bushel, such as 4.50.');
-    check('budget', f.budget >= 0, 'Enter the most you would spend, or 0.');
+    check('where', hasLocation(), 'Pin your farm first.');
+    check('acres', f.acres > 0, 'Enter acres.');
+    check('yield', f.yield > 0, 'Enter a yield.');
+    check('price', f.price > 0, 'Enter a price.');
+    check('budget', f.budget >= 0, 'Enter a budget, or 0.');
     if (first) $(first).focus();
     return !first;
   }
@@ -566,9 +559,9 @@
   function verdict(points) {
     const chip = make('span', 'verdict');
     let name = 'equal';
-    let text = 'About fair';
-    if (points >= 2) { name = 'check'; text = 'Cheap by ' + points + ' points'; }
-    else if (points <= -2) { name = 'alert'; text = 'Expensive by ' + Math.abs(points) + ' points'; }
+    let text = 'Fair price';
+    if (points >= 2) { name = 'check'; text = 'Cheap by ' + points; }
+    else if (points <= -2) { name = 'alert'; text = 'Pricey by ' + Math.abs(points); }
     chip.appendChild(icon(name));
     chip.appendChild(make('span', null, text));
     return chip;
@@ -600,7 +593,7 @@
       const cost = make('span', 'ticket-cost');
       top.appendChild(cost);
       body.appendChild(top);
-      body.appendChild(make('p', 'ticket-q', m.question + '. ' + m.settles + '.'));
+      body.appendChild(make('p', 'ticket-q', m.question));
       if (m.caveat) {
         const caveat = make('p', 'ticket-flag');
         caveat.appendChild(icon('info'));
@@ -613,7 +606,7 @@
         const prices = make('div', 'ticket-prices');
         prices.appendChild(make('span', 'price-yes', 'Yes ' + m.yesCents + '\u00a2'));
         prices.appendChild(make('span', 'price-no', 'No ' + m.noCents + '\u00a2'));
-        const add = make('button', 'btn btn-quiet', 'Add to plan');
+        const add = make('button', 'btn btn-quiet', 'Add');
         add.type = 'button';
         add.setAttribute('aria-label', 'Add ' + m.name + ' to the plan');
         add.addEventListener('click', function () { togglePick(t, true); });
@@ -663,15 +656,14 @@
       body.appendChild(controls);
 
       const why = make('p', 'ticket-why');
-      why.appendChild(make('strong', null, sideWord + ' pays $1'));
-      why.appendChild(document.createTextNode(' when ' + (t.side === 'yes' ? m.yesPaysWhen : m.noPaysWhen) + '. Model chance ' + percent(M.chance(side)) + '. '));
+      why.appendChild(document.createTextNode('Model ' + percent(M.chance(side)) + ' '));
       why.appendChild(verdict(Math.round(M.chance(side) * 100) - Math.round(side.price * 100)));
       body.appendChild(why);
 
       if (t.adds) {
         const flag = make('p', 'ticket-flag');
         flag.appendChild(icon('alert'));
-        flag.appendChild(make('span', null, sideWord + ' pays in the seasons this farm already earns more, so it adds swing. ' + (t.side === 'yes' ? 'No' : 'Yes') + ' is the side that steadies it.'));
+        flag.appendChild(make('span', null, sideWord + ' adds swing. Try ' + (t.side === 'yes' ? 'No' : 'Yes') + '.'));
         body.appendChild(flag);
       }
       li.appendChild(body);
@@ -758,34 +750,24 @@
 
   function chartSpec() {
     return {
-      ariaLabel: 'Season income across ' + whole.format(state.revenue.length) + ' simulated seasons: without protection above, with your plan below. Use the left and right arrow keys to read values.',
+      ariaLabel: 'Season income across ' + whole.format(state.revenue.length) + ' simulated seasons, without protection and with your plan. Arrow keys read values.',
       lo: state.lo,
       hi: state.hi,
       headroom: 1.45,
-      bands: [
-        {
-          key: 'base',
-          label: 'Without protection',
-          values: function (bins, lo, hi) { return M.histogram(state.revenue, lo, hi, bins); },
-          get mark() { return { value: state.base.bad, label: '1 in 20: ' + money(state.base.bad) }; }
-        },
-        {
-          key: 'plan',
-          get label() { return 'With your plan: ' + (state.inGraph.length ? state.inGraph.join(' + ') : 'nothing selected'); },
-          values: function (bins, lo, hi) { return M.histogram(state.planArr, lo, hi, bins); },
-          get mark() { return { value: state.plan.bad, label: '1 in 20: ' + money(state.plan.bad) }; }
-        }
-      ],
+      base: {
+        label: 'Without',
+        values: function (bins, lo, hi) { return M.histogram(state.revenue, lo, hi, bins); }
+      },
+      plan: {
+        get label() { return 'With ' + state.inGraph.join(' + '); },
+        values: function (bins, lo, hi) { return state.inGraph.length ? M.histogram(state.planArr, lo, hi, bins) : null; }
+      },
       xTicks: incomeTicks,
-      tip: function (k, shares, lo, hi) {
-        const w = (hi - lo) / shares[0].length;
-        return {
-          title: moneyShort(lo + k * w) + ' to ' + moneyShort(lo + (k + 1) * w),
-          rows: [
-            { key: 'base', value: percent(shares[0][k], 1), label: 'of seasons without protection' },
-            { key: 'plan', value: percent(shares[1][k], 1), label: 'of seasons with your plan' }
-          ]
-        };
+      tip: function (k, base, plan, lo, hi) {
+        const w = (hi - lo) / base.length;
+        const rows = [{ key: 'base', value: percent(base[k], 1), label: 'without' }];
+        if (plan) rows.push({ key: 'plan', value: percent(plan[k], 1), label: 'with plan' });
+        return { title: moneyShort(lo + k * w) + ' to ' + moneyShort(lo + (k + 1) * w), rows: rows };
       }
     };
   }
@@ -795,7 +777,7 @@
     const w = (state.hi - state.lo) / GROUPS;
     const a = M.histogram(state.revenue, state.lo, state.hi, GROUPS);
     const b = M.histogram(state.planArr, state.lo, state.hi, GROUPS);
-    fill('bins-head', [['Season income', 'Without protection', 'With your plan']], true);
+    fill('bins-head', [['Season income', 'Without', 'With plan']], true);
     const rows = [];
     for (let k = 0; k < GROUPS; k++) {
       rows.push([moneyShort(state.lo + k * w) + ' to ' + moneyShort(state.lo + (k + 1) * w), percent(a[k], 1), percent(b[k], 1)]);
@@ -823,33 +805,22 @@
       t.refs.cost.textContent = t.on ? dollars(t.contracts * price) : 'Not in plan';
     });
 
-    $('plan-title').textContent = active.length
-      ? 'Your plan: ' + dollars(cost) + ' across ' + plural(active.length, 'market')
-      : 'No protection in the plan';
+    $('plan-title').textContent = active.length ? 'Plan: ' + dollars(cost) : 'No plan yet';
     let lede;
-    if (!active.length) {
-      lede = chosen.length
-        ? 'The markets you picked have no contracts in them yet. Raise an amount on the right to see what it does to your season.'
-        : 'Tick the markets you want on the right. The graph shows the combination you pick.';
-    } else if (b.sd < a.sd) {
-      lede = 'It cuts the typical swing in your season income from ±' + money(a.sd) + ' to ±' + money(b.sd) +
-        (b.bad >= a.bad ? ' and lifts a 1-in-20 bad season by ' + money(b.bad - a.bad) + '.' : ', but a 1-in-20 bad season comes in ' + money(a.bad - b.bad) + ' lower.');
-    } else {
-      lede = 'This mix adds swing to your season income instead of removing it. Check the side on each contract.';
-    }
+    if (!active.length) lede = chosen.length ? 'Raise an amount to see the effect.' : 'Tick a market to start.';
+    else if (b.sd < a.sd) lede = 'Swing ±' + money(a.sd) + ' → ±' + money(b.sd) + '. Bad season ' + signedMoney(b.bad - a.bad) + '.';
+    else lede = 'This mix adds swing. Check the sides.';
     $('plan-lede').textContent = lede;
-    $('plan-result').textContent = !active.length ? 'Nothing in the plan yet.'
-      : 'Swing ±' + money(state.base.sd) + ' to ±' + money(state.plan.sd) + '. Bad season ' + signedMoney(state.plan.bad - state.base.bad) + '. Cost ' + dollars(cost) + '.';
-    $('farm-line').textContent = whole.format(f.acres) + ' acres of ' + crop.label.toLowerCase() + ' ' + placePhrase(f.label) +
-      '. Worth ' + dollars(cropValue()) + ' in a normal year. Nearest station: ' + station.city + ', ' + aboutMiles(f.miles) + '.';
+    $('plan-result').textContent = lede + (active.length ? ' Cost ' + dollars(cost) + '.' : '');
+    $('farm-line').textContent = whole.format(f.acres) + ' ac ' + crop.label.toLowerCase() + ' · ' + f.label + ' · ' + station.city + ' station';
 
     const hedging = active.length > 0;
-    fill('analysis-head', [['', 'Without protection', 'With your plan', 'Change']], true);
+    fill('analysis-head', [['', 'Without', 'With plan', 'Change']], true);
     fill('analysis-body', [
-      ['Average season', money(a.mean), money(b.mean), hedging ? signedMoney(b.mean - a.mean) : '—'],
-      ['Typical swing', '±' + money(a.sd), '±' + money(b.sd), hedging ? signedPercent(b.sd / a.sd - 1) : '—'],
-      ['1-in-20 bad season', money(a.bad), money(b.bad), hedging ? signedMoney(b.bad - a.bad) : '—'],
-      ['Cost of protection', '$0', dollars(cost), hedging ? percent(cost / cropValue(), 1) + ' of the crop' : '—']
+      ['Average', money(a.mean), money(b.mean), hedging ? signedMoney(b.mean - a.mean) : '—'],
+      ['Swing', '±' + money(a.sd), '±' + money(b.sd), hedging ? signedPercent(b.sd / a.sd - 1) : '—'],
+      ['Bad season (1 in 20)', money(a.bad), money(b.bad), hedging ? signedMoney(b.bad - a.bad) : '—'],
+      ['Cost', '$0', dollars(cost), hedging ? percent(cost / cropValue(), 1) + ' of crop' : '—']
     ]);
 
     // The order
@@ -860,21 +831,21 @@
     line.textContent = '';
     if (over) {
       line.appendChild(icon('alert'));
-      line.appendChild(make('strong', null, 'Over your ' + dollars(f.budget) + ' limit by ' + dollars(cost - f.budget) + '.'));
-      const trim = make('button', 'link', 'Trim to fit');
+      line.appendChild(make('strong', null, 'Over budget by ' + dollars(cost - f.budget) + '.'));
+      const trim = make('button', 'link', 'Trim');
       trim.type = 'button';
       trim.addEventListener('click', trimToBudget);
       line.appendChild(trim);
     } else {
-      line.appendChild(make('span', null, dollars(cost) + ' of your ' + dollars(f.budget) + ' limit.'));
+      line.appendChild(make('span', null, dollars(cost) + ' of ' + dollars(f.budget)));
     }
     const lines = $('order-lines');
     lines.textContent = '';
-    if (!active.length) lines.appendChild(make('li', 'order-empty', 'Nothing in the order yet.'));
+    if (!active.length) lines.appendChild(make('li', 'order-empty', 'Nothing yet.'));
     active.forEach(function (t) {
       const price = M.sideOf(t.market, t.side).price;
       const li = make('li');
-      li.appendChild(make('span', null, whole.format(t.contracts) + ' ' + (t.side === 'yes' ? 'Yes' : 'No') + ' on ' + t.market.name + ' at ' + Math.round(price * 100) + '¢'));
+      li.appendChild(make('span', null, whole.format(t.contracts) + ' ' + (t.side === 'yes' ? 'Yes' : 'No') + ' · ' + t.market.name + ' · ' + Math.round(price * 100) + '¢'));
       li.appendChild(make('span', null, dollars(t.contracts * price)));
       lines.appendChild(li);
     });
@@ -884,8 +855,8 @@
     const stateLine = $('plan-state');
     stateLine.textContent = '';
     if (state.custom) {
-      stateLine.appendChild(make('span', null, 'You changed the amounts. '));
-      const back = make('button', 'link', 'Back to the recommended amounts');
+      stateLine.appendChild(make('span', null, 'Edited. '));
+      const back = make('button', 'link', 'Reset');
       back.type = 'button';
       back.addEventListener('click', function () {
         recommendPlan();
@@ -894,14 +865,14 @@
       });
       stateLine.appendChild(back);
     } else {
-      stateLine.textContent = !chosen.length ? 'No markets picked'
-        : 'Sized for ' + chosen.join(' + ') + (state.trimmed ? ', trimmed to your limit' : '');
+      stateLine.textContent = !chosen.length ? 'None picked' : state.trimmed ? 'Trimmed to budget' : 'Sized for you';
     }
 
     const toggle = $('table-toggle');
     toggle.setAttribute('aria-pressed', state.tableView ? 'true' : 'false');
-    toggle.textContent = state.tableView ? 'Chart view' : 'Table view';
+    toggle.textContent = state.tableView ? 'Chart' : 'Table';
     $('plot').hidden = state.tableView;
+    $('legend').hidden = state.tableView;
     $('bins').hidden = !state.tableView;
     if (state.tableView) renderBins();
     else if (full) plot.render(chartSpec());
@@ -940,7 +911,7 @@
     const live = state.live;
 
     if (live.status === 'loading') {
-      status.textContent = 'Asking Kalshi…';
+      status.textContent = 'Loading…';
       const sk = make('div', 'skeleton');
       sk.setAttribute('aria-hidden', 'true');
       sk.appendChild(make('span'));
@@ -954,30 +925,29 @@
       const e = live.event;
       const time = e.fetchedAt.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
       const quoted = e.markets.some(function (m) { return m.yesCents !== null || m.noCents !== null; });
-      const tail = 'Kalshi lists each month’s market shortly before the month, so the July plan above runs on sample prices.';
+      const tail = 'July isn’t listed yet, so the plan uses sample prices.';
       status.appendChild(make('span', 'live-dot'));
       body.appendChild(make('p', 'live-title', e.title));
 
       if (!quoted) {
         // Listed but nobody is quoting it: one row says so instead of a table of blanks.
-        status.appendChild(make('span', null, 'Listed, not quoted, ' + time));
+        status.appendChild(make('span', null, 'Listed, no quotes · ' + time));
         const line = make('p', 'live-row');
-        line.appendChild(make('span', null, plural(e.markets.length, 'strike') + ' listed, ' +
-          e.markets[0].label.toLowerCase() + ' to ' + e.markets[e.markets.length - 1].label.toLowerCase()));
-        line.appendChild(make('strong', null, 'No offers right now'));
+        line.appendChild(make('span', null, plural(e.markets.length, 'strike') + ' listed'));
+        line.appendChild(make('strong', null, 'No offers'));
         body.appendChild(line);
-        body.appendChild(make('p', 'live-note', 'This market is really listed for ' + station.city + ', the station nearest your farm (' + e.ticker + '), on Kalshi’s demo exchange. ' + tail));
-        const again = make('button', 'btn btn-quiet', 'Check again');
+        body.appendChild(make('p', 'live-note', tail));
+        const again = make('button', 'btn btn-quiet', 'Retry');
         again.type = 'button';
         again.addEventListener('click', function () { loadLive(true); });
         body.appendChild(again);
         return;
       }
 
-      status.appendChild(make('span', null, 'Live from Kalshi’s demo exchange, ' + time));
+      status.appendChild(make('span', null, 'Live · ' + time));
       const table = make('table', 'live-table');
       const thead = make('thead');
-      thead.appendChild(row(['Pays if rainfall is', 'Yes', 'No'], true));
+      thead.appendChild(row(['Rain', 'Yes', 'No'], true));
       const tbody = make('tbody');
       e.markets.forEach(function (m) {
         const tr = make('tr');
@@ -993,22 +963,22 @@
       table.appendChild(thead);
       table.appendChild(tbody);
       body.appendChild(table);
-      body.appendChild(make('p', 'live-note', 'These are the real open prices for ' + station.city + ', the station nearest your farm (' + e.ticker + '). ' + tail));
+      body.appendChild(make('p', 'live-note', tail));
       return;
     }
 
     const fail = make('div', 'live-fail');
     if (live.status === 'empty') {
       status.textContent = 'Nothing open';
-      fail.appendChild(make('p', null, 'Kalshi has no open monthly rain market for ' + station.city + ' right now. The plan above does not depend on it.'));
+      fail.appendChild(make('p', null, 'No open rain market for ' + station.city + '.'));
     } else {
-      status.textContent = 'Not connected';
-      fail.appendChild(make('p', null, 'Kalshi could not be reached. The plan above does not depend on it.'));
+      status.textContent = 'Offline';
+      fail.appendChild(make('p', null, 'Kalshi unreachable. The plan still works.'));
     }
     const retry = make('button', 'btn btn-quiet');
     retry.type = 'button';
     retry.appendChild(icon('retry'));
-    retry.appendChild(document.createTextNode('Try again'));
+    retry.appendChild(document.createTextNode('Retry'));
     retry.addEventListener('click', function () { loadLive(true); });
     fail.appendChild(retry);
     body.appendChild(fail);
