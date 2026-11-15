@@ -97,4 +97,5 @@ server isn't running.
 
 ## Team
 
-Built by the Farmer Joe team at HackPrinceton Fall 2026. Licensed under the terms in `LICENSE`.
+Built at HackPrinceton Fall 2026 by Siddharth Tiwari, Lingbo Zhang, Rohan Yadav, and Stéphanie
+Meylan. Licensed under the terms in `LICENSE`.
