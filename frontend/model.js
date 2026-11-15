@@ -162,22 +162,79 @@
     return mean(side.payout);
   }
 
-  /* Share of values per bin over [lo, hi), lightly smoothed (1-2-1) so the
-   * shape reads as a distribution instead of sampling noise. */
-  function histogram(a, lo, hi, bins) {
-    const counts = new Float64Array(bins);
-    const w = (hi - lo) / bins;
-    for (let i = 0; i < a.length; i++) {
-      const k = Math.floor((a[i] - lo) / w);
-      if (k >= 0 && k < bins) counts[k] += 1;
+  /* Pick `count` simulated seasons to stand in for all of them on a
+   * harvest-by-harvest chart. One season comes from each slice of the revenue
+   * range, so the group swings like the whole simulation does. Within each
+   * slice the season is chosen so that, across the group, every market pays
+   * out about as often as it does overall, in the same kinds of season and
+   * together with the same other markets. That keeps the chart honest for any
+   * mix of contracts drawn on it. Returns season indices, low revenue first.
+   *
+   * payouts: [Uint8Array] of Yes payouts, one per market. */
+  function representativeSeasons(revenue, payouts, count) {
+    const N = revenue.length;
+    const order = Array.from({ length: N }, function (_, i) { return i; }).sort(function (a, b) { return revenue[a] - revenue[b]; });
+    const mu = mean(revenue);
+    const sigma = sd(revenue) || 1;
+    const J = payouts.length;
+
+    // Targets from the full simulation.
+    const rate = payouts.map(function (x) { return mean(x); });
+    const tilt = payouts.map(function (x) {
+      let s = 0;
+      for (let i = 0; i < N; i++) s += x[i] * (revenue[i] - mu) / sigma;
+      return s / N;
+    });
+    const pair = [];
+    for (let j = 0; j < J; j++) for (let k = j + 1; k < J; k++) {
+      let s = 0;
+      for (let i = 0; i < N; i++) s += payouts[j][i] * payouts[k][i];
+      pair.push(s / N);
     }
-    const out = new Float64Array(bins);
-    for (let k = 0; k < bins; k++) {
-      const l = counts[Math.max(0, k - 1)];
-      const r = counts[Math.min(bins - 1, k + 1)];
-      out[k] = (l + 2 * counts[k] + r) / 4 / a.length;
+
+    const size = Math.floor(N / count);
+    const span = Math.min(size, 80);
+    const pools = [];
+    for (let c = 0; c < count; c++) {
+      const mid = c * size + Math.floor(size / 2);
+      pools.push(order.slice(mid - Math.floor(span / 2), mid + Math.ceil(span / 2)));
     }
-    return out;
+    const chosen = pools.map(function (pool) { return pool[Math.floor(pool.length / 2)]; });
+
+    function miss() {
+      let e = 0;
+      let p = 0;
+      for (let j = 0; j < J; j++) {
+        let r = 0;
+        let t = 0;
+        for (let c = 0; c < count; c++) {
+          const i = chosen[c];
+          r += payouts[j][i];
+          t += payouts[j][i] * (revenue[i] - mu) / sigma;
+        }
+        e += 4 * Math.pow(r / count - rate[j], 2) + Math.pow(t / count - tilt[j], 2);
+        for (let k = j + 1; k < J; k++) {
+          let both = 0;
+          for (let c = 0; c < count; c++) both += payouts[j][chosen[c]] * payouts[k][chosen[c]];
+          e += Math.pow(both / count - pair[p++], 2);
+        }
+      }
+      return e;
+    }
+
+    for (let pass = 0; pass < 3; pass++) {
+      for (let c = 0; c < count; c++) {
+        let best = chosen[c];
+        let bestMiss = miss();
+        for (let q = 0; q < pools[c].length; q++) {
+          chosen[c] = pools[c][q];
+          const m = miss();
+          if (m < bestMiss) { bestMiss = m; best = pools[c][q]; }
+        }
+        chosen[c] = best;
+      }
+    }
+    return chosen;
   }
 
   B.model = {
@@ -191,6 +248,6 @@
     recommend: recommend,
     summary: summary,
     chance: chance,
-    histogram: histogram
+    representativeSeasons: representativeSeasons
   };
 })(window.FarmerJoe = window.FarmerJoe || {});

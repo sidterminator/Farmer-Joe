@@ -1,28 +1,23 @@
-/* The one chart form: season income as a distribution. The season without
- * protection is drawn as columns, and the season with the farmer's plan is a
- * line laid over them, so a tighter spread reads as a taller, narrower outline
- * on the same axis.
+/* The one chart: revenue by harvest. Harvests run along the bottom, dollars up
+ * the side, and two lines cross it: the farm without a hedge and the farm with
+ * the plan. A steadier farm is a flatter line.
  *
  * createPlot(figure) returns { render(spec), refresh() }.
  *
  * spec = {
  *   ariaLabel: string,
- *   lo, hi: number,                         // x range
- *   headroom: number,                       // y-axis top as a multiple of the columns' peak
- *   base: { label, values(bins, lo, hi) -> Float64Array },
- *   plan: { label, values(bins, lo, hi) -> Float64Array | null },   // null: no line
- *   xTicks(lo, hi) -> [{ value, label }],
- *   tip(bin, base, plan, lo, hi) -> { title, rows: [{ key, value, label }] }
+ *   base: { label, values: number[] },                 // revenue per harvest, no hedge
+ *   plan: { label, values() -> number[] | null },      // with the plan; null: no line
+ *   money(v) -> string,                                // axis and tooltip format
+ *   worst(v) -> string,                                // label for each line's lowest harvest
+ *   tip(i, base, plan) -> { title, rows: [{ key, value, label }] }
  * }
  */
 (function (B) {
   'use strict';
 
   const NS = 'http://www.w3.org/2000/svg';
-  const MARGIN = { l: 44, r: 14, t: 14, b: 28 };
-  const PITCH = 10;        // target distance between column centres, px
-  const GAP = 2;           // surface gap between columns, px
-  const RADIUS = 3;
+  const MARGIN = { l: 58, r: 18, t: 16, b: 42 };
 
   function svgEl(name, attrs, parent) {
     const node = document.createElementNS(NS, name);
@@ -31,185 +26,158 @@
     return node;
   }
 
-  function niceStep(max, maxTicks) {
-    const steps = [0.0025, 0.005, 0.01, 0.02, 0.025, 0.05, 0.1, 0.2, 0.25, 0.5];
-    for (let i = 0; i < steps.length; i++) if (max / steps[i] <= maxTicks) return steps[i];
-    return 1;
-  }
-
-  function peakOf(values) {
-    let p = 0;
-    for (let k = 0; k < values.length; k++) p = Math.max(p, values[k]);
-    return p;
+  function niceStep(span, maxTicks) {
+    const raw = span / maxTicks;
+    const p = Math.pow(10, Math.floor(Math.log10(raw)));
+    const f = raw / p;
+    return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 5 ? 5 : 10) * p;
   }
 
   function createPlot(figure) {
     const svg = figure.querySelector('svg');
     const tip = figure.querySelector('.tip');
-    const clipId = 'clip-' + Math.random().toString(36).slice(2, 8);
 
-    const defs = svgEl('defs', null, svg);
-    const clipRect = svgEl('rect', null, svgEl('clipPath', { id: clipId }, defs));
     const gGrid = svgEl('g', { class: 'grid' }, svg);
-    const gCols = svgEl('g', { class: 'cols', 'clip-path': 'url(#' + clipId + ')' }, svg);
-    const cross = svgEl('line', { class: 'cross', visibility: 'hidden' }, svg);
-    const planUnder = svgEl('path', { class: 'plan-under' }, svg);
-    const planLine = svgEl('path', { class: 'plan-line' }, svg);
     const gAxis = svgEl('g', { class: 'axis' }, svg);
-    const gLabels = svgEl('g', { class: 'dlabels' }, svg);
+    const gFloors = svgEl('g', { class: 'floors' }, svg);
+    const cross = svgEl('line', { class: 'cross', visibility: 'hidden' }, svg);
+    const baseLine = svgEl('path', { class: 'line line-base' }, svg);
+    const gBaseDots = svgEl('g', { class: 'dots dots-base' }, svg);
+    const planUnder = svgEl('path', { class: 'line line-under' }, svg);
+    const planLine = svgEl('path', { class: 'line line-plan' }, svg);
+    const gPlanDots = svgEl('g', { class: 'dots dots-plan' }, svg);
 
     let spec = null;
     let geom = null;
-    let base = null;
+    let base = [];
     let plan = null;
-    let yMax = 1;
-    let nodes = [];
+    let lo = 0;
+    let hi = 1;
     let hover = -1;
 
     function measure() {
       const W = Math.max(260, figure.clientWidth);
       const H = Math.max(200, figure.clientHeight);
-      const innerW = W - MARGIN.l - MARGIN.r;
-      const innerH = H - MARGIN.t - MARGIN.b;
-      const bins = Math.max(16, Math.round(innerW / PITCH));
-      return { W: W, H: H, innerW: innerW, innerH: innerH, bins: bins, pitch: innerW / bins };
+      // A wide plot keeps a right-hand margin for the worst-harvest labels.
+      const labels = W >= 520;
+      return { W: W, H: H, labels: labels, innerW: W - MARGIN.l - (labels ? 104 : MARGIN.r), innerH: H - MARGIN.t - MARGIN.b };
     }
 
-    function xOfBin(k) { return MARGIN.l + (k + 0.5) * geom.pitch; }
-    function xOfValue(v) { return MARGIN.l + ((v - spec.lo) / (spec.hi - spec.lo)) * geom.innerW; }
-    function yOf(share) { return MARGIN.t + geom.innerH - (share / yMax) * geom.innerH; }
+    function xOf(i) { return MARGIN.l + (base.length > 1 ? (i / (base.length - 1)) * geom.innerW : geom.innerW / 2); }
+    function yOf(v) { return MARGIN.t + geom.innerH - ((v - lo) / (hi - lo)) * geom.innerH; }
 
+    /* The dollar range comes from the farm without a hedge, with room above
+     * and below, so that line holds still while the plan's line moves. */
     function load() {
-      base = spec.base.values(geom.bins, spec.lo, spec.hi);
-      plan = spec.plan.values(geom.bins, spec.lo, spec.hi);
-      // The columns set the scale, with headroom, so they hold still while the
-      // line over them grows or shrinks.
-      yMax = Math.max(peakOf(base) * (spec.headroom || 1.1), plan ? peakOf(plan) * 1.1 : 0, 1e-6);
+      base = spec.base.values;
+      plan = spec.plan.values();
+      let min = Math.min.apply(null, base);
+      let max = Math.max.apply(null, base);
+      const room = (max - min) * 0.12 || max * 0.05;
+      min -= room;
+      max += room;
+      if (plan) {
+        min = Math.min(min, Math.min.apply(null, plan) - room * 0.3);
+        max = Math.max(max, Math.max.apply(null, plan) + room * 0.3);
+      }
+      const step = niceStep(max - min, 4);
+      lo = Math.floor(min / step) * step;
+      hi = Math.ceil(max / step) * step;
+      return step;
     }
 
-    function drawGrid() {
+    function drawGrid(step) {
       gGrid.textContent = '';
       gAxis.textContent = '';
-      const bottom = MARGIN.t + geom.innerH;
       const right = MARGIN.l + geom.innerW;
-      const step = niceStep(yMax, 4);
-      const pct = +(step * 100).toFixed(6);
-      const decimals = Number.isInteger(pct) ? 0 : Number.isInteger(+(pct * 10).toFixed(6)) ? 1 : 2;
-      for (let v = step; v <= yMax * 1.0001; v += step) {
+      const bottom = MARGIN.t + geom.innerH;
+      for (let v = lo; v <= hi + step * 0.001; v += step) {
         const y = Math.round(yOf(v)) + 0.5;
-        svgEl('line', { class: 'rule-h', x1: MARGIN.l, x2: right, y1: y, y2: y }, gGrid);
-        const t = svgEl('text', { x: MARGIN.l - 8, y: y + 4, 'text-anchor': 'end' }, gAxis);
-        t.textContent = (v * 100).toFixed(decimals) + '%';
+        svgEl('line', { class: v === lo ? 'baseline' : 'rule-h', x1: MARGIN.l, x2: right, y1: y, y2: y }, gGrid);
+        const t = svgEl('text', { x: MARGIN.l - 10, y: y + 4, 'text-anchor': 'end' }, gAxis);
+        t.textContent = spec.money(v);
       }
-      svgEl('line', { class: 'baseline', x1: MARGIN.l, x2: right, y1: Math.round(bottom) + 0.5, y2: Math.round(bottom) + 0.5 }, gGrid);
+      // Harvest numbers: every one where they fit, otherwise every second.
+      const every = geom.innerW / base.length < 22 ? 2 : 1;
+      for (let i = 0; i < base.length; i++) {
+        if ((i + 1) % every !== 0 && i !== 0) continue;
+        const t = svgEl('text', { x: xOf(i), y: bottom + 18, 'text-anchor': 'middle' }, gAxis);
+        t.textContent = String(i + 1);
+      }
+      const title = svgEl('text', { class: 'axis-title', x: MARGIN.l + geom.innerW / 2, y: geom.H - 4, 'text-anchor': 'middle' }, gAxis);
+      title.textContent = 'Harvest';
+    }
 
-      let lastRight = -Infinity;
-      spec.xTicks(spec.lo, spec.hi).forEach(function (tick) {
-        const x = xOfValue(tick.value);
-        if (x < MARGIN.l + 8 || x > right - 8) return;
-        const text = svgEl('text', { x: x, y: geom.H - 8, 'text-anchor': 'middle' }, gAxis);
-        text.textContent = tick.label;
-        const half = text.getComputedTextLength() / 2;
-        if (x - half < lastRight + 14) { gAxis.removeChild(text); return; }
-        lastRight = x + half;
+    function path(values) {
+      let d = '';
+      for (let i = 0; i < values.length; i++) d += (i ? 'L' : 'M') + xOf(i).toFixed(1) + ' ' + yOf(values[i]).toFixed(1);
+      return d;
+    }
+
+    function dots(group, values) {
+      const have = group.childNodes.length;
+      for (let i = have; i < values.length; i++) svgEl('circle', { r: 4 }, group);
+      while (group.childNodes.length > values.length) group.removeChild(group.lastChild);
+      for (let i = 0; i < values.length; i++) {
+        const c = group.childNodes[i];
+        c.setAttribute('cx', xOf(i).toFixed(1));
+        c.setAttribute('cy', yOf(values[i]).toFixed(1));
+        c.setAttribute('class', i === hover ? 'is-hover' : '');
+      }
+    }
+
+    /* A rule at each line's lowest harvest, labelled in the right-hand margin,
+     * so the gap between the two worst years can be read straight off the
+     * chart. On a narrow plot the rules stay and the table carries the figures. */
+    function drawFloors() {
+      gFloors.textContent = '';
+      const right = MARGIN.l + geom.innerW;
+      const floors = [{ key: 'base', v: Math.min.apply(null, base) }];
+      if (plan) floors.push({ key: 'plan', v: Math.min.apply(null, plan) });
+      floors.sort(function (a, b) { return a.v - b.v; });
+      const ys = floors.map(function (f) { return Math.round(yOf(f.v)) + 0.5; });
+      // Keep the two labels a line apart: the lower one moves down, the higher up.
+      const text = ys.map(function (y) { return y + 4; });
+      if (text.length === 2 && text[0] - text[1] < 15) {
+        const mid = (text[0] + text[1]) / 2;
+        text[0] = mid + 7.5;
+        text[1] = mid - 7.5;
+      }
+      floors.forEach(function (f, i) {
+        svgEl('line', { class: 'floor floor-' + f.key, x1: MARGIN.l, x2: right + (geom.labels ? 6 : 0), y1: ys[i], y2: ys[i] }, gFloors);
+        if (!geom.labels) return;
+        const t = svgEl('text', { class: 'floor-label', x: right + 10, y: text[i] }, gFloors);
+        t.textContent = spec.worst(f.v, f.key);
       });
     }
 
-    function drawColumns(rebuild) {
-      const bottom = MARGIN.t + geom.innerH;
-      clipRect.setAttribute('x', MARGIN.l);
-      clipRect.setAttribute('y', 0);
-      clipRect.setAttribute('width', geom.innerW);
-      clipRect.setAttribute('height', bottom);
-      if (rebuild) {
-        gCols.textContent = '';
-        nodes = [];
-        for (let k = 0; k < geom.bins; k++) nodes.push(svgEl('rect', { rx: RADIUS, y: bottom, height: 0 }, gCols));
-      }
-      const w = Math.max(2, geom.pitch - GAP);
-      for (let k = 0; k < geom.bins; k++) {
-        const h = base[k] > 0 ? Math.max(1, (base[k] / yMax) * geom.innerH) : 0;
-        const node = nodes[k];
-        node.setAttribute('x', (MARGIN.l + k * geom.pitch + GAP / 2).toFixed(2));
-        node.setAttribute('width', w.toFixed(2));
-        // Each column runs past the baseline and is clipped there, so only the
-        // data end is rounded.
-        node.setAttribute('y', (bottom - h).toFixed(2));
-        node.setAttribute('height', (h + RADIUS * 2).toFixed(2));
-        node.setAttribute('class', 'col' + (k === hover ? ' is-hover' : ''));
-      }
-    }
-
-    function drawLine() {
-      if (!plan) {
-        planLine.setAttribute('d', '');
-        planUnder.setAttribute('d', '');
-        return;
-      }
-      const floor = peakOf(plan) * 0.004;
-      let first = 0;
-      let last = plan.length - 1;
-      while (first < last && plan[first] <= floor) first++;
-      while (last > first && plan[last] <= floor) last--;
-      first = Math.max(0, first - 1);
-      last = Math.min(plan.length - 1, last + 1);
-      let d = '';
-      for (let k = first; k <= last; k++) d += (k === first ? 'M' : 'L') + xOfBin(k).toFixed(1) + ' ' + yOf(plan[k]).toFixed(1);
+    function drawLines() {
+      drawFloors();
+      baseLine.setAttribute('d', path(base));
+      dots(gBaseDots, base);
+      const d = plan ? path(plan) : '';
       planLine.setAttribute('d', d);
       planUnder.setAttribute('d', d);
+      dots(gPlanDots, plan || []);
     }
 
-    /* A label on each shape: the columns on their left shoulder, the line on
-     * its right. Skipped on narrow plots, where the key above the chart names
-     * them instead. */
-    function drawLabels() {
-      gLabels.textContent = '';
-      if (geom.innerW < 420) return;
-      const right = MARGIN.l + geom.innerW;
-
-      function put(text, keyKind, x, y, anchorEnd) {
-        const g = svgEl('g', { class: 'dlabel' }, gLabels);
-        const keyW = keyKind === 'plan' ? 16 : 10;
-        if (keyKind === 'plan') svgEl('line', { class: 'key-plan', x1: 0, x2: 16, y1: -4, y2: -4 }, g);
-        else svgEl('rect', { class: 'key-base', x: 0, y: -9, width: 10, height: 10, rx: 2 }, g);
-        const t = svgEl('text', { x: keyW + 6, y: 0 }, g);
-        t.textContent = text;
-        const width = keyW + 6 + t.getComputedTextLength();
-        let left = anchorEnd ? x - width : x;
-        left = Math.min(Math.max(left, MARGIN.l + 4), right - width - 4);
-        g.setAttribute('transform', 'translate(' + left.toFixed(1) + ' ' + Math.max(y, MARGIN.t + 12).toFixed(1) + ')');
-      }
-
-      const basePeak = base.indexOf(peakOf(base));
-      let shoulder = basePeak;
-      while (shoulder > 0 && base[shoulder] > base[basePeak] * 0.5) shoulder--;
-      put(spec.base.label, 'base', xOfBin(shoulder) - 12, yOf(base[shoulder]) + 4, true);
-
-      if (plan) {
-        const planPeak = plan.indexOf(peakOf(plan));
-        let edge = planPeak;
-        while (edge < plan.length - 1 && plan[edge] > plan[planPeak] * 0.6) edge++;
-        put(spec.plan.label, 'plan', xOfBin(edge) + 12, yOf(plan[edge]) + 4, false);
-      }
-    }
-
-    function showTip(k) {
-      if (k === hover && !tip.hidden) return;
-      if (hover >= 0 && nodes[hover]) nodes[hover].classList.remove('is-hover');
-      hover = k;
-      if (k < 0 || !spec) {
+    function showTip(i) {
+      if (i === hover && !tip.hidden) return;
+      hover = i;
+      if (i < 0 || !spec) {
         tip.hidden = true;
         cross.setAttribute('visibility', 'hidden');
+        drawLines();
         return;
       }
-      nodes[k].classList.add('is-hover');
-      const x = Math.round(xOfBin(k)) + 0.5;
+      const x = Math.round(xOf(i)) + 0.5;
       cross.setAttribute('x1', x);
       cross.setAttribute('x2', x);
       cross.setAttribute('y1', MARGIN.t);
       cross.setAttribute('y2', MARGIN.t + geom.innerH);
       cross.setAttribute('visibility', 'visible');
-      fillTip(k);
+      drawLines();
+      fillTip(i);
       tip.hidden = false;
       const tw = tip.offsetWidth;
       const left = x + 14 + tw > geom.W - 6 ? x - 14 - tw : x + 14;
@@ -217,8 +185,8 @@
       tip.style.top = MARGIN.t + 'px';
     }
 
-    function fillTip(k) {
-      const content = spec.tip(k, base, plan, spec.lo, spec.hi);
+    function fillTip(i) {
+      const content = spec.tip(i, base, plan);
       tip.textContent = '';
       const title = document.createElement('p');
       title.className = 'tip-title';
@@ -240,19 +208,18 @@
       });
     }
 
-    function binFromEvent(e) {
+    function nearest(e) {
       const rect = svg.getBoundingClientRect();
-      const x = e.clientX - rect.left - MARGIN.l;
-      if (x < 0 || x > geom.innerW) return -1;
-      return Math.min(geom.bins - 1, Math.floor(x / geom.pitch));
+      const x = e.clientX - rect.left;
+      if (x < MARGIN.l - 12 || x > MARGIN.l + geom.innerW + 12) return -1;
+      const t = (x - MARGIN.l) / geom.innerW;
+      return Math.min(base.length - 1, Math.max(0, Math.round(t * (base.length - 1))));
     }
 
     function render(next) {
       if (next) spec = next;
       if (!spec) return;
-      const g = measure();
-      const rebuild = !geom || g.bins !== geom.bins || nodes.length !== g.bins;
-      geom = g;
+      geom = measure();
       svg.setAttribute('viewBox', '0 0 ' + geom.W + ' ' + geom.H);
       svg.setAttribute('width', geom.W);
       svg.setAttribute('height', geom.H);
@@ -260,33 +227,29 @@
       hover = -1;
       tip.hidden = true;
       cross.setAttribute('visibility', 'hidden');
-      load();
-      drawGrid();
-      drawColumns(rebuild);
-      drawLine();
-      drawLabels();
+      drawGrid(load());
+      drawLines();
     }
 
-    /* Fast path while an amount is dragged or a market is ticked: the columns
-     * hold still and the line over them moves. */
+    /* Fast path while an amount is dragged or a hedge is ticked: the plan's
+     * line moves, and the frame is redrawn only if the dollar range changed. */
     function refresh() {
       if (!spec || !geom) return;
-      const before = yMax;
-      load();
-      if (Math.abs(yMax - before) > before * 0.001) { drawGrid(); drawColumns(false); }
-      drawLine();
-      drawLabels();
+      const before = lo + ':' + hi;
+      const step = load();
+      if (lo + ':' + hi !== before) drawGrid(step);
+      drawLines();
       if (hover >= 0 && !tip.hidden) fillTip(hover);
     }
 
-    svg.addEventListener('pointermove', function (e) { if (geom) showTip(binFromEvent(e)); });
+    svg.addEventListener('pointermove', function (e) { if (geom) showTip(nearest(e)); });
     svg.addEventListener('pointerleave', function () { showTip(-1); });
     figure.addEventListener('keydown', function (e) {
       if (!geom) return;
       if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
         e.preventDefault();
-        const start = hover < 0 ? Math.floor(geom.bins / 2) : hover;
-        showTip(Math.min(geom.bins - 1, Math.max(0, start + (e.key === 'ArrowRight' ? 1 : -1))));
+        const start = hover < 0 ? 0 : hover + (e.key === 'ArrowRight' ? 1 : -1);
+        showTip(Math.min(base.length - 1, Math.max(0, start)));
       } else if (e.key === 'Escape') {
         showTip(-1);
       }

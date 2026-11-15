@@ -7,8 +7,7 @@
   const M = B.model;
   const STORE_KEY = 'farmerjoe.farm';
   const MINUS = '−';
-  const EASE_OUT = 'cubic-bezier(0.23, 1, 0.32, 1)';
-  const LOT = 100;
+  const HARVESTS = 20;   // sample harvests on the chart
   const LEAN = [
     { label: 'Lowest cost', value: 0.2 },
     { label: 'Mostly cost', value: 0.4 },
@@ -34,10 +33,6 @@
     use.setAttribute('href', '#i-' + name);
     svg.appendChild(use);
     return svg;
-  }
-
-  function reducedMotion() {
-    return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   }
 
   /* ---------- formatting ---------- */
@@ -77,17 +72,15 @@
   const state = {
     farm: {
       lat: null, lon: null, label: '', stationId: null, miles: 0,
-      crop: 'corn', acres: 300, yield: 200, price: 4.5, yieldSd: null,
-      worries: ['heat', 'drought'], budget: 15000, lean: 4
+      crop: 'corn', acres: 300, yield: 200, price: 4.5, budget: 15000, lean: 4
     },
     touched: { yield: false, price: false },
     scenario: null,
     revenue: null,
     base: null,
     planArr: null,
+    harvests: [],
     plan: null,
-    lo: 0,
-    hi: 1,
     tickets: [],
     inGraph: [],
     custom: false,
@@ -239,13 +232,12 @@
     $('acres-range').value = f.acres;
     $('yield').value = f.yield;
     $('price').value = f.price.toFixed(2);
-    document.querySelectorAll('input[name="worry"]').forEach(function (c) { c.checked = f.worries.indexOf(c.value) >= 0; });
     $('budget').value = f.budget;
     $('budget-range').value = f.budget;
     $('stability').value = f.lean;
     $('stability-out').textContent = LEAN[f.lean - 1].label;
     ['acres-range', 'budget-range', 'stability'].forEach(function (id) { paintRange($(id)); });
-    renderWhere(false);
+    renderWhere();
     renderCropValue();
   }
 
@@ -254,21 +246,11 @@
     $('crop-value').textContent = isFinite(v) && v > 0 ? dollars(v) : '—';
   }
 
-  function renderWhere(animate) {
+  function renderWhere() {
     const f = state.farm;
     const out = $('where-out');
     out.hidden = !hasLocation();
-    if (!hasLocation()) return;
-    const station = stationOf(f);
-    $('where-stamp').textContent = f.label;
-    $('where-station').textContent = 'Station: ' + station.city + ', ' + aboutMiles(f.miles);
-    if (animate && $('where-stamp').animate) {
-      // The place is stamped onto the tag just after the pin lands.
-      $('where-stamp').animate(reducedMotion()
-        ? [{ opacity: 0 }, { opacity: 1 }]
-        : [{ transform: 'rotate(-2deg) scale(1.16)', opacity: 0 }, { transform: 'rotate(-2deg) scale(1)', opacity: 1 }],
-      { duration: 180, delay: reducedMotion() ? 0 : 230, easing: EASE_OUT, fill: 'backwards' });
-    }
+    if (hasLocation()) out.textContent = 'Station: ' + stationOf(f).city + ', ' + aboutMiles(f.miles);
   }
 
   function mapFarm() {
@@ -281,7 +263,7 @@
     Object.assign(state.farm, { lat: lat, lon: lon, label: label, stationId: near.station.id, miles: near.miles });
     $('where').value = label;
     setError('where', '');
-    renderWhere(animate);
+    renderWhere();
     if (map) map.setFarm(mapFarm(), animate);
     document.querySelectorAll('.steps a[href="#/plan"]').forEach(function (a) { a.removeAttribute('aria-disabled'); });
     save();
@@ -301,6 +283,9 @@
 
   function enterFarm() {
     if (!map) {
+      const names = B.stations.map(function (s) { return s.city; }).sort();
+      $('station-count').textContent = names.length + ' station cities';
+      $('station-names').textContent = names.join(' \u00b7 ');
       map = B.createMap($('map'), {
         onPick: function (p) { setLocation(p.lat, p.lon, labelFor(p.lat, p.lon), true); }
       });
@@ -311,68 +296,6 @@
   function numberFrom(input) {
     const v = input.valueAsNumber;
     return isFinite(v) ? v : NaN;
-  }
-
-  /* Accepts a CSV with a year column and a yield column (bushels per acre).
-   * Optional acres and price columns fill those answers too. */
-  function parseSeasonsCsv(text) {
-    const lines = text.split(/\r?\n/).map(function (l) { return l.trim(); }).filter(Boolean);
-    if (!lines.length) return { yields: [] };
-    const delimiter = lines[0].indexOf('\t') >= 0 ? '\t' : lines[0].indexOf(';') >= 0 ? ';' : ',';
-    const cells = function (l) { return l.split(delimiter).map(function (c) { return c.trim().replace(/^"|"$/g, ''); }); };
-    let col = { year: 0, yield: 1, acres: -1, price: -1 };
-    let start = 0;
-    if (/[a-z]/i.test(lines[0])) {
-      const head = cells(lines[0]).map(function (h) { return h.toLowerCase(); });
-      col = {
-        year: head.findIndex(function (h) { return /year|season/.test(h); }),
-        yield: head.findIndex(function (h) { return /yield|bu/.test(h); }),
-        acres: head.findIndex(function (h) { return /^acres?$|planted|area/.test(h); }),
-        price: head.findIndex(function (h) { return /price/.test(h); })
-      };
-      start = 1;
-    }
-    if (col.year < 0 || col.yield < 0) return { yields: [] };
-    const byYear = new Map();
-    let acres = null;
-    let price = null;
-    for (let i = start; i < lines.length; i++) {
-      const c = cells(lines[i]);
-      const year = Number(c[col.year]);
-      const value = Number(c[col.yield]);
-      if (!Number.isInteger(year) || year < 1950 || year > 2100 || !(value > 0 && value < 500)) continue;
-      byYear.set(year, value);
-      if (col.acres >= 0 && Number(c[col.acres]) > 0) acres = Number(c[col.acres]);
-      if (col.price >= 0 && Number(c[col.price]) > 0) price = Number(c[col.price]);
-    }
-    return { yields: Array.from(byYear.values()), acres: acres, price: price };
-  }
-
-  function importHistory(file) {
-    const note = $('yield-note');
-    const reader = new FileReader();
-    reader.onerror = function () { setError('yield', 'Could not read ' + file.name + '.'); };
-    reader.onload = function () {
-      const parsed = parseSeasonsCsv(String(reader.result));
-      if (!parsed.yields.length) {
-        setError('yield', 'No seasons in ' + file.name + '. It needs year and yield columns.');
-        return;
-      }
-      const f = state.farm;
-      f.yield = Math.round(M.mean(parsed.yields));
-      f.yieldSd = parsed.yields.length >= 3 ? M.sd(parsed.yields) : null;
-      if (parsed.acres) f.acres = parsed.acres;
-      if (parsed.price) f.price = parsed.price;
-      state.touched.yield = true;
-      if (parsed.price) state.touched.price = true;
-      setError('yield', '');
-      syncForm();
-      note.hidden = false;
-      note.textContent = plural(parsed.yields.length, 'season') + ': normal ' + f.yield +
-        (f.yieldSd !== null ? ', swing ±' + Math.round(f.yieldSd) : '');
-      save();
-    };
-    reader.readAsText(file);
   }
 
   function validateFarm() {
@@ -416,7 +339,7 @@
         const f = state.farm;
         f.crop = r.value;
         const crop = B.crops[f.crop];
-        if (!state.touched.yield) { f.yield = crop.yield; f.yieldSd = null; }
+        if (!state.touched.yield) f.yield = crop.yield;
         if (!state.touched.price) f.price = crop.price;
         syncForm();
         save();
@@ -447,9 +370,7 @@
 
     $('yield').addEventListener('input', function () {
       state.farm.yield = numberFrom($('yield'));
-      state.farm.yieldSd = null;
       state.touched.yield = true;
-      $('yield-note').hidden = true;
       setError('yield', '');
       renderCropValue();
       save();
@@ -462,24 +383,11 @@
       save();
     });
 
-    document.querySelectorAll('input[name="worry"]').forEach(function (c) {
-      c.addEventListener('change', function () {
-        state.farm.worries = Array.from(document.querySelectorAll('input[name="worry"]:checked')).map(function (x) { return x.value; });
-        save();
-      });
-    });
-
     $('stability').addEventListener('input', function () {
       state.farm.lean = Number($('stability').value);
       $('stability-out').textContent = LEAN[state.farm.lean - 1].label;
       paintRange($('stability'));
       save();
-    });
-
-    $('import-btn').addEventListener('click', function () { $('file-input').click(); });
-    $('file-input').addEventListener('change', function (e) {
-      if (e.target.files && e.target.files[0]) importHistory(e.target.files[0]);
-      e.target.value = '';
     });
 
     $('farm-form').addEventListener('submit', function (e) {
@@ -495,35 +403,54 @@
     return { payout: side.payout, price: side.price, contracts: ticket.contracts };
   }
 
+  function priceOf(ticket) { return M.sideOf(ticket.market, ticket.side).price; }
+
   function roundUpNice(v) {
     const p = Math.pow(10, Math.floor(Math.log10(v)));
     const f = v / p;
     return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 3 ? 3 : f <= 5 ? 5 : f <= 7 ? 7 : 10) * p;
   }
 
-  /* The steadiest amount of one contract on its own, used to scale its slider. */
+  /* How far one hedge's slider runs, from what the adviser says it could take. */
   function measure(ticket) {
-    const side = M.sideOf(ticket.market, ticket.side);
-    ticket.steady = M.recommend(state.revenue, [side], { budget: -1, stability: 1, lot: LOT }).steadiest[0];
-    ticket.adds = ticket.steady === 0;
-    ticket.max = roundUpNice(Math.max(5000, ticket.steady * 2, ticket.contracts * 1.2));
+    const top = B.advisor.ceiling(state.revenue, ticket.market, ticket.side);
+    ticket.adds = top.contracts === 0;
+    ticket.max = roundUpNice(Math.max(5000, top.contracts * 2, ticket.contracts * 1.2));
   }
 
   function costOf(tickets) {
     let cost = 0;
-    tickets.forEach(function (t) { if (t.on) cost += t.contracts * M.sideOf(t.market, t.side).price; });
+    tickets.forEach(function (t) { if (t.on) cost += t.contracts * priceOf(t); });
     return cost;
   }
 
+  /* Ask the adviser (advisor.js, a placeholder model) what to hedge and how
+   * much to put into each of the ticked markets. */
   function recommendPlan() {
     const on = state.tickets.filter(function (t) { return t.on; });
-    on.forEach(function (t) { if (!t.sideChosen) t.side = M.hedgeSide(state.revenue, t.market); });
-    const rec = M.recommend(state.revenue, on.map(function (t) { return M.sideOf(t.market, t.side); }),
-      { budget: state.farm.budget, stability: LEAN[state.farm.lean - 1].value, lot: LOT });
-    on.forEach(function (t, i) { t.contracts = rec.contracts[i]; });
+    const advice = B.advisor.suggest(state.revenue, on.map(function (t) {
+      return Object.assign({}, t.market, { side: t.sideChosen ? t.side : null });
+    }), { budget: state.farm.budget, stability: LEAN[state.farm.lean - 1].value });
+    on.forEach(function (t, i) {
+      t.side = advice.picks[i].side;
+      t.contracts = advice.picks[i].contracts;
+    });
     state.tickets.forEach(function (t) { if (!t.on) t.contracts = 0; measure(t); });
     state.custom = false;
-    state.trimmed = rec.trimmed;
+    state.trimmed = advice.trimmed;
+  }
+
+  /* A fixed shuffle, so the sample harvests read as a run of years and the
+   * same farm always shows the same run. */
+  function shuffled(list, seed) {
+    const a = list.slice();
+    let s = seed >>> 0;
+    for (let i = a.length - 1; i > 0; i--) {
+      s = (Math.imul(s, 1664525) + 1013904223) >>> 0;
+      const j = s % (i + 1);
+      const tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    }
+    return a;
   }
 
   function enterPlan() {
@@ -535,18 +462,16 @@
       state.scenario = scenario;
       state.revenue = M.farmIncome(scenario.farmShock, {
         acres: f.acres, price: f.price, yield: f.yield,
-        yieldSd: f.yieldSd !== null ? f.yieldSd : crop.spread * f.yield
+        yieldSd: crop.spread * f.yield
       });
       state.base = M.summary(state.revenue);
-      const span = Math.max(state.base.sd * 3.3, state.base.mean * 0.02);
-      state.lo = state.base.mean - span;
-      state.hi = state.base.mean + span;
+      state.harvests = shuffled(M.representativeSeasons(state.revenue, scenario.markets.map(function (m) { return m.payoutYes; }), HARVESTS), 2027);
       state.tickets = scenario.markets.map(function (m) {
         return {
           market: m,
-          on: f.worries.length ? f.worries.indexOf(m.worry) >= 0 : true,
+          on: !!m.preselect,
           side: M.hedgeSide(state.revenue, m),
-          sideChosen: false, contracts: 0, steady: 0, max: 5000, adds: false, refs: null
+          sideChosen: false, contracts: 0, max: 5000, adds: false, refs: null
         };
       });
       recommendPlan();
@@ -580,18 +505,19 @@
       const box = document.createElement('input');
       box.type = 'checkbox';
       box.checked = t.on;
-      box.setAttribute('aria-label', 'Include ' + m.name + ' in the plan');
+      box.setAttribute('aria-label', 'Hedge with ' + m.name);
       const boxMark = make('span', 'box');
       boxMark.appendChild(icon('check'));
       pick.appendChild(box);
       pick.appendChild(boxMark);
       li.appendChild(pick);
+      box.addEventListener('change', function () { togglePick(t, box.checked); });
 
       const body = make('div', 'ticket-body');
       const top = make('div', 'ticket-top');
       top.appendChild(make('span', 'ticket-name', m.name));
-      const cost = make('span', 'ticket-cost');
-      top.appendChild(cost);
+      const meta = make('span', 'ticket-meta');
+      top.appendChild(meta);
       body.appendChild(top);
       body.appendChild(make('p', 'ticket-q', m.question));
       if (m.caveat) {
@@ -600,21 +526,20 @@
         caveat.appendChild(make('span', null, m.caveat));
         body.appendChild(caveat);
       }
+      t.refs = { meta: meta };
 
-      box.addEventListener('change', function () { togglePick(t, box.checked); });
       if (!t.on) {
         const prices = make('div', 'ticket-prices');
-        prices.appendChild(make('span', 'price-yes', 'Yes ' + m.yesCents + '\u00a2'));
-        prices.appendChild(make('span', 'price-no', 'No ' + m.noCents + '\u00a2'));
+        prices.appendChild(make('span', 'price-yes', 'Yes ' + m.yesCents + '¢'));
+        prices.appendChild(make('span', 'price-no', 'No ' + m.noCents + '¢'));
         const add = make('button', 'btn btn-quiet', 'Add');
         add.type = 'button';
-        add.setAttribute('aria-label', 'Add ' + m.name + ' to the plan');
+        add.setAttribute('aria-label', 'Hedge with ' + m.name);
         add.addEventListener('click', function () { togglePick(t, true); });
         prices.appendChild(add);
         body.appendChild(prices);
         li.appendChild(body);
         list.appendChild(li);
-        t.refs = { cost: cost };
         return;
       }
 
@@ -633,24 +558,26 @@
       });
       controls.appendChild(sides);
 
+      // How much money goes into this hedge: typed in dollars, or dragged.
       const qty = make('div', 'qty');
       const field = make('span', 'field');
-      const number = document.createElement('input');
-      number.type = 'number';
-      number.min = 0;
-      number.step = LOT;
-      number.inputMode = 'numeric';
-      number.value = t.contracts;
-      number.setAttribute('aria-label', m.name + ' contracts');
-      field.appendChild(number);
+      field.appendChild(make('span', 'unit unit-lead', '$'));
+      const amount = document.createElement('input');
+      amount.type = 'number';
+      amount.min = 0;
+      amount.step = 100;
+      amount.inputMode = 'numeric';
+      amount.value = Math.round(t.contracts * side.price);
+      amount.setAttribute('aria-label', 'Dollars into ' + m.name);
+      field.appendChild(amount);
       qty.appendChild(field);
       const range = document.createElement('input');
       range.type = 'range';
       range.min = 0;
       range.max = t.max;
-      range.step = LOT;
+      range.step = B.advisor.lot;
       range.value = t.contracts;
-      range.setAttribute('aria-label', m.name + ' contracts, slider');
+      range.setAttribute('aria-label', 'Dollars into ' + m.name + ', slider');
       qty.appendChild(range);
       controls.appendChild(qty);
       body.appendChild(controls);
@@ -668,22 +595,22 @@
       }
       li.appendChild(body);
       list.appendChild(li);
-
-      t.refs = { cost: cost };
       paintRange(range);
 
-      number.addEventListener('input', function () {
-        const v = numberFrom(number);
-        t.contracts = isFinite(v) && v > 0 ? Math.round(v) : 0;
+      amount.addEventListener('input', function () {
+        const v = numberFrom(amount);
+        t.contracts = isFinite(v) && v > 0 ? Math.round(v / side.price / B.advisor.lot) * B.advisor.lot : 0;
         if (t.contracts > Number(range.max)) { t.max = roundUpNice(t.contracts * 1.2); range.max = t.max; }
         range.value = t.contracts;
         paintRange(range);
         state.custom = true;
         updatePlan(false);
       });
+      // Contracts come in hundreds, so settle the field on what the money buys.
+      amount.addEventListener('change', function () { amount.value = Math.round(t.contracts * side.price); });
       range.addEventListener('input', function () {
         t.contracts = Number(range.value);
-        number.value = t.contracts;
+        amount.value = Math.round(t.contracts * side.price);
         paintRange(range);
         state.custom = true;
         updatePlan(false);
@@ -691,9 +618,9 @@
     });
   }
 
-  /* Choosing which markets are in the plan, or which side of one to buy,
-   * re-sizes the whole combination inside the budget. Amounts typed or
-   * dragged afterwards stand until the next such choice. */
+  /* Choosing which hedges are in the plan, or which side of one to buy, asks
+   * the adviser to size the whole mix again inside the budget. Amounts typed
+   * or dragged afterwards stand until the next such choice. */
   function togglePick(ticket, on) {
     ticket.on = on;
     if (!on) ticket.sideChosen = false;
@@ -715,7 +642,7 @@
     const cost = costOf(state.tickets);
     if (cost <= 0) return;
     const f = state.farm.budget / cost;
-    state.tickets.forEach(function (t) { if (t.on) t.contracts = Math.floor((t.contracts * f) / LOT) * LOT; });
+    state.tickets.forEach(function (t) { if (t.on) t.contracts = Math.floor((t.contracts * f) / B.advisor.lot) * B.advisor.lot; });
     state.custom = true;
     renderTickets();
     updatePlan(false);
@@ -738,59 +665,41 @@
     rows.forEach(function (r) { target.appendChild(row(r, head)); });
   }
 
-  function incomeTicks(lo, hi) {
-    const raw = (hi - lo) / 6;
-    const p = Math.pow(10, Math.floor(Math.log10(raw)));
-    const f = raw / p;
-    const step = (f <= 1 ? 1 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 5 ? 5 : 10) * p;
-    const ticks = [];
-    for (let v = Math.ceil(lo / step) * step; v <= hi; v += step) ticks.push({ value: v, label: moneyShort(v) });
-    return ticks;
-  }
-
+  /* Revenue by harvest: the sample harvests along the bottom, dollars up the
+   * side, one line without a hedge and one with the plan. */
   function chartSpec() {
+    const picks = state.harvests;
     return {
-      ariaLabel: 'Season income across ' + whole.format(state.revenue.length) + ' simulated seasons, without protection and with your plan. Arrow keys read values.',
-      lo: state.lo,
-      hi: state.hi,
-      headroom: 1.45,
-      base: {
-        label: 'Without',
-        values: function (bins, lo, hi) { return M.histogram(state.revenue, lo, hi, bins); }
-      },
+      ariaLabel: 'Revenue over ' + picks.length + ' sample harvests, without a hedge and with your plan. Arrow keys read values.',
+      base: { label: 'Without', values: picks.map(function (i) { return state.revenue[i]; }) },
       plan: {
-        get label() { return 'With ' + state.inGraph.join(' + '); },
-        values: function (bins, lo, hi) { return state.inGraph.length ? M.histogram(state.planArr, lo, hi, bins) : null; }
+        label: 'With plan',
+        values: function () { return state.inGraph.length ? picks.map(function (i) { return state.planArr[i]; }) : null; }
       },
-      xTicks: incomeTicks,
-      tip: function (k, base, plan, lo, hi) {
-        const w = (hi - lo) / base.length;
-        const rows = [{ key: 'base', value: percent(base[k], 1), label: 'without' }];
-        if (plan) rows.push({ key: 'plan', value: percent(plan[k], 1), label: 'with plan' });
-        return { title: moneyShort(lo + k * w) + ' to ' + moneyShort(lo + (k + 1) * w), rows: rows };
+      money: moneyShort,
+      worst: function (v) { return 'Worst ' + moneyShort(v); },
+      tip: function (i, base, plan) {
+        const rows = [{ key: 'base', value: money(base[i]), label: 'without' }];
+        if (plan) rows.push({ key: 'plan', value: money(plan[i]), label: 'with plan' });
+        return { title: 'Harvest ' + (i + 1), rows: rows };
       }
     };
   }
 
   function renderBins() {
-    const GROUPS = 12;
-    const w = (state.hi - state.lo) / GROUPS;
-    const a = M.histogram(state.revenue, state.lo, state.hi, GROUPS);
-    const b = M.histogram(state.planArr, state.lo, state.hi, GROUPS);
-    fill('bins-head', [['Season income', 'Without', 'With plan']], true);
-    const rows = [];
-    for (let k = 0; k < GROUPS; k++) {
-      rows.push([moneyShort(state.lo + k * w) + ' to ' + moneyShort(state.lo + (k + 1) * w), percent(a[k], 1), percent(b[k], 1)]);
-    }
-    fill('bins-body', rows);
+    const picks = state.harvests;
+    fill('bins-head', [['Harvest', 'Without', 'With plan']], true);
+    fill('bins-body', picks.map(function (s, i) {
+      return [String(i + 1), money(state.revenue[s]), money(state.planArr[s])];
+    }));
   }
 
-  /* Everything that follows from the quantities. `full` redraws the chart
-   * frame; otherwise only its columns move. */
+  /* Everything that follows from the amounts. `full` redraws the chart frame;
+   * otherwise only the plan's line moves. */
   function updatePlan(full) {
     const f = state.farm;
     const active = state.tickets.filter(function (t) { return t.on && t.contracts > 0; });
-    const chosen = state.tickets.filter(function (t) { return t.on; }).map(function (t) { return t.market.name; });
+    const chosen = state.tickets.filter(function (t) { return t.on; });
     state.inGraph = active.map(function (t) { return t.market.name; });
     state.planArr = M.planIncome(state.revenue, active.map(legOf));
     state.plan = M.summary(state.planArr);
@@ -799,27 +708,35 @@
     const cost = costOf(state.tickets);
     const station = stationOf(f);
     const crop = B.crops[f.crop];
+    const hedging = active.length > 0;
 
     state.tickets.forEach(function (t) {
-      const price = M.sideOf(t.market, t.side).price;
-      t.refs.cost.textContent = t.on ? dollars(t.contracts * price) : 'Not in plan';
+      t.refs.meta.textContent = t.on ? whole.format(t.contracts) + ' contracts' : 'Not in plan';
     });
 
-    $('plan-title').textContent = active.length ? 'Plan: ' + dollars(cost) : 'No plan yet';
-    let lede;
-    if (!active.length) lede = chosen.length ? 'Raise an amount to see the effect.' : 'Tick a market to start.';
-    else if (b.sd < a.sd) lede = 'Swing ±' + money(a.sd) + ' → ±' + money(b.sd) + '. Bad season ' + signedMoney(b.bad - a.bad) + '.';
-    else lede = 'This mix adds swing. Check the sides.';
-    $('plan-lede').textContent = lede;
-    $('plan-result').textContent = lede + (active.length ? ' Cost ' + dollars(cost) + '.' : '');
+    // The advice, in dollars per hedge.
+    $('plan-title').textContent = hedging ? 'Hedge ' + dollars(cost) : 'No hedge yet';
+    $('plan-lede').textContent = !hedging
+      ? (chosen.length ? 'Raise an amount to see the effect.' : 'Tick a hedge to start.')
+      : (state.custom ? 'Your mix: ' : 'Suggested: ') + active.map(function (t) {
+        return dollars(t.contracts * priceOf(t)) + ' in ' + t.market.name;
+      }).join(' · ');
+    let effect = '';
+    if (hedging) {
+      effect = b.sd < a.sd
+        ? Math.round((1 - b.sd / a.sd) * 100) + '% steadier. Bad harvest ' + signedMoney(b.bad - a.bad) + '. Average ' + signedMoney(b.mean - a.mean) + '.'
+        : 'This mix adds swing. Check the sides.';
+    }
+    $('plan-effect').textContent = effect;
+    $('plan-effect').hidden = !effect;
+    $('plan-result').textContent = hedging ? effect : 'Nothing in the plan yet.';
     $('farm-line').textContent = whole.format(f.acres) + ' ac ' + crop.label.toLowerCase() + ' · ' + f.label + ' · ' + station.city + ' station';
 
-    const hedging = active.length > 0;
     fill('analysis-head', [['', 'Without', 'With plan', 'Change']], true);
     fill('analysis-body', [
-      ['Average', money(a.mean), money(b.mean), hedging ? signedMoney(b.mean - a.mean) : '—'],
+      ['Average harvest', money(a.mean), money(b.mean), hedging ? signedMoney(b.mean - a.mean) : '—'],
       ['Swing', '±' + money(a.sd), '±' + money(b.sd), hedging ? signedPercent(b.sd / a.sd - 1) : '—'],
-      ['Bad season (1 in 20)', money(a.bad), money(b.bad), hedging ? signedMoney(b.bad - a.bad) : '—'],
+      ['Bad harvest (1 in 20)', money(a.bad), money(b.bad), hedging ? signedMoney(b.bad - a.bad) : '—'],
       ['Cost', '$0', dollars(cost), hedging ? percent(cost / cropValue(), 1) + ' of crop' : '—']
     ]);
 
@@ -841,16 +758,16 @@
     }
     const lines = $('order-lines');
     lines.textContent = '';
-    if (!active.length) lines.appendChild(make('li', 'order-empty', 'Nothing yet.'));
+    if (!hedging) lines.appendChild(make('li', 'order-empty', 'Nothing yet.'));
     active.forEach(function (t) {
-      const price = M.sideOf(t.market, t.side).price;
+      const price = priceOf(t);
       const li = make('li');
       li.appendChild(make('span', null, whole.format(t.contracts) + ' ' + (t.side === 'yes' ? 'Yes' : 'No') + ' · ' + t.market.name + ' · ' + Math.round(price * 100) + '¢'));
       li.appendChild(make('span', null, dollars(t.contracts * price)));
       lines.appendChild(li);
     });
     $('order-total').textContent = dollars(cost);
-    $('send-order').disabled = !(B.source.ordersConnected && active.length);
+    $('send-order').disabled = !(B.source.ordersConnected && hedging);
 
     const stateLine = $('plan-state');
     stateLine.textContent = '';
@@ -873,6 +790,7 @@
     toggle.textContent = state.tableView ? 'Chart' : 'Table';
     $('plot').hidden = state.tableView;
     $('legend').hidden = state.tableView;
+    $('legend-plan').hidden = !hedging;
     $('bins').hidden = !state.tableView;
     if (state.tableView) renderBins();
     else if (full) plot.render(chartSpec());
@@ -947,7 +865,7 @@
       status.appendChild(make('span', null, 'Live · ' + time));
       const table = make('table', 'live-table');
       const thead = make('thead');
-      thead.appendChild(row(['Rain', 'Yes', 'No'], true));
+      thead.appendChild(row(['Pays if', 'Yes', 'No'], true));
       const tbody = make('tbody');
       e.markets.forEach(function (m) {
         const tr = make('tr');
@@ -970,7 +888,7 @@
     const fail = make('div', 'live-fail');
     if (live.status === 'empty') {
       status.textContent = 'Nothing open';
-      fail.appendChild(make('p', null, 'No open rain market for ' + station.city + '.'));
+      fail.appendChild(make('p', null, 'No open market for ' + station.city + '.'));
     } else {
       status.textContent = 'Offline';
       fail.appendChild(make('p', null, 'Kalshi unreachable. The plan still works.'));

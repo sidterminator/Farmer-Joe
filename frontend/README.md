@@ -1,10 +1,10 @@
 # Farmer Joe frontend
 
-Three screens for the weather-hedging tool, built for farmers:
+A financial advice app for farmers, in three screens:
 
 1. **Intro.** The name, one promise and a Start button.
-2. **Your farm.** The farmer drops a pin on a map (or types a town) and answers seven more questions: crop, acres, normal yield, expected price, what worries them, the most they'll spend, and stability versus cost.
-3. **Your plan.** The farmer ticks the markets they want. The amounts are sized together inside the budget, and one graph overlays season income without protection (columns) and with that mix (a line). They can change the side or the amount on each market and review the order.
+2. **Your farm.** The farmer drops a pin on a map (or types a town) and answers six more questions: crop, acres, normal yield, price, budget for hedging, and stability versus cost. The map names every city with a Kalshi weather station.
+3. **Advice.** The model suggests which markets to hedge with and how many dollars to put into each. A graph of revenue by harvest shows the farm without the hedge and with it. The farmer can tick hedges, switch sides, change the dollars and review the order.
 
 Plain HTML, CSS and JavaScript. No install and no build step.
 
@@ -32,20 +32,29 @@ Screens are addressed by hash: `#/`, `#/farm`, `#/plan`. The farm answers are ke
 
 The screens label sample data. Nothing is sent anywhere except one market-data request to Kalshi's demo API, which carries only a series ticker such as `KXRAININDM`.
 
-## How the plan screen behaves
+## The model is a placeholder
 
-- Ticking or unticking a market, or switching a market between Yes and No, re-sizes the whole combination inside the budget.
-- Typing or dragging an amount changes only that market. Those amounts stand until the next tick or side change, and "Reset" re-sizes on request.
-- The line on the graph is labelled with the markets in it, for example "With Temp + Rain". With nothing ticked there is no line.
+`advisor.js` is the adviser. `FarmerJoe.advisor.suggest(revenue, markets, { budget, stability })` returns `{ trimmed, picks: [{ id, side, contracts, dollars }] }`: which markets to hedge with, which side, and how much money. The placeholder buys the side that pays in the farm's bad seasons, sizes the mix to be as steady as possible, leans it toward cost by the Priority answer and scales it to the budget. Replace the function with the team's model and keep the return shape.
+
+## How the advice screen behaves
+
+- Ticking or unticking a hedge, or switching it between Yes and No, asks the adviser to size the whole mix again inside the budget.
+- Typing or dragging a dollar amount changes only that hedge. Those amounts stand until the next tick or side change, and "Reset" re-sizes on request. Contracts come in hundreds, so a typed amount settles on what it buys.
 - Going over the budget shows a warning and a "Trim" action.
 - Wording is kept short on purpose: labels and results, no explanations.
+
+## The graph
+
+Harvests run along the bottom and revenue in dollars up the side. One line is the farm without a hedge; the other is the farm with the plan. A rule marks each line's worst harvest.
+
+The 20 harvests are sample seasons from the simulation, not a forecast of particular years. `model.representativeSeasons` picks them so the group stands in for all 20,000: one from each slice of the revenue range, chosen so each market pays out about as often, and in the same kinds of season, as it does overall. On the default farm the 20 match the full simulation's average within about $500 and its swing within about 5%. The table under the graph always shows the full simulation's figures.
 
 ## Kalshi
 
 - `kalshi.js` reads open markets from `https://demo-api.kalshi.co/trade-api/v2`, which accepts requests from a web page. The production API refuses requests that carry a browser `Origin`, so live production prices have to come through a server.
 - On the demo exchange many markets are listed with nobody quoting them. The panel shows "No offer" for those sides.
 - Placing an order needs a signed API key. A web page cannot keep one safe, so `FarmerJoe.source.placeOrders` is a stub and `ordersConnected` is `false`. Wire it to the team's server and set the flag to enable the button.
-- `stations.js` lists the stations with a monthly rain series. The series tickers are real (read from Kalshi's series list on 2026-11-14). The `julyHot` and `julyRain` figures are round numbers used only to give the sample markets believable thresholds.
+- `stations.js` lists 38 cities with a Kalshi rain or temperature market (snow-only cities are left out). Each `series` ticker is real, read from Kalshi's series list on 2026-11-14; Great Falls and Orlando exist on production but not on the demo exchange. The `julyHot` and `julyRain` figures are round numbers used only to give the sample markets believable thresholds.
 - Kalshi lists monthly markets month by month, so July markets are not open in November. That is why the plan runs on sample July prices and the live panel shows the current month.
 
 ## Files
@@ -54,17 +63,17 @@ The screens label sample data. Nothing is sent anywhere except one market-data r
 |---|---|
 | `index.html` | The three screens and the icon sprite |
 | `styles.css` | The seed-sack look: layout, colours, states, responsive rules |
-| `app.js` | Routing, the farm form, the plan, the order, the live panel |
+| `app.js` | Routing, the farm form, the advice screen, the order, the live panel |
 | `map.js` | The map, the Albers projection, the pin and its drop animation |
-| `charts.js` | The one chart form: columns for one distribution with a line for the other laid over them |
-| `model.js` | Hedge maths (pure functions, no DOM) |
+| `charts.js` | The one chart: revenue by harvest, two lines |
+| `advisor.js` | **Placeholder model**: which markets to hedge with and how many dollars in each |
+| `model.js` | Hedge maths and the sample-harvest picker (pure functions, no DOM) |
 | `sample-data.js` | Sample scenario and the `FarmerJoe.source` seam for the backend |
 | `kalshi.js` | Kalshi demo API client |
-| `stations.js` | Stations with Kalshi monthly rain markets, and distance helpers |
+| `stations.js` | The 38 station cities, and distance helpers |
 | `us-map.js`, `places.js` | Generated data: state outlines and 3,355 towns |
 | `tools/build-geo.mjs` | Regenerates the two data files; not needed to run the app |
 | `fonts/` | Big Shoulders and Archivo (SIL Open Font License), embedded in `fonts.css` so they load from `file://` |
-| `sample/farm-history.csv` | Example file for "Import history" on the yield question |
 
 ## Connecting the real models
 
@@ -80,7 +89,7 @@ The screens label sample data. Nothing is sent anywhere except one market-data r
   tracking: { temperature, rain }, // 0..1, how closely the station's weather follows the farm's
   markets: [{
     id, name,                      // name is the short label on the ticket
-    worry,                         // 'heat' | 'drought' | 'crop': which answer pre-selects it
+    preselect,                     // true if the market starts ticked on the plan
     question,                      // one short line shown on the ticket
     caveat,                        // optional short warning, e.g. "May not exist on Kalshi."
     yesCents, noCents,             // ask prices in cents
@@ -95,11 +104,7 @@ All per-season arrays share one order, so index `s` is one simulated season ever
 
 `source.placeOrders([{ market, side, contracts, cents }])` should resolve when the server has accepted the orders.
 
-The frontend computes, per simulated season, `income = acres x price x (yield + yieldSd x farmShock) + sum of contracts x (payout - price)`. `model.recommend` picks the amounts: the steadiest mix for the chosen markets, leaned toward cost by the stability answer, then scaled to fit the budget. It is a stand-in for the team's optimizer.
-
-## Farm history import
-
-A CSV with a year column and a yield column in bushels per acre. It sets the normal yield, and with three or more seasons the swing too. Optional `acres` and `price` columns fill those answers. See `sample/farm-history.csv`.
+The frontend computes, per simulated season, `revenue = acres x price x (yield + yieldSd x farmShock) + sum of contracts x (payout - price)`.
 
 ## Data credits
 

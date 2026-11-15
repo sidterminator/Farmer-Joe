@@ -131,7 +131,7 @@
         {
           id: 'temp',
           name: 'Temp',
-          worry: 'heat',
+          preselect: true,
           question: st.city + ' hits ' + st.julyHot + '\u00b0F in July',
           yesCents: tempYes,
           noCents: 100 - tempYes,
@@ -140,7 +140,7 @@
         {
           id: 'yield',
           name: 'Yield',
-          worry: 'crop',
+          preselect: false,
           question: 'U.S. ' + crop.lower + ' yield under ' + yieldStrike + ' bu/acre',
           caveat: 'May not exist on Kalshi.',
           yesCents: yieldYes,
@@ -150,7 +150,7 @@
         {
           id: 'rain',
           name: 'Rain',
-          worry: 'drought',
+          preselect: true,
           question: st.city + ' gets ' + rainStrike.toFixed(1) + ' in of July rain',
           yesCents: rainYes,
           noCents: 100 - rainYes,
@@ -168,10 +168,10 @@
       return Promise.resolve(buildScenario(farm));
     },
 
-    /* Live: the open monthly rain market at the farm's nearest station, read
-     * from Kalshi's demo API in the browser. */
+    /* Live: the open market at the farm's nearest station, read from Kalshi's
+     * demo API in the browser. */
     liveMarkets: function (station) {
-      return B.kalshi.openEvent(station.rainSeries);
+      return B.kalshi.openEvent(station.series);
     },
 
     /* Orders need a signed Kalshi API key, which a web page cannot keep safe,

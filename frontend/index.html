@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Farmer Joe</title>
-  <meta name="description" content="Weather protection, sized to your farm.">
+  <meta name="description" content="Financial advice to steady your farm income.">
   <meta name="theme-color" content="#17603a">
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="fonts/fonts.css">
@@ -14,7 +14,6 @@
 
 <svg class="sprite" aria-hidden="true" focusable="false">
   <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h15M13 5.5l6.5 6.5-6.5 6.5"/></symbol>
-  <symbol id="i-import" viewBox="0 0 24 24"><path d="M12 15V4M7.5 8.5 12 4l4.5 4.5M4 14v4.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V14"/></symbol>
   <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5M12 7.6v.2"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
   <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 4 3.5 19h17zM12 10v4.5M12 16.8v.2"/></symbol>
@@ -28,13 +27,13 @@
   <section class="screen screen-intro" id="screen-intro" aria-labelledby="intro-title">
     <div class="sack-panel">
       <h1 class="brand" id="intro-title" tabindex="-1"><span>Farmer</span> <span>Joe</span></h1>
-      <p class="promise">Weather protection, sized to your farm.</p>
+      <p class="promise">Financial advice to steady your farm income.</p>
     </div>
     <div class="sack-side">
       <ol class="how">
         <li>Pin your farm.</li>
-        <li>See your plan.</li>
-        <li>Pick your markets.</li>
+        <li>Get your advice.</li>
+        <li>Pick your hedges.</li>
       </ol>
       <div class="start-wrap">
         <a class="start-tag" href="#/farm" id="start">
@@ -44,7 +43,7 @@
             <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
           </span>
         </a>
-        <p class="fine">Sample data. Not financial advice. No real money.</p>
+        <p class="fine">Sample data, no real money.</p>
       </div>
     </div>
   </section>
@@ -56,7 +55,7 @@
       <ol class="steps" aria-label="Steps">
         <li><a href="#/">Start</a></li>
         <li><a href="#/farm" aria-current="step">Farm</a></li>
-        <li><a href="#/plan">Plan</a></li>
+        <li><a href="#/plan">Advice</a></li>
       </ol>
       <p class="sample-note"><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg><span>Sample data</span></p>
     </header>
@@ -67,6 +66,10 @@
         <p class="map-hint">Click the map or type a town.</p>
         <svg class="map" id="map" role="img" focusable="false"></svg>
         <p class="map-key"><span class="key-dot" aria-hidden="true"></span>Kalshi weather stations</p>
+        <details class="station-list">
+          <summary id="station-count"></summary>
+          <p id="station-names"></p>
+        </details>
       </div>
 
       <form class="tag farm-tag" id="farm-form" novalidate>
@@ -78,10 +81,7 @@
             <input type="text" id="where" list="places" autocomplete="off" spellcheck="false" placeholder="Town" aria-describedby="where-out where-error">
             <datalist id="places"></datalist>
           </div>
-          <p class="where-out" id="where-out" hidden>
-            <span class="stamped" id="where-stamp"></span>
-            <span class="where-station" id="where-station"></span>
-          </p>
+          <p class="where-out" id="where-out" hidden></p>
           <p class="error" id="where-error" hidden></p>
         </div>
 
@@ -105,14 +105,9 @@
 
         <div class="row" id="row-yield">
           <label for="yield">Normal yield</label>
-          <div class="control pair pair-wrap">
-            <span class="field"><input type="number" id="yield" inputmode="decimal" min="1" max="500" step="1" value="200" aria-describedby="yield-note yield-error"><span class="unit">bu/acre</span></span>
-            <button type="button" class="btn btn-quiet" id="import-btn">
-              <svg class="icon" aria-hidden="true"><use href="#i-import"/></svg>Import
-            </button>
-            <input type="file" id="file-input" accept=".csv,text/csv,text/plain" hidden>
+          <div class="control">
+            <span class="field"><input type="number" id="yield" inputmode="decimal" min="1" max="500" step="1" value="200" aria-describedby="yield-error"><span class="unit">bu/acre</span></span>
           </div>
-          <p class="note" id="yield-note" hidden></p>
           <p class="error" id="yield-error" hidden></p>
         </div>
 
@@ -124,20 +119,11 @@
           <p class="error" id="price-error" hidden></p>
         </div>
 
-        <fieldset class="row">
-          <legend>Worries</legend>
-          <div class="control chips">
-            <label><input type="checkbox" name="worry" value="heat" checked><span><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Heat</span></label>
-            <label><input type="checkbox" name="worry" value="drought" checked><span><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Drought</span></label>
-            <label><input type="checkbox" name="worry" value="crop"><span><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Poor crop</span></label>
-          </div>
-        </fieldset>
-
         <div class="row" id="row-budget">
-          <label for="budget">Max spend</label>
+          <label for="budget">Budget for hedging</label>
           <div class="control pair">
             <span class="field"><span class="unit unit-lead">$</span><input type="number" id="budget" inputmode="numeric" min="0" max="1000000" step="500" value="15000" aria-describedby="budget-error"></span>
-            <input type="range" id="budget-range" min="0" max="50000" step="500" value="15000" aria-label="Max spend, slider">
+            <input type="range" id="budget-range" min="0" max="50000" step="500" value="15000" aria-label="Budget for hedging, slider">
           </div>
           <p class="error" id="budget-error" hidden></p>
         </div>
@@ -166,7 +152,7 @@
       <ol class="steps" aria-label="Steps">
         <li><a href="#/">Start</a></li>
         <li><a href="#/farm">Farm</a></li>
-        <li><a href="#/plan" aria-current="step">Plan</a></li>
+        <li><a href="#/plan" aria-current="step">Advice</a></li>
       </ol>
       <p class="sample-note"><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg><span>Sample data</span></p>
     </header>
@@ -175,17 +161,18 @@
       <div class="plan-main">
         <h1 id="plan-title" tabindex="-1"></h1>
         <p class="lede" id="plan-lede"></p>
+        <p class="plan-effect" id="plan-effect" hidden></p>
         <p class="farm-line"><span id="farm-line"></span> <a href="#/farm">Edit</a></p>
 
         <div class="tag chart-tag">
           <div class="tag-head">
-            <h2>Season income</h2>
+            <h2>Revenue by harvest</h2>
             <span class="stamped stamp-small">Sample</span>
             <button type="button" class="btn btn-quiet" id="table-toggle" aria-pressed="false">Table</button>
           </div>
           <ul class="legend" id="legend" aria-label="Chart key">
-            <li><span class="sw-base"></span>Without protection</li>
-            <li><span class="sw-plan"></span>With your plan</li>
+            <li><span class="sw-base"></span>Without Farmer Joe</li>
+            <li id="legend-plan"><span class="sw-plan"></span>With Farmer Joe</li>
           </ul>
           <figure class="plot" id="plot" tabindex="0" role="group" aria-roledescription="chart">
             <svg aria-hidden="true" focusable="false"></svg>
@@ -206,11 +193,11 @@
 
       <aside class="plan-side" aria-labelledby="contracts-title">
         <div class="side-head">
-          <h2 id="contracts-title">Markets</h2>
+          <h2 id="contracts-title">Hedges</h2>
           <span class="stamped stamp-small stamp-on-green">Sample</span>
           <p class="plan-state" id="plan-state"></p>
         </div>
-        <p class="side-hint">Tick markets. The graph shows your mix.</p>
+        <p class="side-hint">Tick hedges and set the dollars. The graph follows.</p>
         <p class="plan-result" id="plan-result" aria-live="polite"></p>
         <ul class="tickets" id="tickets"></ul>
 
@@ -237,7 +224,7 @@
       </div>
     </div>
 
-    <p class="fine plan-fine">Sample data and assumptions. Not financial advice. Towns: GeoNames.</p>
+    <p class="fine plan-fine">Sample data from a placeholder model, no real money. Town list from GeoNames.</p>
   </section>
 
 </div>
@@ -246,6 +233,7 @@
 <script src="places.js"></script>
 <script src="stations.js"></script>
 <script src="model.js"></script>
+<script src="advisor.js"></script>
 <script src="kalshi.js"></script>
 <script src="sample-data.js"></script>
 <script src="map.js"></script>

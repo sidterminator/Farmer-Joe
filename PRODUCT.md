@@ -18,7 +18,7 @@ The team README on `main` lists an ice cream shop and a roofer as the first pers
 
 ## Product Purpose
 
-Farmer Joe is a weather-hedging tool built on prediction-market contracts. The farmer describes their farm, and the tool shows which contracts to buy, how many, what they cost, and what the farm's season income looks like with and without them. Built at HackPrinceton Fall 2026 (Nov 13 to 15, 2026). Repo: `sidterminator/Farmer-Joe` (renamed from `bizfax`).
+Farmer Joe is a financial advice app for farmers (the user's positioning, 2026-11-14). The farmer describes their farm, and the app's model suggests which weather markets to hedge with and how many dollars to put into each. A graph of revenue by harvest shows the farm without the hedge beside the farm with it. Built at HackPrinceton Fall 2026 (Nov 13 to 15, 2026). Repo: `sidterminator/Farmer-Joe` (renamed from `bizfax`).
 
 ## Positioning
 
@@ -29,8 +29,8 @@ It turns a weather forecast into a hedge recommendation for one specific farm: t
 Three screens, in order (user's spec, 2026-11-14):
 
 1. **Intro.** The Farmer Joe name and text, with a Start button.
-2. **Farm form.** The questions from `../input form.png`: where the farm is, crop, acres, normal yield, expected price, what worries you, the most you'll spend on protection, and a stability-versus-cost slider. Entering the location drops a pin on a map with an animation. Controls are interactive buttons and sliders.
-3. **Results and advice.** The recommended contracts, with the farmer choosing which ones and how many, using the Kalshi API.
+2. **Farm form.** Farm location, crop, acres, normal yield, price, budget for hedging, and a stability-versus-cost slider. Setting the location drops a pin on a map with an animation. The map names every city that has a Kalshi weather station. The questions began from `../input form.png`; on 2026-11-14 the user removed the "what worries you" question and the yield-history import, removed the red place stamp under the town, and renamed the spend question "Budget for hedging".
+3. **Advice.** The model's suggestion in dollars per hedge, a graph with harvests along the bottom and revenue in dollars up the side (one line without the hedge, one with), and the hedges themselves, where the farmer chooses which ones and how much.
 
 Market facts:
 
@@ -42,7 +42,7 @@ Market facts:
 
 ## Capabilities and Constraints
 
-- No weather model, optimizer or order server is connected yet. Forecasts, the July markets and their prices are sample data, and the screen must say so.
+- The adviser is a placeholder model (`frontend/advisor.js`) until the team's model replaces it. No weather model or order server is connected yet. Forecasts, the July markets and their prices are sample data, and the screen must say so.
 - The live part today is reading currently open markets from the Kalshi demo API for the station nearest the farm.
 - Undecided: which real markets map to a farm's July heat and drought risk, how distance to the settlement station reduces the hedge (the frontend uses a labelled sample assumption), and whether a market for crop yield exists.
 - The earlier parcel-carrier code in this repo (`app.py`, `bizfax/`, `tests/`) is a different idea. It stays on disk and is not part of this frontend.
@@ -69,4 +69,4 @@ Market facts:
 2. The farmer's own income is the subject. Contracts are shown in terms of what they do to it.
 3. A hedge is insurance, not a bet: the tool sizes the hedge, respects the farmer's budget, and flags when a contract is unusually cheap or expensive.
 4. Never trade real money, and never ask for an API key in the browser.
-5. Educational tool, not financial advice. The plan requires this disclaimer.
+5. The app presents itself as financial advice (user, 2026-11-14), so the "not financial advice" line was removed from the screens. The team's plan and the README on `main` still carry that disclaimer; settle which one stands before anything real is traded. Sample-data labels stay either way.

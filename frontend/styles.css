@@ -125,17 +125,6 @@ h1:focus { outline: none; }
   text-wrap: balance;
 }
 
-.spec { margin-top: 22px; border-top: 2px solid var(--ink); }
-.spec div {
-  display: flex;
-  justify-content: space-between;
-  gap: 24px;
-  padding: 7px 0;
-  border-bottom: 1px solid var(--ink);
-}
-.spec dt { font-weight: 700; }
-.spec dd { text-align: right; }
-
 .sack-side {
   display: flex;
   flex-direction: column;
@@ -300,7 +289,7 @@ h2 { font-size: 16px; font-weight: 700; }
 
 .legend { display: flex; flex-wrap: wrap; gap: 4px 18px; margin: -4px 0 8px; color: var(--ink-2); font-size: 13px; }
 .legend li { display: flex; align-items: center; gap: 7px; }
-.sw-base { width: 10px; height: 10px; border-radius: 2px; background: var(--green-300); }
+.sw-base { width: 16px; height: 3px; border-radius: 1px; background: var(--green-300); }
 .sw-plan { width: 16px; height: 3px; border-radius: 1px; background: var(--ink); }
 
 .stamped {
@@ -394,17 +383,19 @@ h2 { font-size: 16px; font-weight: 700; }
 .station { fill: var(--ink); pointer-events: none; }
 .station.is-nearest { stroke: #ffffff; stroke-width: 2; vector-effect: non-scaling-stroke; }
 .station-link { stroke: var(--ink); stroke-width: 2; vector-effect: non-scaling-stroke; pointer-events: none; }
-.station-label { pointer-events: none; }
-.station-label text {
+/* Every station city is named. The nearest one to the farm is set heavier. */
+.city-label { pointer-events: none; }
+.city-label text {
   fill: var(--ink);
   font-family: var(--text);
-  font-size: 13.5px;
-  font-weight: 700;
+  font-size: 11.5px;
+  font-weight: 600;
   paint-order: stroke;
   stroke: var(--tag);
-  stroke-width: 4px;
+  stroke-width: 3px;
   stroke-linejoin: round;
 }
+.city-label.is-nearest text { font-size: 13.5px; font-weight: 800; }
 .pin-anchor { pointer-events: none; }
 .pin-body { fill: var(--red); stroke: #ffffff; stroke-width: 1.5; }
 .pin-eye { fill: #ffffff; }
@@ -418,6 +409,9 @@ h2 { font-size: 16px; font-weight: 700; }
 }
 
 .map-key { display: flex; align-items: center; gap: 9px; margin-top: 4px; color: var(--on-green-2); font-size: 13px; }
+.station-list { margin-top: 6px; color: var(--on-green-2); font-size: 13px; max-width: 70ch; }
+.station-list summary { width: fit-content; cursor: pointer; color: var(--on-green); font-weight: 650; }
+.station-list p { margin-top: 6px; line-height: 1.6; }
 .key-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--ink); box-shadow: 0 0 0 2px var(--tag); }
 
 .farm-tag {
@@ -448,9 +442,6 @@ fieldset.row > .control { margin-left: 39%; }
 
 .control { min-width: 0; }
 .pair { display: grid; grid-template-columns: minmax(118px, 0.9fr) minmax(0, 1fr); align-items: center; gap: 12px; }
-.pair-wrap { display: flex; flex-wrap: wrap; gap: 8px 12px; }
-.pair-wrap .field { flex: 1 1 118px; }
-.pair-wrap .btn { flex: none; }
 
 .field {
   display: flex;
@@ -500,7 +491,7 @@ fieldset.row > .control { margin-left: 39%; }
 [aria-invalid="true"], .field:has([aria-invalid="true"]) { border-color: var(--red); }
 
 .where-out, .row > .note, .row > .error { grid-column: 2; }
-.where-out { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 12px; padding-top: 2px; }
+.where-out { color: var(--ink-2); font-size: 13.5px; }
 .where-station { color: var(--ink-2); font-size: 13.5px; }
 .note { color: var(--ink-2); font-size: 13.5px; }
 .error { display: flex; gap: 6px; color: var(--red-deep); font-size: 13.5px; font-weight: 600; }
@@ -524,29 +515,6 @@ fieldset.row > .control { margin-left: 39%; }
 .seg input:checked + span { background: var(--ink); color: #ffffff; }
 .seg input:focus-visible + span { outline: 2px solid var(--ink); outline-offset: 1px; }
 .seg input:checked:focus-visible + span { outline-color: #ffffff; outline-offset: -4px; }
-
-/* Worries: any of three. */
-.chips { display: flex; flex-wrap: wrap; gap: 8px; }
-.chips label { position: relative; display: block; }
-.chips input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
-.chips span {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  min-height: 36px;
-  padding: 0 12px 0 9px;
-  border: 1.5px solid var(--rule-strong);
-  border-radius: 3px;
-  background: #ffffff;
-  font-size: 14px;
-  font-weight: 600;
-  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
-}
-.chips .icon { width: 16px; height: 16px; stroke-width: 2.25; opacity: 0.25; }
-.chips input:hover + span { border-color: var(--ink); }
-.chips input:checked + span { background: var(--ink); border-color: var(--ink); color: #ffffff; }
-.chips input:checked + span .icon { opacity: 1; }
-.chips input:focus-visible + span { outline: 2px solid var(--ink); outline-offset: 2px; }
 
 /* Sliders */
 input[type="range"] {
@@ -630,6 +598,7 @@ input[type="range"]:disabled { cursor: not-allowed; opacity: 0.45; }
 .live-tag { grid-area: live; }
 
 .lede { margin-top: 12px; max-width: 62ch; color: var(--on-green); font-size: 18px; line-height: 1.4; }
+.plan-effect { margin-top: 6px; max-width: 62ch; color: var(--on-green); font-size: 16px; font-weight: 650; font-variant-numeric: tabular-nums; }
 .farm-line { margin-top: 10px; color: var(--on-green-2); font-size: 14px; max-width: 80ch; }
 .farm-line a { color: var(--on-green); font-weight: 650; text-underline-offset: 3px; }
 
@@ -642,23 +611,31 @@ input[type="range"]:disabled { cursor: not-allowed; opacity: 0.45; }
 .rule-h { stroke: var(--rule); stroke-width: 1; }
 .baseline { stroke: var(--ink); stroke-width: 1; }
 .axis text { fill: var(--ink-3); font-size: 12px; font-variant-numeric: tabular-nums; }
-.col { fill: var(--green-300); transition: y 200ms var(--ease-out), height 200ms var(--ease-out), fill 120ms linear; }
-.col.is-hover { fill: #478a63; }
-.plan-line, .plan-under { fill: none; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
-.plan-line { stroke: var(--ink); stroke-width: 2.5; }
-.plan-under { stroke: var(--tag); stroke-width: 7; }
-.dlabel { pointer-events: none; }
-.dlabel text {
+.axis .axis-title { fill: var(--ink-2); font-size: 12.5px; font-weight: 600; }
+/* Two lines by harvest: the farm without a hedge in light green, the farm
+ * with the plan in ink, heavier and drawn on top. */
+.floor { stroke-width: 1; pointer-events: none; }
+.floor-base { stroke: var(--green-300); }
+.floor-plan { stroke: var(--ink); }
+.floor-label {
   fill: var(--ink);
-  font-size: 12.5px;
-  font-weight: 700;
+  font-size: 12px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
   paint-order: stroke;
   stroke: var(--tag);
   stroke-width: 4px;
   stroke-linejoin: round;
+  pointer-events: none;
 }
-.key-base { fill: var(--green-300); }
-.key-plan { stroke: var(--ink); stroke-width: 2.5; stroke-linecap: round; }
+.line { fill: none; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
+.line-base { stroke: var(--green-300); stroke-width: 2; }
+.line-plan { stroke: var(--ink); stroke-width: 2.5; }
+.line-under { stroke: var(--tag); stroke-width: 6; }
+.dots circle { stroke: var(--tag); stroke-width: 2; pointer-events: none; transition: r 120ms var(--ease-out); }
+.dots-base circle { fill: var(--green-300); }
+.dots-plan circle { fill: var(--ink); }
+.dots circle.is-hover { r: 5.5px; }
 .cross { stroke: var(--ink-2); stroke-width: 1; pointer-events: none; }
 
 .tip {
@@ -677,9 +654,9 @@ input[type="range"]:disabled { cursor: not-allowed; opacity: 0.45; }
 .tip-title { color: var(--ink-2); font-variant-numeric: tabular-nums; margin-bottom: 3px; }
 .tip-row { display: flex; align-items: center; gap: 7px; color: var(--ink-2); white-space: nowrap; }
 .tip-row strong { color: var(--ink); font-weight: 700; font-variant-numeric: tabular-nums; }
-.tip-key { width: 10px; height: 10px; flex: none; border-radius: 2px; }
+.tip-key { width: 12px; height: 3px; flex: none; border-radius: 1px; }
 .tip-key-base { background: var(--green-300); }
-.tip-key-plan { height: 3px; border-radius: 1px; background: var(--ink); }
+.tip-key-plan { background: var(--ink); }
 
 .bins { height: 300px; overflow: auto; border: 1px solid var(--rule); border-radius: 3px; scrollbar-color: var(--rule-strong) transparent; }
 .bins table { width: 100%; }
@@ -776,7 +753,7 @@ tbody tr { border-top: 1px solid var(--rule); }
 .ticket-body { display: grid; gap: 8px; padding: 12px 16px 14px; min-width: 0; }
 .ticket-top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
 .ticket-name { font-family: var(--display); font-weight: 800; font-size: 30px; line-height: 0.95; text-transform: uppercase; }
-.ticket-cost { font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ticket-meta { color: var(--ink-3); font-size: 13.5px; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .ticket-q { color: var(--ink-2); font-size: 14px; line-height: 1.35; text-wrap: pretty; }
 .ticket-why { color: var(--ink-2); font-size: 13.5px; line-height: 1.35; }
 .ticket-why strong { color: var(--ink); font-weight: 650; }
@@ -824,7 +801,7 @@ tbody tr { border-top: 1px solid var(--rule); }
 
 .qty { display: grid; grid-template-columns: minmax(104px, 0.8fr) minmax(0, 1fr); align-items: center; gap: 10px; }
 .qty .field { min-height: 38px; }
-.ticket:not(.is-on) .ticket-name, .ticket:not(.is-on) .ticket-cost { color: var(--ink-3); }
+.ticket:not(.is-on) .ticket-name { color: var(--ink-3); }
 .ticket-flag { display: flex; gap: 6px; color: var(--ink); font-size: 13.5px; }
 .ticket-flag .icon { width: 16px; height: 16px; margin-top: 1px; }
 
