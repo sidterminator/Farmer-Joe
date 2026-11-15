@@ -71,8 +71,9 @@
 
   const state = {
     farm: {
-      lat: null, lon: null, label: '', stationId: null, miles: 0,
-      crop: 'corn', acres: 300, yield: 200, price: 4.5, budget: 15000, lean: 4
+      // Default farm: the parameter sweep's best case (150 ac Champaign corn, $40K, Most Stability).
+      lat: 40.12, lon: -88.24, label: 'Champaign, IL', stationId: 'ind', miles: 107,
+      crop: 'corn', acres: 150, yield: 200, price: 4.5, budget: 40000, lean: 5
     },
     touched: { yield: false, price: false },
     scenario: null,
@@ -494,6 +495,8 @@
       state.base = M.summary(state.revenue);
       // Bad year = unhedged revenue in the bottom 20% of ALL simulated seasons (not just the 20 shown).
       state.badCut = (function () { const a = Float64Array.from(state.revenue).sort(); return a[Math.floor(0.2 * (a.length - 1))]; })();
+      state.badIdx = [];
+      for (let i = 0; i < state.revenue.length; i++) if (state.revenue[i] <= state.badCut) state.badIdx.push(i);
       state.harvests = shuffled(M.representativeSeasons(state.revenue, scenario.markets.map(function (m) { return m.payoutYes; }), HARVESTS), 2027);
       const rec = scenario.recommendation;
       const picks = {};
@@ -576,11 +579,7 @@
     state.illustration = on;
     $('illus-toggle').checked = on;
     $('illus-toggle').disabled = !state.realScenario;   // nothing to switch back to without the server
-    document.querySelectorAll('.illus-label').forEach(function (el) { el.hidden = !on; });
     if (on) $('plan-verdict').hidden = true;
-    const pct = Math.round((state.trend || 0) * 1000) / 10;
-    $('plot-note').textContent = 'Years 1\u201320 are sample seasons from the simulation. Both lines include an assumed +' +
-      pct + '%/year yield trend' + (on ? '.' : '; the hedge payouts are model output.');
   }
 
   function wireIllustration() {
@@ -601,9 +600,8 @@
     if (!el) return;
     if (!rec) { el.hidden = true; return; }
     el.dataset.decision = rec.decision;
-    el.textContent = rec.decision === 'hedge' ? 'Hedge'
-      : rec.decision === 'partial' ? 'Partial Hedge'
-      : 'Don\u2019t Hedge \u2014 ' + rec.reason;
+    if (rec.decision === 'hedge') { el.hidden = true; return; }   // the title already says "Hedge $X"
+    el.textContent = rec.decision === 'partial' ? 'Partial Hedge' : 'Don\u2019t Hedge \u2014 ' + rec.reason;
     el.title = rec.reason;
     el.hidden = false;
   }
@@ -670,12 +668,6 @@
       top.appendChild(meta);
       body.appendChild(top);
       body.appendChild(make('p', 'ticket-q', m.question));
-      if (m.caveat) {
-        const caveat = make('p', 'ticket-flag');
-        caveat.appendChild(icon('info'));
-        caveat.appendChild(make('span', null, m.caveat));
-        body.appendChild(caveat);
-      }
       t.refs = { meta: meta };
 
       if (!t.on) {
@@ -822,6 +814,14 @@
   function grown(i, k) { return state.revenue[i] * Math.pow(1 + (state.trend || 0), k); }
   function grownPlan(i, k) { return grown(i, k) + (state.planArr[i] - state.revenue[i]); }
 
+  const STATE_NAMES = {};
+  'AL Alabama|AK Alaska|AZ Arizona|AR Arkansas|CA California|CO Colorado|CT Connecticut|DE Delaware|DC District of Columbia|FL Florida|GA Georgia|HI Hawaii|ID Idaho|IL Illinois|IN Indiana|IA Iowa|KS Kansas|KY Kentucky|LA Louisiana|ME Maine|MD Maryland|MA Massachusetts|MI Michigan|MN Minnesota|MS Mississippi|MO Missouri|MT Montana|NE Nebraska|NV Nevada|NH New Hampshire|NJ New Jersey|NM New Mexico|NY New York|NC North Carolina|ND North Dakota|OH Ohio|OK Oklahoma|OR Oregon|PA Pennsylvania|RI Rhode Island|SC South Carolina|SD South Dakota|TN Tennessee|TX Texas|UT Utah|VT Vermont|VA Virginia|WA Washington|WV West Virginia|WI Wisconsin|WY Wyoming'.split('|').forEach(function (e) { STATE_NAMES[e.slice(0, 2)] = e.slice(3); });
+  /* 'Champaign, IL' -> 'Champaign, Illinois' */
+  function placeName(label) {
+    const m = /^(.*),\s*([A-Z]{2})$/.exec(label || '');
+    return m && STATE_NAMES[m[2]] ? m[1] + ', ' + STATE_NAMES[m[2]] : (label || '');
+  }
+
   function chartSpec() {
     const picks = state.harvests;
     return {
@@ -880,28 +880,30 @@
 
     // The advice, in dollars per hedge.
     $('plan-title').textContent = hedging ? 'Hedge ' + dollars(cost) : 'No Hedge Yet';
-    $('plan-lede').textContent = !hedging
-      ? (chosen.length ? 'Raise an amount to see the effect.' : 'Tick a hedge to start.')
-      : (state.custom ? 'Your mix: ' : 'Suggested: ') + active.map(function (t) {
-        return dollars(t.contracts * priceOf(t)) + ' in ' + t.market.name;
-      }).join(' · ');
+    $('plan-lede').textContent = hedging ? '' : (chosen.length ? 'Raise an amount to see the effect.' : 'Tick a hedge to start.');
+    $('plan-lede').hidden = hedging;
     let effect = '';
     if (hedging) {
       effect = b.sd < a.sd
-        ? Math.round((1 - b.sd / a.sd) * 100) + '% steadier. Bad harvest ' + signedMoney(b.bad - a.bad) + '. ' + (a.mean >= b.mean ? 'Cost Of Protection: ' + dollars(a.mean - b.mean) + '/yr.' : 'Expected Gain: ' + dollars(b.mean - a.mean) + '/yr.')
-        : 'This mix adds swing. Check the sides.';
+        ? Math.round((1 - b.sd / a.sd) * 100) + '% Steadier \u00b7 Bad Harvest ' + signedMoney(b.bad - a.bad)
+        : 'This Mix Adds Swing \u00b7 Check The Sides';
     }
     $('plan-effect').textContent = effect;
     $('plan-effect').hidden = !effect;
     $('plan-result').textContent = hedging ? effect : 'Nothing in the plan yet.';
-    $('farm-line').textContent = whole.format(f.acres) + ' ac ' + crop.label.toLowerCase() + ' · ' + f.label + ' · ' + station.city + ' station';
+    $('farm-line').textContent = whole.format(f.acres) + ' Acres Of ' + crop.label + ' \u00b7 ' + placeName(f.label) + ' \u00b7 ' + station.city + ' Station \u00b7';
 
-    fill('analysis-head', [['', 'Without', 'With Plan', 'Change']], true);
+    // Average Bad Harvest: mean over the bottom 20% of simulated seasons by unhedged revenue (the
+    // red-dot definition), for both columns over the same seasons.
+    const badMean = function (arr) { let t = 0; state.badIdx.forEach(function (i) { t += arr[i]; }); return t / state.badIdx.length; };
+    const protection = a.mean - b.mean;
+    fill('analysis-head', [['', 'Without', 'With Plan']], true);
     fill('analysis-body', [
-      ['Average Harvest', money(a.mean), money(b.mean), hedging ? signedMoney(b.mean - a.mean) : '—'],
-      ['Swing', '±' + money(a.sd), '±' + money(b.sd), hedging ? signedPercent(b.sd / a.sd - 1) : '—'],
-      ['Bad Harvest (1 In 20)', money(a.bad), money(b.bad), hedging ? signedMoney(b.bad - a.bad) : '—'],
-      ['Cost', '$0', dollars(cost), hedging ? percent(cost / cropValue(), 1) + ' of crop' : '—']
+      ['Average Bad Harvest', money(badMean(state.revenue)), money(badMean(state.planArr))],
+      ['Swing', '\u00b1' + money(a.sd), '\u00b1' + money(b.sd)],
+      ['Bad Harvest (1 In 20)', money(a.bad), money(b.bad)],
+      ['Amount Hedged', '$0', dollars(cost)],
+      ['Cost Of Protection', '$0/yr', (protection >= 0 ? dollars(protection) : MINUS + dollars(-protection)) + '/yr']
     ]);
 
     // The order

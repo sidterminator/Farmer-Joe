@@ -930,8 +930,8 @@ body:not(.real-data) .real-only { display: none; }
 
 /* Advice screen: recommendation first, the rest collapsed; illustration mode label. */
 .plan-topline { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
-.illus-toggle { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.875rem; cursor: pointer; }
-.illus-toggle input { width: 1rem; height: 1rem; }
+.illus-toggle { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.875rem; line-height: 1; cursor: pointer; }
+.illus-toggle input { width: 1rem; height: 1rem; margin: 0; vertical-align: middle; flex: none; }
 .illus-label { margin: 0 0 0.5rem; display: inline-block; padding: 0.2rem 0.55rem; border-radius: 4px;
   background: #f2c94c; color: #1c1c1c; font-weight: 700; font-size: 0.8125rem; letter-spacing: 0.01em; }
 .illus-label[hidden] { display: none; }

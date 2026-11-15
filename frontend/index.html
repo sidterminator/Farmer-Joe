@@ -42,8 +42,6 @@
             <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
           </span>
         </a>
-        <p class="fine sample-only">Sample data, no real money.</p>
-        <p class="fine real-only">Model output with placeholder settings. No real money.</p>
       </div>
     </div>
   </section>
@@ -97,8 +95,8 @@
         <div class="row" id="row-acres">
           <label for="acres">Acres</label>
           <div class="control pair">
-            <span class="field"><input type="number" id="acres" inputmode="numeric" min="1" max="100000" step="1" value="300" aria-describedby="acres-error"><span class="unit">acres</span></span>
-            <input type="range" id="acres-range" min="10" max="5000" step="10" value="300" aria-label="Acres, slider">
+            <span class="field"><input type="number" id="acres" inputmode="numeric" min="1" max="100000" step="1" value="150" aria-describedby="acres-error"><span class="unit">acres</span></span>
+            <input type="range" id="acres-range" min="10" max="5000" step="10" value="150" aria-label="Acres, slider">
           </div>
           <p class="error" id="acres-error" hidden></p>
         </div>
@@ -122,8 +120,8 @@
         <div class="row" id="row-budget">
           <label for="budget">Budget For Hedging</label>
           <div class="control pair">
-            <span class="field"><span class="unit unit-lead">$</span><input type="number" id="budget" inputmode="numeric" min="0" max="1000000" step="500" value="15000" aria-describedby="budget-error"></span>
-            <input type="range" id="budget-range" min="0" max="50000" step="500" value="15000" aria-label="Budget for hedging, slider">
+            <span class="field"><span class="unit unit-lead">$</span><input type="number" id="budget" inputmode="numeric" min="0" max="1000000" step="500" value="40000" aria-describedby="budget-error"></span>
+            <input type="range" id="budget-range" min="0" max="60000" step="500" value="40000" aria-label="Budget For Hedging, slider">
           </div>
           <p class="error" id="budget-error" hidden></p>
         </div>
@@ -131,9 +129,9 @@
         <div class="row">
           <label for="stability">Priority</label>
           <div class="control lean">
-            <input type="range" id="stability" min="1" max="5" step="1" value="4" aria-describedby="stability-out">
+            <input type="range" id="stability" min="1" max="5" step="1" value="5" aria-describedby="stability-out">
             <div class="lean-ends" aria-hidden="true"><span>Cost</span><span>Stability</span></div>
-            <output id="stability-out" for="stability">Mostly Stability</output>
+            <output id="stability-out" for="stability">Most Stability</output>
           </div>
         </div>
 
@@ -163,7 +161,6 @@
           <p class="plan-verdict" id="plan-verdict" hidden></p>
           <label class="illus-toggle"><input type="checkbox" id="illus-toggle"> Illustration</label>
         </div>
-        <p class="illus-label" id="illus-label" hidden>Illustration, Not Model Output</p>
         <h1 id="plan-title" tabindex="-1"></h1>
         <p class="lede" id="plan-lede"></p>
         <p class="plan-effect" id="plan-effect" hidden></p>
@@ -172,7 +169,6 @@
       <div class="tag chart-tag">
         <div class="tag-head">
           <h2>Revenue By Year</h2>
-          <span class="illus-label illus-chip" hidden>Illustration, Not Model Output</span>
           <span class="stamped stamp-small sample-only">Sample</span>
           <button type="button" class="btn btn-quiet" id="table-toggle" aria-pressed="false">Table</button>
         </div>
@@ -185,7 +181,6 @@
           <svg aria-hidden="true" focusable="false"></svg>
           <div class="tip" role="status" hidden></div>
         </figure>
-        <p class="plot-note" id="plot-note"></p>
         <div class="bins" id="bins" hidden>
           <table>
             <thead id="bins-head"></thead>
@@ -206,7 +201,6 @@
             <span class="stamped stamp-small stamp-on-green sample-only">Sample</span>
             <p class="plan-state" id="plan-state"></p>
           </div>
-          <p class="side-hint">Tick hedges and set the dollars. The graph follows.</p>
         </div>
       </div>
 
@@ -223,15 +217,12 @@
           <p class="budget-line" id="budget-line" aria-live="polite"></p>
           <ul class="order-lines" id="order-lines"></ul>
           <p class="order-total"><span>Total</span><strong id="order-total"></strong></p>
-          <button type="button" class="btn btn-primary" id="send-order" disabled aria-describedby="order-note">Send To Kalshi Demo</button>
-          <p class="note" id="order-note">Not connected yet. Orders need the team's server. No real money.</p>
+          <button type="button" class="btn btn-primary" id="send-order" disabled>Send To Kalshi (Demo)</button>
         </div>
       </aside>
 
     </div>
 
-    <p class="fine plan-fine sample-only">Sample data from a placeholder model, no real money. Town list from GeoNames.</p>
-    <p class="fine plan-fine real-only">Model output — contracts are hypothetical, coefficients are placeholders. Educational tool, not financial advice. Town list from GeoNames.</p>
   </section>
 
 </div>
