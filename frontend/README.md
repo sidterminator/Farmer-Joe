@@ -27,8 +27,10 @@ Screens are addressed by hash: `#/`, `#/farm`, `#/plan`. The farm answers are ke
 | "Open on Kalshi now" on the plan screen | **Live**: read from Kalshi's demo exchange in the browser |
 | The three July markets, their prices and the model's chances | **Sample**, generated in `sample-data.js` from a fixed seed |
 | The 20,000 simulated seasons and the farm's income in each | **Sample** |
-| How much distance to the station weakens the hedge | **Sample assumption** (`tracking()` in `sample-data.js`) |
+| How much distance to the station weakens the hedge | Not modelled: the sample treats the farm's weather as the station's |
 | Sending the order | **Not connected.** The button is disabled and says why |
+
+**The sample is deliberately exaggerated** (the user's request, 2026-11-14) so the graph shows a large gap. In it a hot or dry July knocks a large, fixed amount off the farm's yield, little else moves it, and the contracts that pay in those years cost about 28 points less than the model's own chance of them paying. On the default farm that gives 71% less swing and $21,100 more per average harvest for a $15,000 hedge. Those figures are an illustration, not a result; the constants are at the top of `buildScenario` in `sample-data.js`.
 
 The screens label sample data. Nothing is sent anywhere except one market-data request to Kalshi's demo API, which carries only a series ticker such as `KXRAININDM`.
 
@@ -84,9 +86,9 @@ The 20 harvests are sample seasons from the simulation, not a forecast of partic
 ```js
 {
   sample: true,
+  exaggerated: true,               // the demo sample is deliberately generous to the hedge
   seasons: N,
   farmShock: Float64Array(N),      // standardised farm-yield shock per simulated season
-  tracking: { temperature, rain }, // 0..1, how closely the station's weather follows the farm's
   markets: [{
     id, name,                      // name is the short label on the ticket
     preselect,                     // true if the market starts ticked on the plan

@@ -44,7 +44,7 @@ Market facts:
 
 - The adviser is a placeholder model (`frontend/advisor.js`) until the team's model replaces it. No weather model or order server is connected yet. Forecasts, the July markets and their prices are sample data, and the screen must say so.
 - The live part today is reading currently open markets from the Kalshi demo API for the station nearest the farm.
-- Undecided: which real markets map to a farm's July heat and drought risk, how distance to the settlement station reduces the hedge (the frontend uses a labelled sample assumption), and whether a market for crop yield exists.
+- Undecided: which real markets map to a farm's July heat and drought risk, how distance to the settlement station reduces the hedge (the sample ignores it), and whether a market for crop yield exists.
 - The earlier parcel-carrier code in this repo (`app.py`, `bizfax/`, `tests/`) is a different idea. It stays on disk and is not part of this frontend.
 
 ## Brand Commitments
@@ -54,6 +54,10 @@ Market facts:
 - Palette set by the user on 2026-11-14: **green and white**, with red kept for the pin, stamps, No and warnings. The user went back and forth with a yellow version the same day and settled here. The Start button is white with a plain black arrow (no circle).
 - Copy: keep wording short. The user asked for only the important information on every screen.
 - The plan's graph overlays the two income shapes on one plot.
+
+## Demo data
+
+On 2026-11-14 the user asked for the sample data to be exaggerated "a lot" so the graph shows a large gap between hedging and not. The sample world in `frontend/sample-data.js` is therefore far kinder to the hedge than a real one: fixed large losses in hot or dry Julys, no distance effect, and contracts priced about 28 points below the model's chance. Its figures (for example 71% less swing and +$21,100 per average harvest on the default farm) are an illustration and must not be quoted as a result.
 
 ## Evidence on Hand
 

@@ -1,5 +1,8 @@
 /* SAMPLE DATA and the seam for the real backend.
  *
+ * The sample is deliberately EXAGGERATED so the demo's graph shows a large
+ * gap between hedging and not hedging. See the note above buildScenario.
+ *
  * The simulated seasons, the three July markets and their prices are made up
  * for the demo. Nothing built here is a live quote or a real forecast. The one
  * live piece is `liveMarkets`, which reads open markets from Kalshi's demo API.
@@ -68,65 +71,64 @@
     return Math.min(95, Math.max(5, Math.round(chance * 100) + offset));
   }
 
-  /* Sample assumption: weather at the settlement station tracks the farm's
-   * less the farther away it is, and rain is more local than temperature. */
-  function tracking(miles) {
-    return {
-      temperature: Math.min(0.97, Math.max(0.2, Math.exp(-miles / 600))),
-      rain: Math.min(0.95, Math.max(0.12, Math.exp(-miles / 250)))
-    };
-  }
+  /* EXAGGERATED ON PURPOSE (the user's request, 2026-11-14). The demo is meant
+   * to make the effect of hedging easy to see, so this sample world is far
+   * kinder to the hedge than a real one would be:
+   *   - a hot July or a dry July each knocks a large, fixed amount off the
+   *     farm's yield, and little else moves it;
+   *   - the farm's weather is the station's weather, whatever the distance;
+   *   - the contracts that pay in those years are priced far below the
+   *     model's own chance of them paying.
+   * None of this is a finding. Do not present these numbers as results. */
+  const HOT_LOSS = 2.2;    // yield lost in a hot July, in units of the farm's yield spread
+  const DRY_LOSS = 1.5;   // and in a dry one
+  const OTHER = 0.25;      // everything else that moves the farm's yield
+  const BARGAIN = 28;      // points below the model's chance that the hedging side costs
 
   /* farm: { crop, station, miles }  ->  scenario for that farm's nearest station. */
   function buildScenario(farm) {
     const z = getDraws();
     const crop = CROPS[farm.crop] || CROPS.corn;
     const st = farm.station;
-    const track = tracking(farm.miles);
 
     // Hot Julys tend to be dry Julys.
     const HEAT_RAIN = -0.45;
-    // Weather stress on the crop: heat hurts, rain helps. Scaled to unit variance.
-    const A = -0.65;
-    const C = 0.45;
-    const stressSd = Math.sqrt(A * A + C * C + 2 * A * C * HEAT_RAIN);
-    const FARM_WEATHER = 0.85;     // share of the farm's yield shock that is weather
-    const NATIONAL_WEATHER = 0.6;  // the national crop follows local weather less closely
-
-    const farmShock = new Float64Array(SEASONS);
     const hottest = new Float64Array(SEASONS);
     const rainfall = new Float64Array(SEASONS);
-    const national = new Float64Array(SEASONS);
     const rainStrike = Math.max(0.5, Math.round(st.julyRain * 2) / 2);
-
     for (let i = 0; i < SEASONS; i++) {
       const heat = z[0][i];
       const rain = HEAT_RAIN * heat + Math.sqrt(1 - HEAT_RAIN * HEAT_RAIN) * z[1][i];
-      const stress = (A * heat + C * rain) / stressSd;
-      farmShock[i] = FARM_WEATHER * stress + Math.sqrt(1 - FARM_WEATHER * FARM_WEATHER) * z[2][i];
+      hottest[i] = st.julyHot - 0.4 + 3.5 * heat;
+      rainfall[i] = Math.exp(Math.log(st.julyRain) + 0.45 * rain);
+    }
+    const tempPay = payouts(hottest, function (v) { return v >= st.julyHot; });
+    const rainPay = payouts(rainfall, function (v) { return v >= rainStrike; });
 
-      const stationHeat = track.temperature * heat + Math.sqrt(1 - track.temperature * track.temperature) * z[3][i];
-      const stationRain = track.rain * rain + Math.sqrt(1 - track.rain * track.rain) * z[4][i];
-      hottest[i] = st.julyHot - 0.4 + 3.5 * stationHeat;
-      rainfall[i] = Math.exp(Math.log(st.julyRain) + 0.45 * stationRain);
-      national[i] = crop.nationalYield + crop.nationalSd * (NATIONAL_WEATHER * stress + Math.sqrt(1 - NATIONAL_WEATHER * NATIONAL_WEATHER) * z[5][i]);
+    // The farm's yield falls by a set amount in a hot July and in a dry one,
+    // centred so an average season sits at the farm's normal yield.
+    const centre = HOT_LOSS * share(tempPay) + DRY_LOSS * (1 - share(rainPay));
+    const farmShock = new Float64Array(SEASONS);
+    const national = new Float64Array(SEASONS);
+    for (let i = 0; i < SEASONS; i++) {
+      const weather = centre - HOT_LOSS * tempPay[i] - DRY_LOSS * (1 - rainPay[i]);
+      farmShock[i] = weather + OTHER * z[2][i];
+      national[i] = crop.nationalYield + crop.nationalSd * (0.7 * weather + 0.7 * z[5][i]);
     }
 
     const yieldStrike = Math.round(crop.nationalYield - 0.14 * crop.nationalSd);
-    const tempPay = payouts(hottest, function (v) { return v >= st.julyHot; });
-    const rainPay = payouts(rainfall, function (v) { return v >= rainStrike; });
     const yieldPay = payouts(national, function (v) { return v < yieldStrike; });
-    // Sample prices sit a few points off the model's chance, so the screen
-    // can show a cheap contract, an expensive one and one in between.
-    const tempYes = cents(share(tempPay), -5);
-    const rainYes = cents(share(rainPay), 7);
-    const yieldYes = cents(share(yieldPay), 6);
+    // Bargain prices: the side that pays in the farm's bad years costs far
+    // less than the model's chance of it paying.
+    const tempYes = cents(share(tempPay), -BARGAIN);
+    const rainYes = cents(share(rainPay), BARGAIN);       // so No, the dry-July side, is the bargain
+    const yieldYes = cents(share(yieldPay), -BARGAIN / 2);
 
     return {
       sample: true,
+      exaggerated: true,
       seasons: SEASONS,
       farmShock: farmShock,
-      tracking: track,
       markets: [
         {
           id: 'temp',
